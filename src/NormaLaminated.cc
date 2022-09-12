@@ -20,6 +20,6 @@
 #include "latticetester/NormaLaminated.h"
 
 namespace LatticeTester{
-  template class NormaLaminated<double>;
-  template class NormaLaminated<NTL::RR>;
+ // template class NormaLaminated<double>;
+  //template class NormaLaminated<NTL::RR>;
 }

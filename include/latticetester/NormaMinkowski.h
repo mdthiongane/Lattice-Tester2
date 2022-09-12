@@ -30,7 +30,7 @@ namespace LatticeTester {
    * The Hermite constants \f$\gamma_s\f$ are approximated using this bound.
    * This class is to be used with the L2NORM (the Euclidean norm) exclusively.
    */
-  template<typename RealRed>
+  //template<typename RealRed>
     class NormaMinkowski : public Normalizer {
       public:
 
@@ -68,7 +68,7 @@ namespace LatticeTester {
   /*
    * This is (2/V_n)^(2/n) which seems wrong.
    * */
-  template<typename RealRed>
+  //template<typename RealRed>
     const double NormaMinkowski::m_gamma[ ] =
     {
       /* GamMinkowski[0] = */     0.00000000000000,
@@ -129,7 +129,7 @@ namespace LatticeTester {
     NormaMinkowski::NormaMinkowski (double logDensity, int maxDim):
       Normalizer (logDensity, maxDim, "Minkowski", L2NORM)
     {
-      if (t > this->MAX_DIM)
+      if (maxDim > this->MAX_DIM)
         throw std::invalid_argument("NormaMinkowski:   dimension > MAX_DIM");
       Normalizer::computeBounds (logDensity);
     }

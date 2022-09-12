@@ -43,7 +43,7 @@
 #include "NTL/RR.h"
 
 #include "latticetester/Const.h"
-#include "latticetester/ntlwrap.h"
+#include "latticetester/NTLWrap.h"
 
 namespace NTL {
 

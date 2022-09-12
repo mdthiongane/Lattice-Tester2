@@ -1,7 +1,7 @@
 // This file is part of LatticeTester.
 //
 // Copyright (C) 2012-2022  The LatticeTester authors, under the occasional supervision
-// of Pierre L'Ecuyer at Université de Montréal.
+// of Pierre L'Ecuyer at Universitï¿½ de Montrï¿½al.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/Config.h"
+//#include "/u/thiongam/Documents/mamadou2022/workspaceCPP/ProjetLaticeTester/Lattice-Tester/examples/Config.h"
 
 #include <string>
 #include <cstring>
@@ -1018,9 +1019,9 @@ namespace LatticeTester {
       }
     }
 
-  extern template class ParamReader<std::int64_t, std::int64_t, double>;
-  extern template class ParamReader<NTL::ZZ, NTL::ZZ, double>;
-  extern template class ParamReader<NTL::ZZ, NTL::ZZ, NTL::RR>;
+  extern template class ParamReader<std::int64_t, double>;
+  extern template class ParamReader<NTL::ZZ, double>;
+  extern template class ParamReader<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatticeTester
 

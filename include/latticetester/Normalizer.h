@@ -1,4 +1,4 @@
-// This file is part of LatticeTester.
+ // This file is part of LatticeTester.
 //
 // Copyright (C) 2012-2022  The LatticeTester authors, under the supervision
 // of Pierre L'Ecuyer at Universit� de Montr�al.
@@ -88,7 +88,7 @@ namespace LatticeTester {
  * NOT to construct a new Normalizer object and to recompute the constants for each lattice.
  */
 
-template<typename Int>
+//template<typename Int>
 class Normalizer {
 
 public:
@@ -201,7 +201,7 @@ public:
 	/**
 	 * Returns the bound for dimension `j` as computed in Normalizer::init().
 	 */
-	// double getPreComputedBound (int j) const;
+	// double getBound (int j) const;
 	/**
 	 * Returns the bound on the length of the shortest nonzero vector in `j` dimensions.
 	 */
@@ -229,7 +229,7 @@ protected:
 	 * log of the density, ie log of the number of points of the lattice
 	 * per unit of volume.
 	 */
-	// double m_logDensity;  // remove ...
+	 double m_logDensity;  // remove ...
 	/**
 	 * Maximum dimension. Only elements 1 to <tt>m_maxDim</tt> (inclusive) of m_bounds below
 	 * will be pre-computed.
@@ -254,20 +254,41 @@ private:
 	 */
 	Normalizer& operator=(const Normalizer&);
 
+	/**
+	 * Return the min between k et j
+	 */
+
+	int min(int k, int j);
+
 };
 // End class Normalizer
+
+
+
+
+//===========================================================================
+
+
+ Normalizer::Normalizer (double logDensity, int maxDim, std::string name, NormType norm ) 
+ : m_name(name), m_norm(norm),m_logDensity(logDensity),m_maxDim(maxDim)
+{
+	m_bounds = new double[maxDim + 1];
+}
+
+
+
 
 //===========================================================================
 
 Normalizer::Normalizer (int maxDim, std::string name, NormType norm) :
-m_maxDim(maxDim), m_name(name), m_norm(norm),
+ m_name(name), m_norm(norm),m_maxDim(maxDim)
 {
 	m_bounds = new double[maxDim + 1];
 }
 
 /*-------------------------------------------------------------------------*/
 
-void Normalizer<Real>::computeBounds(double logDensity) {
+void Normalizer::computeBounds(double logDensity) {
 	double x;
 	for (int j = 1; j <= m_maxDim; j++) {
 		x = 0.5 * log(getGamma(j)) - (1.0 / j) * logDensity;
@@ -287,6 +308,13 @@ void Normalizer::computeBounds(double logm, int k) {
 		m_bounds[j] = exp(x);
 	}
 }
+
+
+/*-------------------------------------------------------------------------*/
+ int Normalizer::min(int k, int j)
+ {
+	return (k<j)?k:j;
+ }
 
 /*-------------------------------------------------------------------------*/
 
@@ -323,8 +351,9 @@ double Normalizer::getBound(int j) const {
 
 /*-------------------------------------------------------------------------*/
 
-double * Normalizer::getBounds const {
+double * Normalizer::getBounds() const {
 	return m_bounds;
+}
 }
 // end namespace LatticeTester
 

@@ -165,6 +165,13 @@ namespace LatticeTester {
            * Builds the basis (and perhaps m-dual basis) for the projection `proj` for this
            * lattice. The result is placed in the `lattice` object. The LLL algorithm is 
            * applied to recover a proper basis. 
+           * 
+           * 
+           * 
+           * 
+           * 
+           * 
+           * 
            */
           virtual void buildProjection (IntLattice<Int, Real, RealRed>* lattice,
               const Coordinates & proj);
@@ -188,13 +195,13 @@ namespace LatticeTester {
            * It contains the complete normalization constants for the number of dimensions
            * of this lattice. 
            */
-<<<<<<< HEAD
+//<<<<<<< HEAD
           // LatticeTester::Normalizer<RealRed> * getNormalizer (NormaType norma,
           //    int alpha, bool dualF);
-=======
-          LatticeTester::Normalizer<RealRed> * getNormalizer (NormaType norma,
+//=======
+          LatticeTester::Normalizer * getNormalizer (NormaType norma,
               int alpha, bool dualF);
->>>>>>> 80726e1a9e1d0aa373820dc56e41d7405580ed7c
+//>>>>>>> 80726e1a9e1d0aa373820dc56e41d7405580ed7c
 
           /**
            * A virtual utility method to store a vector of indices with lacunary values
@@ -323,7 +330,7 @@ namespace LatticeTester {
   template<typename Int, typename Real, typename RealRed>
       void IntLattice<Int, Real, RealRed>::kill ()
     {
-      IntLatticeBase<Int, Real, RealRed>::kill();
+     // IntLatticeBase<Int, Real, RealRed>::kill();
       // m_vSI.clear();
     }
 
@@ -333,7 +340,7 @@ namespace LatticeTester {
   template<typename Int, typename Real, typename RealRed>
       IntLattice<Int, Real, RealRed>::~IntLattice ()
     {
-      IntLatticeBase<Int, Real, RealRed>::kill();
+      //sIntLatticeBase<Int, Real, RealRed>::kill();
     }
 
   //===========================================================================
@@ -418,7 +425,7 @@ namespace LatticeTester {
 
   template<typename Int, typename Real, typename RealRed>
       void IntLattice<Int, Real, RealRed>::buildProjection (
-          IntLattice<Int, Real, RealRed>* lattice, const Coordinates & proj)
+          IntLattice<Int, Real, RealRed>* lattice, const Coordinates  & proj)
     {
       const int dim = this->getDim ();
       //  std::cout << "      ESPION_2\n";  getPrimalBasis ().write();
@@ -442,7 +449,7 @@ namespace LatticeTester {
 
       lattice->m_withDual = this->m_withDual;
       if (this->m_withDual) {
-        constr.DualConstruction(lattice->m_basis, lattice->m_dualbasis, this->m_modulo);
+        constr.mDualTriangular(lattice->m_basis, lattice->m_dualbasis, this->m_modulo);
         lattice->setDualNegativeNorm ();
       }
 
@@ -558,9 +565,13 @@ namespace LatticeTester {
 
   //===========================================================================
 
-  extern template class IntLattice<std::int64_t, std::int64_t, double, double>;
-  extern template class IntLattice<NTL::ZZ, NTL::ZZ, double, double>;
-  extern template class IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>;
+  //extern template class IntLattice<std::int64_t, std::int64_t, double, double>;
+  //extern template class IntLattice<NTL::ZZ, NTL::ZZ, double, double>;
+  //extern template class IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>;
+
+  extern template class IntLattice<std::int64_t, double, double>;
+  extern template class IntLattice<NTL::ZZ, double, double>;
+  extern template class IntLattice<NTL::ZZ, NTL::RR, NTL::RR>;
 
 } // End namespace LatticeTester
 

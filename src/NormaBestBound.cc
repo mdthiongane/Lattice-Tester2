@@ -19,6 +19,6 @@
 #include "latticetester/NormaBestBound.h"
 
 namespace LatticeTester{
-  template class NormaBestBound<double>;
-  template class NormaBestBound<NTL::RR>;
+ // template class NormaBestBound<double>;
+ // template class NormaBestBound<NTL::RR>;
 }

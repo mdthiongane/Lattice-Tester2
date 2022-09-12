@@ -172,7 +172,7 @@ namespace LatticeTester {
 
 	/*=========================================================================*/
 
-	NormaBestLat::NormaMinkL1 (double logm, int k, int maxDim)
+	NormaMinkL1::NormaMinkL1 (double logm, int k, int maxDim)
 	: Normalizer (maxDim, "MinkL1", L1NORM) {
 		m_gamma = new double[maxDim + 1];
 		int t0 = maxDim;

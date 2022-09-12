@@ -112,7 +112,7 @@ public:
 	void mDualTriangular(IntMat &matrix, IntMat &dualMatrix, Int m);
 
 	/**
-	 * This does the same thing as DualConstruction(), but is much slower. This
+	 * This does the same thing as mDualTriangular(), but is much slower. This
 	 * is here simply for the sake of comparison and should not be used in practice.
 	 * Suppose the basis matrix contains basis vectors on its lines and is
 	 * \f$p\times q\f$ where \f$q \geq p\f$. We can compute the \f$m\f$-dual
@@ -140,7 +140,9 @@ public:
 	 * overwrite the lattice basis in `out`, changing also the dimension.
 	 * The returned basis is not triangular in general.
 	 */
-	template<typename Int, typename Real, typename RealRed>
+	//template<typename Int, typename Real, typename RealRed>
+	//template<typename Int>
+    template<typename Real, typename RealRed>
 	void ProjectionConstruction(IntLatticeBase<Int, Real, RealRed> &in,
 			IntLatticeBase<Int, Real, RealRed> &out, const Coordinates &proj);
 };
@@ -252,7 +254,7 @@ void BasisConstruction<Int>::mDualTriangular(IntMat &matrix, IntMat &dualMatrix,
 		Int m) {
 	// We need to have a triangular basis matrix
 	if (!CheckTriangular(matrix, matrix.NumRows(), Int(0)))
-		GCDConstruction(matrix);
+		GCDTriangularBasis(matrix);
 	long dim = matrix.NumRows();
 	if (dim != matrix.NumCols()) {
 		std::cout << "matrix has to be square, but dimensions do not fit.\n";
@@ -300,11 +302,13 @@ void BasisConstruction<Int>::mDualComputation(IntMat &matrix,
 
 //============================================================================
 
+//template<typename Int>s
+//template<typename Int, typename Real, typename RealRed>
 template<typename Int>
-template<typename Int, typename Real, typename RealRed>
+template<typename Real, typename RealRed>
 void BasisConstruction<Int>::ProjectionConstruction(
 		IntLatticeBase<Int, Real, RealRed> &in,
-		IntLatticeBase<Int, Real, RealRed> &out, const Coordinates &proj) {
+		IntLatticeBase<Int, Real, RealRed> &out, const Coordinates& proj) {
 	std::size_t dim = proj.size();
 	unsigned int lat_dim = in.getDim();
 	if (dim > lat_dim)

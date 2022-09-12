@@ -109,7 +109,7 @@ namespace LatticeTester {
    * \f${\mathcal{L}}_1\f$ norm.<br>
    * `NONE`: no normalization will be used.<br>
    */
-  enum NormaType { BESTLAT, BESTBOUND, LAMINATED, ROGERS, MINKOWSKI, MINKL1, NONE };
+  enum NormaType { BESTLAT, BESTBOUND, LAMINATED, ROGERS, MINKOWSKI, MINKL1, MINK,L1,L2, NONE };
 
   /**
    * Indicates which type of calculation is considered for the

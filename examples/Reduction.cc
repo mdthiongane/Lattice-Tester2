@@ -47,12 +47,12 @@ using namespace LatticeTester;
 
 namespace {
   // Returns the average of the length of this vector
-  NScal average(NVect vector) {
-    NScal sum(0);
+  Real average(RealVec vector) {
+    Real sum(0);
     for (int i = 0; i<vector.length(); i++) {
       sum += vector[i];
     }
-    return sum/NScal(vector.length());
+    return sum/Real(vector.length());
   }
 }
 
@@ -73,7 +73,7 @@ int main() {
     sho_bkz[i] = 0;
   }
   int die_fails=0, lll_fails=0, bkz_fails=0;
-  NScal vec_length[3];
+  Real vec_length[3];
   vec_length[0] = vec_length[1] = vec_length[2] = 0;
 
   std::string prime = primes[0];
@@ -83,19 +83,19 @@ int main() {
       // We dynamically allocate memory to these two pointers every time we need to
       // create an object of their type. This is because of the OOP approach
       // to lattice reduction.
-      IntLatticeBase<MScal, BScal, NScal, RScal>* basis;
-      Reducer<MScal, BScal, NScal, RScal>* red;
+      IntLatticeBase<Int, Real, RealRed>* basis;
+      Reducer<Int, Real, RealRed>* red;
 
       //! Variables definition
-      ParamReader<MScal, BScal, RScal> reader;
+      ParamReader<Int, RealRed> reader;
       std::string name;
       int numlines;
-      BMat matrix1;
+      IntMat matrix1;
       unsigned int ln;
 
       //! Reader shenanigans
       name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
-      reader = ParamReader<MScal, BScal, RScal>(name + ".dat");
+      reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
       reader.readInt(numlines, 0, 0);
       matrix1.SetDims(numlines, numlines);
@@ -104,8 +104,8 @@ int main() {
 
       // Dieter reduction before shortest vector search
       tmp = clock();
-      basis = new IntLatticeBase<MScal, BScal, NScal, RScal>(matrix1, numlines);
-      red = new Reducer<MScal, BScal, NScal, RScal>(*basis);
+      basis = new IntLatticeBase<Int, Real,  RealRed>(matrix1, numlines);
+      red = new Reducer<Int, Real, RealRed>(*basis);
       red->redDieter(0);
       die_time[j] += clock() - tmp;
       basis->updateVecNorm();
@@ -121,8 +121,8 @@ int main() {
 
       // LLL reduction before shortest vector search
       tmp = clock();
-      basis = new IntLatticeBase<MScal, BScal, NScal, RScal>(matrix1, numlines);
-      red = new Reducer<MScal, BScal, NScal, RScal>(*basis);
+      basis = new IntLatticeBase<Int, Real, RealRed>(matrix1, numlines);
+      red = new Reducer<Int, Real, RealRed>(*basis);
       red->redLLLNTL();
       lll_time[j] += clock() - tmp;
       basis->updateVecNorm();
@@ -138,8 +138,8 @@ int main() {
 
       // BKZ reduction before shortest vector search
       tmp = clock();
-      basis = new IntLatticeBase<MScal, BScal, NScal, RScal>(matrix1, numlines);
-      red = new Reducer<MScal, BScal, NScal, RScal>(*basis);
+      basis = new IntLatticeBase<Int, Real, RealRed>(matrix1, numlines);
+      red = new Reducer<Int, Real, RealRed>(*basis);
       red->redBKZ();
       bkz_time[j] += clock() - tmp;
       basis->updateVecNorm();
