@@ -229,7 +229,7 @@ protected:
 	 * log of the density, ie log of the number of points of the lattice
 	 * per unit of volume.
 	 */
-	 double m_logDensity;  // remove ...
+	 //double m_logDensity;  // remove ...
 	/**
 	 * Maximum dimension. Only elements 1 to <tt>m_maxDim</tt> (inclusive) of m_bounds below
 	 * will be pre-computed.
@@ -269,11 +269,11 @@ private:
 //===========================================================================
 
 
- Normalizer::Normalizer (double logDensity, int maxDim, std::string name, NormType norm ) 
+ /*Normalizer::Normalizer (double logDensity, int maxDim, std::string name, NormType norm ) 
  : m_name(name), m_norm(norm),m_logDensity(logDensity),m_maxDim(maxDim)
 {
 	m_bounds = new double[maxDim + 1];
-}
+}*/
 
 
 

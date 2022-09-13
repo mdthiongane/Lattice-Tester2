@@ -45,7 +45,7 @@
 //#include "latticetester/Reducer.h"
 //#include "latticetester/ParamReader.h"
 //#include "latticetester/Config.h"
-#include "latticetester/LatticeAnalysis.h"
+#include "../examples/LatticeAnalysis.h"
 
 // Include NTL Header
 #include <NTL/tools.h>

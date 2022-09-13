@@ -23,8 +23,7 @@
 #include "latticetester/NTLWrap.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
-#include "latticetester/Config.h"
-//#include "/u/thiongam/Documents/mamadou2022/workspaceCPP/ProjetLaticeTester/Lattice-Tester/examples/Config.h"
+#include "../examples/Config.h"
 
 #include <string>
 #include <cstring>

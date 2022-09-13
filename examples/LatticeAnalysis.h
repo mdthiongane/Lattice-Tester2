@@ -39,7 +39,7 @@
 #include "latticetester/Reducer.h"
 #include "latticetester/Writer.h"
 #include "latticetester/WriterRes.h"
-#include "latticetester/Config.h"
+#include "examples/Config.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/BasisConstruction.h"
 //#include "latticetester/NTLWrap.h"

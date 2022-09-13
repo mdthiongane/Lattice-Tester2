@@ -16,11 +16,13 @@
 // limitations under the License.
 
 #include <NTL/ZZ.h>
+#include <NTL/RR.h>
 
-#include "latticetester/Config.h"
-
+#include "../examples/LatticeAnalysis.h"
 
 namespace LatticeTester{
-  template class Config<std::int64_t, NTL::matrix<std::int64_t>>;
-  template class Config<NTL::ZZ, NTL::matrix<NTL::ZZ>>;
+//namespace examples{  
+  template class LatticeAnalysis<std::int64_t, double, double>;
+  template class LatticeAnalysis<NTL::ZZ, double, double>;
+  template class LatticeAnalysis<NTL::ZZ, NTL::RR, NTL::RR>;
 }

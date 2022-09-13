@@ -112,8 +112,8 @@ def build(ctx):
     ctx.recurse('src')
     ctx.recurse('data')    
 
-    ctx.set_group('group2')
-    ctx.recurse('examples')
+    #ctx.set_group('group2')
+    #ctx.recurse('examples')
 
     ctx.add_group('group6')
     ctx.set_group('group6')
