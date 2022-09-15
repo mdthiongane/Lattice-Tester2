@@ -38,14 +38,34 @@
 #include <sys/stat.h>
 
 // Include LatticeTester Header
-//#include "latticetester/Util.h"
-//#include "latticetester/Const.h"
-//#include "latticetester/IntFactor.h"
-//#include "latticetester/IntLatticeBase.h"
-//#include "latticetester/Reducer.h"
-//#include "latticetester/ParamReader.h"
+#include "latticetester/Util.h"
+#include "latticetester/Const.h"
+#include "latticetester/IntFactor.h"
+#include "latticetester/IntLatticeBase.h"
+#include "latticetester/Reducer.h"
+#include "latticetester/ParamReader.h"
 //#include "latticetester/Config.h"
 #include "../examples/LatticeAnalysis.h"
+//#include "LatticeAnalysis.h"
+#include "latticetester/Util.h"
+#include "latticetester/Const.h"
+#include "latticetester/IntLatticeBase.h"
+#include "latticetester/Normalizer.h"
+#include "latticetester/NormaBestLat.h"
+#include "latticetester/NormaBestBound.h"
+#include "latticetester/NormaLaminated.h"
+#include "latticetester/NormaMinkowski.h"
+#include "latticetester/NormaMinkL1.h"
+#include "latticetester/NormaPalpha.h"
+#include "latticetester/NormaRogers.h"
+#include "latticetester/Reducer.h"
+#include "latticetester/Writer.h"
+#include "latticetester/WriterRes.h"
+#include "../examples/Config.h"
+#include "latticetester/ParamReader.h"
+#include "latticetester/BasisConstruction.h"
+#include "latticetester/NTLWrap.h"
+
 
 // Include NTL Header
 #include <NTL/tools.h>

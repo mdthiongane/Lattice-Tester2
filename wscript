@@ -118,7 +118,7 @@ def build(ctx):
     ctx.add_group('group6')
     ctx.set_group('group6')
     if not hasattr(ctx.options, 'nested') or not ctx.options.nested:
-        ctx.recurse('progs')
+        #ctx.recurse('progs')
         if ctx.env.BUILD_DOCS:
             ctx.recurse('doc') 
 
