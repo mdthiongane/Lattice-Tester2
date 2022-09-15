@@ -34,7 +34,7 @@ namespace LatticeTester {
  * and offers constructors to build a lattice from an arbitrary basis.
  * The class `IntLattice` extends this class and contains virtual methods that must
  * be defined in its subclasses.
- * An object of this class is an integral lattice, with its basis and `m`-dual basis.
+ * An `IntLatticeBase` object is an integral lattice, with its basis and `m`-dual basis.
  * There are tools to perform simple manipulations on those lattice bases.
  * The value of `m` is always chosen in a way that all coordinates of the basis and
  * of its `m`-dual are integers, so they can be represented exactly.
@@ -42,18 +42,22 @@ namespace LatticeTester {
  * Typically, `m` is the smallest integer with this property.
  *
  * The dimension $t$ of the lattice is the number of independent vectors that form a basis.
- * Usually, these vectors also have $t$ coordinates.
+ * Usually, these vectors also have $t$ coordinates, but in general they may have more.      (???)
  * A norm is also chosen in `NormType` to measure the vector lengths; by default it is the
  * Euclidean norm.
  * Methods and attributes are offered to compute and store the norms of the basis and dual basis vectors,
  * to permute basis vectors, sort them by length and do the corresponding changes in the dual, etc.
- *
+ * An `IntLatticeBase` object contains several protected variables to store all these quantities.
+ * For better efficiency, we should avoid creating too many of these objects, for example when
+ * making searches for good lattices.
  */
 template<typename Int, typename Real, typename RealRed>
 class IntLatticeBase {
 
 private:
 	// Forward definition of types to be used in this class.
+	//  Could this be replaced by just importing FlexTypes.h   ????
+	//  Also, RealRed is never used in this class.
 	typedef NTL::vector<Int> IntVec;
 	typedef NTL::matrix<Int> IntMat;
 	typedef NTL::vector<Real> RealVec;
@@ -100,19 +104,28 @@ public:
 	 * Makes a deep copy of the lattice `lat` into this object.
 	 * CHANGED: WE NOW COPY EVERYTHING!
 	 */
-	void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat);
+	void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat, int dim=0);
 
 	/*
+<<<<<<< HEAD
 	 * Copy the `n` first elements of the basis of the lattice `lat` into this
 	 * object. The object into which `lat` is copied has to be of dimension `n` already.
 	 * SEEMS BIZARRE AND APPARENTLY NEVER USED.
 	 *  */
 	 void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat, long n);
 	 
+=======
+	 * Copy the first `dim` elements of the primal basis of the lattice `lat` into this
+	 * object.  It also undefines the norm, the dual basis, etc.
+	 * The object into which `lat` is copied has to be of dimension `dim` already,
+	 * otherwise nothing is done.  Nothing else is changed.   ??????
+	 */
+	void copyBasis(const IntLatticeBase<Int, Real, RealRed> &lat, int dim=0);
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 	/**
 	 * Initializes a vector containing the norms of the basis vectors to -1
-	 * for all components.
+	 * for all components.  It means the norms are no longer up to date.
 	 */
 	void initVecNorm();
 
@@ -131,7 +144,8 @@ public:
 	}
 
 	/**
-	 * Returns the dimension of the lattice, which is the number of independent vectors in the basis.
+	 * Returns the dimension of the lattice, which is the dimension of the basis vectors,
+	 * and also usually the number of independent vectors in the basis.
 	 */
 	int getDim() const {
 		return m_dim;
@@ -140,7 +154,7 @@ public:
 	/**
 	 * Returns the `NormType` used by this lattice.
 	 */
-	NormType getNorm() const {
+	NormType getNormType() const {
 		return m_norm;
 	}
 
@@ -200,6 +214,7 @@ public:
 	/**
 	 * Sets the norm of the `i`-th component of the basis to `value`.
 	 * Using `updateVecNorm(const int&)` is recommended over this function.
+	 *   ***  Do we really need this ???  ***
 	 */
 	void setVecNorm(const Real &value, const int &i) {
 		m_vecNorm[i] = value;
@@ -232,6 +247,7 @@ public:
 	/**
 	 * Sets all the values in the array containing the norms of the basis vectors to -1.
 	 * This means that these norms are not up to date (they still have to be computed).
+	 *   ***   Seems to be the same as  initVecNorm ???
 	 */
 	void setNegativeNorm();
 
@@ -265,6 +281,7 @@ public:
 	/**
 	 * Updates the array containing the basis vectors norms from the `d`-th
 	 * component to the last, by recomputing them.
+	 * Putting `d=0` recomputes all the norms.
 	 * */
 	void updateVecNorm(const int &d);
 
@@ -350,6 +367,7 @@ public:
 	 * Writes the lattice and its parameters on standard output. This prints
 	 * the dimension, the norm used, the basis and m-dual basis vectors and
 	 * the basis and dual basis vector norms.
+	 *  ***   This should return a string instead !!!!   ***
 	 */
 	void write() const;
 
@@ -446,7 +464,11 @@ IntLatticeBase<Int, Real, RealRed>::IntLatticeBase(const IntMat primalbasis,
 template<typename Int, typename Real, typename RealRed>
 IntLatticeBase<Int, Real, RealRed>::IntLatticeBase(
 		const IntLatticeBase<Int, Real, RealRed> &lat) {
+<<<<<<< HEAD
 		//: m_dim(lat.getDim()), m_norm(lat.getNorm())
+=======
+//		: m_dim(lat.getDim()), m_norm(lat.getNormType())
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	copyLattice(lat);
 }
 
@@ -470,6 +492,7 @@ void IntLatticeBase<Int, Real, RealRed>::kill() {
 
 /*=========================================================================*/
 
+//  Is this really a deep copy?
 template<typename Int, typename Real, typename RealRed>
 void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 		const IntLatticeBase<Int, Real, RealRed> &lat) {
@@ -486,11 +509,14 @@ void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 
 /*=========================================================================*/
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 template<typename Int, typename Real, typename RealRed>
 void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 		const IntLatticeBase<Int, Real, RealRed> &lat, long n) {
-	if (this->m_dim == n) {
+	if (this->m_dim == n) {     // What if n < m_dim ?    Error message?   ***********
 		CopyMatr(this->m_basis, lat.m_basis, n);
 		CopyVect(this->m_vecNorm, lat.m_vecNorm, n);
 		this->m_withDual = lat.m_withDual;
@@ -504,7 +530,10 @@ void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 		this->m_modulo = lat.m_modulo;
 	}
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 /*=========================================================================*/
 
