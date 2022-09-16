@@ -225,16 +225,6 @@ typedef double        RealRed; //RScal
 typedef NTL::ZZ_pX    PolX;
 typedef NTL::ZZ_pE    PolE;
 
-// From FlexType added by Pierre
-//typedef NTL::ZZ_p     MScalP;
-//typedef NTL::vec_ZZ_p MVectP;
-//typedef NTL::ZZ       Int;
-//typedef std::int64_t  Int;
-//typedef NTL::RR       Real;
-//typedef double        Real;
-//typedef double        RealRed;
-//typedef NTL::RR       RealRed;
-
 
 
 #elif NTL_TYPES_CODE == 3

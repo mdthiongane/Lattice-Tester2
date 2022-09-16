@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+//<<<<<<< HEAD
 // This file is part of LatticeTester.
 //
 // LatticeTester
@@ -24,7 +24,7 @@ namespace LatticeTester {
  // template class NormaMinkL1<double>;
  // template class NormaMinkL1<NTL::RR>;
 }
-=======
+//=======
 // This file is part of LatticeTester.
 //
 // Copyright (C) 2012-2022  The LatticeTester authors, under the supervision
@@ -47,7 +47,7 @@ namespace LatticeTester {
 #include "latticetester/NormaMinkL1.h"
 
 namespace LatticeTester {
-  template class NormaMinkL1<double>;
-  template class NormaMinkL1<NTL::RR>;
+//  template class NormaMinkL1<double>;
+ // template class NormaMinkL1<NTL::RR>;
 }
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+//>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4

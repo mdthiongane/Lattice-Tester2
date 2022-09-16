@@ -104,7 +104,8 @@ public:
 	 * Makes a deep copy of the lattice `lat` into this object.
 	 * CHANGED: WE NOW COPY EVERYTHING!
 	 */
-	void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat, int dim=0);
+	//void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat, int dim=0);
+	void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat);
 
 	/*
 <<<<<<< HEAD
@@ -114,14 +115,14 @@ public:
 	 *  */
 	 void copyLattice(const IntLatticeBase<Int, Real, RealRed> &lat, long n);
 	 
-=======
+/***=======
 	 * Copy the first `dim` elements of the primal basis of the lattice `lat` into this
 	 * object.  It also undefines the norm, the dual basis, etc.
 	 * The object into which `lat` is copied has to be of dimension `dim` already,
 	 * otherwise nothing is done.  Nothing else is changed.   ??????
 	 */
 	void copyBasis(const IntLatticeBase<Int, Real, RealRed> &lat, int dim=0);
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+///>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 	/**
 	 * Initializes a vector containing the norms of the basis vectors to -1
@@ -464,11 +465,11 @@ IntLatticeBase<Int, Real, RealRed>::IntLatticeBase(const IntMat primalbasis,
 template<typename Int, typename Real, typename RealRed>
 IntLatticeBase<Int, Real, RealRed>::IntLatticeBase(
 		const IntLatticeBase<Int, Real, RealRed> &lat) {
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		//: m_dim(lat.getDim()), m_norm(lat.getNorm())
-=======
+//=======
 //		: m_dim(lat.getDim()), m_norm(lat.getNormType())
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+//>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	copyLattice(lat);
 }
 
@@ -509,10 +510,10 @@ void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 
 /*=========================================================================*/
 
-<<<<<<< HEAD
+/***<<<<<<< HEAD
 
 =======
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4**/
 template<typename Int, typename Real, typename RealRed>
 void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 		const IntLatticeBase<Int, Real, RealRed> &lat, long n) {
@@ -530,10 +531,10 @@ void IntLatticeBase<Int, Real, RealRed>::copyLattice(
 		this->m_modulo = lat.m_modulo;
 	}
 }
-<<<<<<< HEAD
+/***<<<<<<< HEAD
 
 =======
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4**/
 
 /*=========================================================================*/
 

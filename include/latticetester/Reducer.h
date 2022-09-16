@@ -133,11 +133,7 @@ public:
 	 * object will be changed to `norm`. If `MaxNodesBB` is exceeded
 	 * during the branch-and-bound, the method aborts and returns
 	 * `false`. Otherwise, it returns `true`. If the reduction was
-<<<<<<< HEAD
-	 * successful, the new reduced basis can be accessed as desired via
-=======
 	 * successful, the new reduced basis can be accessed via
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	 * `getIntLatticeBase()`.
 	 *
 	 * It is strongly recommended to use `redBKZ` or `redLLLNTL` to pre-reduce
@@ -307,17 +303,9 @@ private:
 	 * \f$q=\lfloor z_i/z_j\rfloor\not0\f$, and adding \f$q V_i\f$ to
 	 * \f$V_j\f$ when this happens. We return in \f$k\f$ the last index
 	 * \f$j\f$ such that \f$|z_j|=1\f$.
-<<<<<<< HEAD
-	 *   **This method does not change the m-dual.
-	 *   **It is probably useless for SV, because we have a guaranteed SV anyway. */
-
-	 void transformStage3ShortVec(std::vector<std::int64_t> &z, int &k);
-	
-=======
 	 * This method does not change the m-dual.
 	 */
 	void transformStage3ShortVec(std::vector<std::int64_t> &z, int &k);
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 	/**
 	 * Method used in `reductMinkowski` to perform a transformation of
@@ -453,10 +441,10 @@ private:
 	 * Maximum number of transformations in the method `PreRedDieter`.
 	 * After <tt>MAX_PRE_RED</tt> successful transformations have been
 	 * performed, the prereduction is stopped.
-	 *
-	 */
+	 * 
+	 * */
 	 static const std::int64_t MAX_PRE_RED = 1000000;
-
+	
 
 	/**
 	 * Whenever the number of nodes in the branch-and-bound tree exceeds
@@ -524,13 +512,8 @@ struct specReducer<std::int64_t, Real, RealRed> {
 			std::int64_t blocksize, PrecisionType precision, int dim) {
 		IntLatticeBase<std::int64_t, Real, RealRed> *lattmp = 0;
 		if (dim > 0) {
-<<<<<<< HEAD
 			lattmp = new IntLatticeBase<std::int64_t, Real,
-					RealRed>(dim, red.getIntLatticeBase()->getNorm());
-=======
-			lattmp = new IntLatticeBase<std::int64_t, std::int64_t, Real,
 					RealRed>(dim, red.getIntLatticeBase()->getNormType());
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 			lattmp->copyLattice(*red.getIntLatticeBase(), dim);
 		} else
 			lattmp = red.getIntLatticeBase();
@@ -549,14 +532,6 @@ struct specReducer<std::int64_t, Real, RealRed> {
 	 * performs NTL LLL reduction is faster than our own LLL.
 	 * If it is, we should re-implement our LLL to match what is done in NTL.
 	 */
-<<<<<<< HEAD
-	void redLLLNTL(Reducer<std::int64_t, Real, RealRed> &red,
-			double delta, PrecisionType precision, int dim) {
-		IntLatticeBase<NTL::ZZ, Real, RealRed> *lattmp = 0;
-		NTL::matrix<std::int64_t> basis = red.getIntLatticeBase()->getBasis();
-		NTL::mat_ZZ U;
-		U.SetDims(basis.NumRows(), basis.NumCols());
-=======
 	void redLLLNTL(Reducer<std::int64_t, Real, RealRed> &red, double delta,
 			PrecisionType precision, int dim) {
 		// Here we create a new temporary lattice, new NTL matrices, and then destroy them.
@@ -566,21 +541,14 @@ struct specReducer<std::int64_t, Real, RealRed> {
 		// We copy the basis in B, for all the dimensions!
 		NTL::mat_ZZ B;
 		B.SetDims(basis.NumRows(), basis.NumCols());
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 		for (int i = 0; i < basis.NumRows(); i++) {
 			for (int j = 0; j < basis.NumCols(); j++) {
 				B[i][j] = basis[i][j];
 			}
 		}
-<<<<<<< HEAD
-		lattmp = new IntLatticeBase<NTL::ZZ, Real, RealRed>(U, dim,
-				red.getIntLatticeBase()->getNorm());
-		U.kill();
-=======
 		lattmp = new IntLatticeBase<NTL::ZZ, Real, RealRed>(B, dim,
 				red.getIntLatticeBase()->getNormType());
 		B.kill();
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 		switch (precision) {
 		case DOUBLE:
@@ -619,13 +587,8 @@ struct specReducer<std::int64_t, Real, RealRed> {
 	 * {
 	 *   IntLatticeBase<std::int64_t, Real, RealRed> *lattmp = 0;
 	 *   if(dim > 0){
-<<<<<<< HEAD
-	 *     lattmp = new IntLatticeBase<std::int64_t, std::int64_t, Real, RealRed>(
-	 *                dim, red.getIntLatticeBase()->getNorm());
-=======
 	 *     lattmp = new IntLatticeBase<std::int64_t, Real, RealRed>(
 	 *                dim, red.getIntLatticeBase()->getNorm(Type));
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	 *     lattmp->copyLattice(*red.getIntLatticeBase(), dim);
 	 *   }
 	 *   else
@@ -645,19 +608,11 @@ struct specReducer<std::int64_t, Real, RealRed> {
 template<typename Real, typename RealRed>
 struct specReducer<NTL::ZZ, Real, RealRed> {
 
-<<<<<<< HEAD
-	void redLLLNTLExact(Reducer<NTL::ZZ, Real, RealRed> &red,
-			double delta) {
-		NTL::ZZ det(0);
-		NTL::LLL(det, red.getIntLatticeBase()->getBasis(), 99999, 100000);
-		// These numbers should not be hardcoded !!!
-=======
 	void redLLLNTLExact(Reducer<NTL::ZZ, Real, RealRed> &red, double delta) {
 		NTL::ZZ det(0);
 		int64_t denum;
 		denum = round(1.0 / (1.0 - delta)); // We want (denum-1)/denum \approx delta.
 		NTL::LLL(det, red.getIntLatticeBase()->getBasis(), denum - 1, denum);
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	}
 
 	void redBKZ(Reducer<NTL::ZZ, Real, RealRed> &red, double delta,
@@ -665,20 +620,10 @@ struct specReducer<NTL::ZZ, Real, RealRed> {
 		IntLatticeBase<NTL::ZZ, Real, RealRed> *lattmp = 0;
 		if (dim > 0) {
 			lattmp = new IntLatticeBase<NTL::ZZ, Real, RealRed>(dim,
-<<<<<<< HEAD
-					red.getIntLatticeBase()->getNorm());
-			lattmp->copyLattice(*red.getIntLatticeBase(), dim);
-		} else
-			lattmp = red.getIntLatticeBase();
-
-		NTL::mat_ZZ U;
-		U.SetDims(lattmp->getBasis().size1(), lattmp->getBasis().size2());
-=======
 					red.getIntLatticeBase()->getNormType());
 			lattmp->copyLattice(*red.getIntLatticeBase(), dim);
 		} else
 			lattmp = red.getIntLatticeBase(); // dim=0 means we use the full dimension.
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 		switch (precision) {
 		case DOUBLE:
@@ -705,14 +650,9 @@ struct specReducer<NTL::ZZ, Real, RealRed> {
 			PrecisionType precision, int dim) {
 		IntLatticeBase<NTL::ZZ, Real, RealRed> *lattmp = 0;
 		if (dim > 0) {
-<<<<<<< HEAD
-			lattmp = new IntLatticeBase<NTL::ZZ, Real, RealRed>(dim,
-					red.getIntLatticeBase()->getNorm());
-=======
 			// We should copy only the basis matrix, not the whole IntLatticeBase object !   ******
 			lattmp = new IntLatticeBase<NTL::ZZ, Real, RealRed>(dim,
 					red.getIntLatticeBase()->getNormType());
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 			lattmp->copyLattice(*red.getIntLatticeBase(), dim);
 		} else
 			lattmp = red.getIntLatticeBase();
@@ -909,11 +849,7 @@ inline void Reducer<Int, Real, RealRed>::calculCholesky2Ele(int i, int j) {
 
 //=========================================================================
 
-<<<<<<< HEAD
- void negativeCholeski();   
-=======
 //  void negativeCholesky();   ???
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
 //=========================================================================
 
@@ -986,7 +922,7 @@ bool Reducer<Int, Real, RealRed>::calculCholesky(RealRedVec &DC2,
 			if (i == j) {
 				DC2[i] = m_c2(i, i);
 				if (DC2[i] < 0.0) {
-					negativeCholesky();
+					//negativeCholesky();
 					return false;
 				}
 			} else
@@ -1298,7 +1234,7 @@ void Reducer<Int, Real, RealRed>::redLLLNTLExact(double delta) {
 //=========================================================================
 
 template<typename Int, typename Real, typename RealRed>
-void Reducer<Int, Real, RealRed>::redBKZ(double delta, std::int64_t blocksize,
+void Reducer<Int, Real, RealRed>::redBKZ(double delta, int blocksize,
 		PrecisionType precision, int dim) {
 	spec.redBKZ(*this, delta, blocksize, precision, dim);
 }
@@ -1967,33 +1903,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm) {
 	 */
 	if ((norm != L1NORM) & (norm != L2NORM)) {
 		std::cerr << "RedBBShortVec: only L1 and L2 norms are supported";
-<<<<<<< HEAD
-	return false;
-}
-bool smaller = false;  // Found a smaller vector?
-int k, h;
-const int dim = m_lat->getDim();  // Lattice dimension
-RealRed x;
-// Here we sort the basis, otherwise Cholesky will fail more rapidly
-// due to floating-point errors.
-m_lat->updateScalL2Norm(0, dim);
-m_lat->sortNoDual(0);
-
-// Approximate the square norm of the current shortest vector.
-if (norm == L2NORM) {
-	NTL::conv(m_lMin2, m_lat->getVecNorm(0));
-} else {
-	// Looking for the shortest vector in basis according to the considered norm
-	NTL::matrix_row<IntMat> row1(m_lat->getBasis(), 0);
-	CalcNorm<IntVec, Real>(row1, dim, m_lMin, norm);
-	for (k = 1; k < dim; k++) {
-		NTL::matrix_row<IntMat> row2(m_lat->getBasis(), k);
-		CalcNorm<IntVec, Real>(row2, dim, x, norm);
-		if (x < m_lMin)
-			m_lMin = x;
-=======
 		return false;
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 	}
 	bool smaller = false;  // Found a smaller vector?
 	int k, h;
@@ -2029,7 +1939,7 @@ if (norm == L2NORM) {
 	/* Perform the Cholesky decomposition; if it fails we exit. */
 	if (!calculCholesky(m_dc2, m_c0))
 		return false;
-	/*   ***   Alternative:  triangular basis.   ****
+	/*   ***   Alternative:  triangular basis.   ****/
 
 	/* Perform the branch and bound.  */
 	/* m_n2[j] will be the sum of terms |z*k|^2 ||v*k||^2 for k > j.  */
@@ -2158,8 +2068,6 @@ bool Reducer<Int, Real, RealRed>::shortestVector(NormType norm) {
 
 extern template class Reducer< std::int64_t, double, double> ;
 extern template class Reducer< NTL::ZZ, double, double> ;
-extern template class Reducer< NTL::ZZ, NTL::RR, double> ;
-extern template class Reducer< NTL::ZZ, double, NTL::RR> ;
 extern template class Reducer< NTL::ZZ, NTL::RR, NTL::RR> ;
 
 }     // namespace LatticeTester

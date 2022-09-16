@@ -192,7 +192,7 @@ namespace LatticeTester {
            * It contains the complete normalization constants for the number of dimensions
            * of this lattice. 
            */
-<<<<<<< HEAD
+//<<<<<<< HEAD
 //<<<<<<< HEAD
           // LatticeTester::Normalizer<RealRed> * getNormalizer (NormaType norma,
           //    int alpha, bool dualF);
@@ -200,11 +200,11 @@ namespace LatticeTester {
           LatticeTester::Normalizer * getNormalizer (NormaType norma,
               int alpha, bool dualF);
 //>>>>>>> 80726e1a9e1d0aa373820dc56e41d7405580ed7c
-=======
+//=======
           // LatticeTester::Normalizer<RealRed> * getNormalizer (NormaType norma,
           //    int alpha, bool dualF);
 
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+//>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
 
           /**
            * A virtual utility method to store a vector of indices with lacunary values
@@ -421,7 +421,7 @@ namespace LatticeTester {
       }
       //   for (int i = 1; i <= getMaxDim(); i++)
       //      std::cout << " fix  " << m_lgVolDual2[i] << endl;
-    }
+    }ss
   */
 
   //===========================================================================

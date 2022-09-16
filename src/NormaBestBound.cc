@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+//<<<<<<< HEAD
 // This file is part of LatticeTester.
 //
 // LatticeTester
@@ -23,7 +23,7 @@ namespace LatticeTester{
  // template class NormaBestBound<double>;
  // template class NormaBestBound<NTL::RR>;
 }
-=======
+//=======
 // This file is part of LatticeTester.
 //
 // Copyright (C) 2012-2022  The LatticeTester authors, under the supervision
@@ -45,7 +45,7 @@ namespace LatticeTester{
 #include "latticetester/NormaBestBound.h"
 
 namespace LatticeTester{
-  template class NormaBestBound<double>;
-  template class NormaBestBound<NTL::RR>;
+  //template class NormaBestBound<double>;
+ // template class NormaBestBound<NTL::RR>;
 }
->>>>>>> b23681ea0112bce9ba98c1463251528b775075a4
+//>>>>>>> b23681ea0112bce9ba98c1463251528b775075a4

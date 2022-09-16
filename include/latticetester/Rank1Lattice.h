@@ -170,7 +170,7 @@ namespace LatticeTester {
     Rank1Lattice<Int, Real, RealRed>::Rank1Lattice (
         const Rank1Lattice<Int, Real, RealRed> & lat):
       IntLattice<Int, Real, RealRed> (
-          lat.m_modulo, lat.getDim (), lat.getNorm ())
+          lat.m_modulo, lat.getDim (), lat.getNormType ())
   {
     // MyExit (1, "Rank1Lattice:: constructor is incomplete" );
     init ();

@@ -308,7 +308,7 @@ void BasisConstruction<Int>::mDualComputation(IntMat &matrix,
 template<typename Int>
 template<typename Real, typename RealRed>
 void BasisConstruction<Int>::ProjectionConstruction(
-		IntLatticeBase<Int, Real, RealRed> &in,
+		IntLatticeBase<Int, Real, RealRed>& in,
 		IntLatticeBase<Int, Real, RealRed> &out, const Coordinates& proj) {
 	std::size_t dim = proj.size();
 	unsigned int lat_dim = in.getDim();
