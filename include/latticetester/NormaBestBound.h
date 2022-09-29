@@ -140,7 +140,7 @@ namespace LatticeTester {
 	/*=======================================================================*/
 
 	NormaBestBound::NormaBestBound (double logDensity, int maxDim)
-	: Normalizer (logDensity, maxDim, "Best", L2NORM) {
+	: Normalizer (maxDim, "Best", L2NORM) { //Normalizer (logDensity, maxDim, "Best", L2NORM
 		Normalizer::computeBounds (logDensity);
 	}
 

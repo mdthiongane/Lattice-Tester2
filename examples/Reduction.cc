@@ -92,6 +92,8 @@ int main() {
       int numlines;
       IntMat matrix1;
       unsigned int ln;
+      std::string s1("cholesky");
+      std::string s2("GCDTriangular");
 
       //! Reader shenanigans
       name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
@@ -111,7 +113,7 @@ int main() {
       basis->updateVecNorm();
       vec_length[0] += average(basis->getVecNorm());
       tmp = clock();
-      if (!red->shortestVector(L2NORM)) {
+      if (!red->shortestVector(L2NORM,s2)) {
         die_fails++;
       }
       sho_die[j] += clock() - tmp;
@@ -128,7 +130,7 @@ int main() {
       basis->updateVecNorm();
       vec_length[1] += average(basis->getVecNorm());
       tmp = clock();
-      if (!red->shortestVector(L2NORM)) {
+      if (!red->shortestVector(L2NORM,s1)) {
         lll_fails++;
       }
       sho_lll[j] += clock() - tmp;
@@ -145,7 +147,7 @@ int main() {
       basis->updateVecNorm();
       vec_length[2] += average(basis->getVecNorm());
       tmp = clock();
-      if (!red->shortestVector(L2NORM)) {
+      if (!red->shortestVector(L2NORM,s1)) {
         bkz_fails++;
       }
       sho_bkz[j] += clock() - tmp;

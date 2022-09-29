@@ -275,8 +275,8 @@ private:
 //===========================================================================
 
 
- /*Normalizer::Normalizer (double logDensity, int maxDim, std::string name, NormType norm ) 
- : m_name(name), m_norm(norm),m_logDensity(logDensity),m_maxDim(maxDim)
+/* Normalizer::Normalizer (double logDensity, int maxDim, std::string name, NormType norm ) 
+ : m_name(name), m_norm(norm),m_maxDim(maxDim)
 {
 	m_bounds = new double[maxDim + 1];
 }*/

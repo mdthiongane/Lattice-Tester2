@@ -165,7 +165,7 @@ namespace LatticeTester {
   /*=========================================================================*/
 
     NormaRogers::NormaRogers (double logDensity, int maxDim)
-    : Normalizer (logDensity, maxDim, "Rogers", L2NORM)
+    : Normalizer (maxDim, "Rogers", L2NORM)
     {
       m_gamma = new double[maxDim + 1];
       int t0 = maxDim;

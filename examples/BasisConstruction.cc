@@ -28,7 +28,7 @@
 #include <iostream>
 #include <ctime>
 
-#include "latticetester/Types.h"
+#include "latticetester/Types.h" 
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
 #include "latticetester/ParamReader.h"

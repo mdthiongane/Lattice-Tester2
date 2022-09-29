@@ -23,12 +23,19 @@
 #include "latticetester/Const.h"
 #include "latticetester/Util.h"
 #include "latticetester/IntLatticeBase.h"
+#include "latticetester/BasisConstruction.h"
 
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <limits>
 #include <cstdint>
+
+
+#include <iostream>
+#include <ctime>
+
+
 
 namespace LatticeTester {
 
@@ -139,7 +146,7 @@ public:
 	 * It is strongly recommended to use `redBKZ` or `redLLLNTL` to pre-reduce
 	 * the basis before invoking this method; this is not done automatically.
 	 */
-	bool shortestVector(NormType norm);
+	bool shortestVector(NormType norm,std::string decomp);
 
 	/**
 	 * This method performs pairwise reduction sequentially on all vectors
@@ -277,6 +284,7 @@ private:
 	 * The lattice that this object is working on.
 	 */
 	IntLatticeBase<Int, Real, RealRed> *m_lat;
+	IntLatticeBase<Int, Real, RealRed> *m_lat2;
 
 	/**
 	 * Contains specialized implementations of member methods depending on
@@ -347,7 +355,7 @@ private:
 	 * Tries to shorten the smallest vector of the primal basis using
 	 * branch-and-bound.  Used in `shortestVector`.
 	 */
-	bool redBBShortVec(NormType norm);
+	bool redBBShortVec(NormType norm,std::string decomp);
 
 	/**
 	 * Tries to find shorter vectors; recursive procedure used in `reductMinkowski`.
@@ -906,6 +914,7 @@ bool Reducer<Int, Real, RealRed>::calculCholesky(RealRedVec &DC2,
 	//  d = dim / 2; // If we use the Dual, we compute Cholesky
 	// with the Dual
 
+
 	// Compute the d first lines of C0 with the primal Basis.
 	for (i = 0; i < d; i++) {
 		m_lat->updateScalL2Norm(i);
@@ -1232,7 +1241,7 @@ void Reducer<Int, Real, RealRed>::redLLLNTLExact(double delta) {
 }
 
 //=========================================================================
-
+//std::int64_t 
 template<typename Int, typename Real, typename RealRed>
 void Reducer<Int, Real, RealRed>::redBKZ(double delta, int blocksize,
 		PrecisionType precision, int dim) {
@@ -1894,7 +1903,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 //=========================================================================
 
 template<typename Int, typename Real, typename RealRed>
-bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm) {
+bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decomp) {
 	/*
 	 * Finds shortest non-zero vector, using branch-and-bound, with L1 or L2 norm.
 	 * Stops and returns false if not finished after examining MaxNodesBB nodes in the
@@ -1936,12 +1945,63 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm) {
 	if (m_lMin2 <= m_BoundL2[dim - 1])
 		return false;
 
-	/* Perform the Cholesky decomposition; if it fails we exit. */
-	if (!calculCholesky(m_dc2, m_c0))
-		return false;
-	/*   ***   Alternative:  triangular basis.   ****/
+    std::string s1("cholesky");
+    std::string s2("GCDTriangular");
+	std::string s3("UtilTriangular");
+	BasisConstruction<Int> constr;
+    if(decomp==s1){
+    /* Perform the Cholesky decomposition; if it fails we exit. */
+         if (!calculCholesky(m_dc2, m_c0))
+           return false;
+     }
+    else if(decomp==s2){
+        /*   ***   Alternative:  triangular basis.   ****/
+        constr.GCDTriangularBasis(m_lat->getBasis());
+        m_lat->updateScalL2Norm(0, dim);
+		IntMat m_ba=m_lat->getBasis();
+		
+        for (int i = 0; i < dim; i++){
+		  for (int j = 0; j < dim; j++){
+             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
+			 m_c0(i,j)=NTL::conv<RealRed>(m_ba(i,j));
+		   }
+		}
+	    
+       // m_dc2=getDiagonalVec(m_lat->getBasis());
+        for (int i = 0; i < dim; i++) {
+          m_dc2[i] = m_c0(i, i)*m_c0(i, i);
+		}
+        
+     }
+	    else if(decomp==s3){
+       
+		IntMat m_v;
+		m_v.resize(dim, dim);
+		 m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
+		//IntMat m_w=m_lat->copyBasis();
+        Triangularization(m_lat2->getBasis(),m_v, dim,dim,m_lat->getModulo());
+		//Triangularization(m_w,m_v, dim,dim,m_lat->getModulo());
+		//m_lat->getBasis()=m_v;
+        m_lat->updateScalL2Norm(0, dim);
+		//IntMat m_ba=m_lat->getBasis();
+		
+        for (int i = 0; i < dim; i++){
+		  for (int j = 0; j < dim; j++){
+             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
+			 m_c0(i,j)=NTL::conv<RealRed>(m_v(i,j));
+			 std::cout <<  m_c0(i,j)<< "   ";
+		   }
+		    std::cout << ""<< std::endl;
+		}
+	    
+       // m_dc2=getDiagonalVec(m_lat->getBasis());
+        for (int i = 0; i < dim; i++) {
+          m_dc2[i] = m_c0(i, i)*m_c0(i, i);
+		}
+        
+		}
 
-	/* Perform the branch and bound.  */
+    /* Perform the branch and bound.  */
 	/* m_n2[j] will be the sum of terms |z*k|^2 ||v*k||^2 for k > j.  */
 	m_n2[dim - 1] = 0.0;
 	m_countNodes = 0;
@@ -2044,7 +2104,7 @@ bool Reducer<Int, Real, RealRed>::reductMinkowski(int d) {
 // On successful exit, the basis vectors are sorted by lengths and the norms are updated.
 // The square length of the shortest vector can be recovered in m_lMin2.
 template<typename Int, typename Real, typename RealRed>
-bool Reducer<Int, Real, RealRed>::shortestVector(NormType norm) {
+bool Reducer<Int, Real, RealRed>::shortestVector(NormType norm,std::string decomp) {
 
 	if (norm != L2NORM) {
 		m_lat->setNegativeNorm();
@@ -2053,7 +2113,7 @@ bool Reducer<Int, Real, RealRed>::shortestVector(NormType norm) {
 	/* The L2 norm is used for the Cholesky decomposition and BB bounds. */
 	bool ok;
 	if (norm == L1NORM || norm == L2NORM) {
-		ok = redBBShortVec (norm);
+		ok = redBBShortVec (norm,decomp);
 	} else {
 		ok = false;
 		std::cerr << "RedLattice::shortestVector: this norm is not supported";
@@ -2072,4 +2132,4 @@ extern template class Reducer< NTL::ZZ, NTL::RR, NTL::RR> ;
 
 }     // namespace LatticeTester
 
-#endif // REDUCER_H
+#endif 

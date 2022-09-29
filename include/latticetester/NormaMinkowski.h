@@ -127,7 +127,7 @@ namespace LatticeTester {
   /*=========================================================================*/
 
     NormaMinkowski::NormaMinkowski (double logDensity, int maxDim):
-      Normalizer (logDensity, maxDim, "Minkowski", L2NORM)
+      Normalizer (maxDim, "Minkowski", L2NORM)
     {
       if (maxDim > this->MAX_DIM)
         throw std::invalid_argument("NormaMinkowski:   dimension > MAX_DIM");

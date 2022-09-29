@@ -689,6 +689,37 @@ namespace LatticeTester {
       //cout << endl;
     }
 
+ 
+    void GCDvect (IntVec col, IntVec coeff,  int n, Int G){  
+      Int C, D, E, F,G;
+      Euclide (col[0], col[1], C, D , E, F, G);
+      coeff[0]=C;
+      coeff[1]=D;
+      Int val=G;
+      for(int i=2;i<n;i++){
+         if(col[i]==0)
+         {coeff[i]= 0;
+          continue;
+         }    
+         Euclide (val, col[i], C, D , E, F, G);
+         coeff[i]= D;
+         for(int j=0;j<i;j++)
+             coeff[j]*=C;
+       }
+       val=G; 
+      }
+
+      
+
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   /**
    * @}
    */

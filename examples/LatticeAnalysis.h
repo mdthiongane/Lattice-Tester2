@@ -39,8 +39,8 @@
 #include "latticetester/Reducer.h"
 #include "latticetester/Writer.h"
 #include "latticetester/WriterRes.h"
-//#include "../examples/Config.h"
-#include "Config.h"
+#include "../examples/Config.h"
+//#include "Config.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/NTLWrap.h"
@@ -48,17 +48,15 @@
 namespace LatticeTester {
 
   /**
-   * This class contains facilities to perform various tests on lattices while
-   * reading all the required input from a file.
-   * There are two intended usages of this class.
+   * Objects of this class can perform various tests on lattices. There are two
+   * intended usages of this class.
    * - The first one is the one used in the 
    * **lattest** executable, it is to simply pass a directory name (resp. a file
    * name) to the program to perform the tests specified in the `.dat` files in
    * the directory (resp. the file itself).
-   * ***  Where is this "lattest" program ???   ***
-   * - The other possibility is to instantiate all the needed fields of the
+   * - The other possibility is to instanciate all the needed fields of the
    *   class independently and to call the doTest() method. This approach is
-   *   more flexible and allows easy implementation of small scripts.  ???
+   *   more flexible and allows easy implementation of small scripts.
    *
    * The tests consist on the computation of one of the figures of merit
    * enumerated in CriterionType. If the user intend to simply reduce a lattice
@@ -86,17 +84,17 @@ namespace LatticeTester {
 
           /**
            * Base constructor for the case where the data will come from files.
-           * In that case, the fields of the class will be initialized when
+           * In that case, the fields of the class will be instanciated when
            * read. This constructor can also be used to create a default object
-           * of this class and then initialize its fields one at a time.
+           * for the class that will be populated one field at a time by the user.
            *
-           * If the user chooses to fill directly the fields that are needed, he
+           * If the user choose to fill by hand the fields that are needed, he
            * needs to fill the following fields:
-           * - `m_reducer` with a valid reducer containing an IntLatticeBase.
+           * - `m_reducer` with a valid reducer containing a basis.
            * - `m_criterion` with the criterion for the figure of merit he wants
            * - `m_preRed` with one of the pre-reduction strategies.
-           * - `m_norm` with one of the norm types for which the selected test has
-           *    been implemented.
+           * - `m_norm` with one of the norms for which the selected test has
+           *   been implemented.
            * */
           LatticeAnalysis ();
 
@@ -515,8 +513,8 @@ namespace LatticeTester {
           Red.redDieter(0);
         }
       }
-
-      result = Red.shortestVector(L2NORM);
+      std::string ch("cholesky");
+      result = Red.shortestVector(L2NORM,ch);
       m_shortest = NTL::conv<double>(Red.getMinLength());
       config.basis = Basis.getBasis();
 
@@ -531,7 +529,7 @@ namespace LatticeTester {
     {
       bool result = false;
       IntLatticeBase<Int, Real, RealRed>
-        Basis(config.basis, config.NumCols);    // This is not a basis, but a lattice!!!
+        Basis(config.basis, config.NumCols);
       Reducer<Int, Real, RealRed> Red(Basis);
 
       if (config.config.merit.reduction) {
@@ -550,7 +548,8 @@ namespace LatticeTester {
       if (config.config.merit.figure == SPECTRAL) {
         // performing the Branch-and-Bound procedure to find the shortest 
         // non-zero vector
-        result = Red.shortestVector(L2NORM);
+         std::string ch("cholesky");
+        result = Red.shortestVector(L2NORM,ch);
         // calculating the Figure of Merit
         NormaType norma(config.config.merit.norma);
         //RealRed density = RealRed(-log(abs(NTL::determinant(config.basis))));

@@ -63,7 +63,8 @@ int main() {
     proj_basis.sort(0);
     Reducer<Int, Real, RealRed> red(proj_basis);
     red.redBKZ();
-    red.shortestVector(L2NORM);
+     std::string ch("cholesky");
+    red.shortestVector(L2NORM,ch);
     double shortest = NTL::conv<double>(red.getMinLength());
 
     // Instanciating the normalizers

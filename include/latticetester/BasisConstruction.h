@@ -327,7 +327,7 @@ void BasisConstruction<Int>::ProjectionConstruction(
 	}
 	new_basis = NTL::transpose(new_basis);
 	LLLConstruction(new_basis);
-	out = IntLatticeBase<Int, Real, RealRed>(new_basis, dim, in.getNorm());
+	out = IntLatticeBase<Int, Real, RealRed>(new_basis, dim, in.getNormType());
 }
 
 extern template class BasisConstruction<std::int64_t> ;
