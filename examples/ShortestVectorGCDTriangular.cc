@@ -113,7 +113,7 @@ int main() {
       }
       sho_bkz[j] += clock() - tmp;
       delete red;
-      //std::cout << "BKZ: " << average(basis->getVecNorm()) << "\n";
+      //std::cout << "BKZ: " << average(basis->getVecNorm()) << "\n";ss
       delete basis;
     }
   }

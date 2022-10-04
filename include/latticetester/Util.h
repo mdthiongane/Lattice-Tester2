@@ -689,14 +689,42 @@ namespace LatticeTester {
       //cout << endl;
     }
 
- 
-    void GCDvect (IntVec col, IntVec coeff,  int n, Int G){  
-      Int C, D, E, F,G;
+  ///Begin implementation for Triangularization2
+   /*
+     Put in vector $vec$  the value matrix of th column number $numCol$. We take of matrice $mat$
+  
+   */
+    template<typename IntVec> 
+    void printVl(IntVec vv){
+     std::cout <<" vl= ";  
+    for(int i=0; i<vv.length();i++)
+        std::cout << vv(i)<<"   "; 
+     std::cout << ""<<std::endl;    
+    }
+
+
+     template<typename IntMat,typename IntVec> 
+    void getMatColumnVec(IntMat mat, int pc, int pl, IntVec &vec){
+       int k=0;
+       long ln=mat.NumRows();
+       long taille=ln-pl;
+       vec.SetLength(taille);
+       for(int i=pl;i<ln;i++)
+          vec[k++]=mat(i,pc);    
+       }
+
+     
+
+    template<typename IntVec, typename Int> 
+    void GCDvect (IntVec &col, IntVec &coeff, Int &G){  
+      Int C, D, E, F,val;
+    
+      coeff.SetLength(col.length());
       Euclide (col[0], col[1], C, D , E, F, G);
       coeff[0]=C;
       coeff[1]=D;
-      Int val=G;
-      for(int i=2;i<n;i++){
+      val=G;
+      for(int i=2;i<col.length() ;i++){
          if(col[i]==0)
          {coeff[i]= 0;
           continue;
@@ -705,19 +733,120 @@ namespace LatticeTester {
          coeff[i]= D;
          for(int j=0;j<i;j++)
              coeff[j]*=C;
+        val=G; 
        }
-       val=G; 
+       
       }
 
-      
+     /*
+      * compule vl'=a_{1,1}.v11+...  +a_{s,1}.v_s
+      * 
+     */
+      template<typename IntMat,typename IntVec,typename Int> 
+      void computeVl(IntMat &mat, IntVec &coeff, IntVec &vl, int &pl ,Int &mod){
+          vl.SetLength(mat[0].length());
+          int ln=mat.NumRows();
+         // int col= mat.NumCols();
+        
+           int k=0; 
+           Int r; 
+           for(int i=pl;i<ln;i++) 
+            {   vl=vl+coeff[k++]*mat[i];
+              /* for(int j=0; j<mat[i].length();j++) 
+               { 
+                  Modulo(mat(i,j), mod, r);
+                  mat(i,j)=r; 
+                } */
+            }                 
+           // printVl(vl)   ;
+        }
 
+     
+    // we put in $K$ the line that we replace by vl. 
+    // We swap this line by pl line before we update other vector v_i
+     template<typename IntMat,typename IntVec> 
+     void replaceVector(IntMat &mat, IntVec &vl, int &pl,int &pc, int &K){
+         int ln=mat.NumRows();
+        if(vl.length()!=mat[pl].length())
+            std::cout << " replaceVector --length not equal:"<<std::endl; 
+         //for(int i=0;i<coeff.length();i++) 
+
+          for(int i=pl;i<ln;i++) 
+          { if(mat(i,pc)!=0 )  
+            { mat[pl]=vl;
+             // swapVector(mat, pl, pl+i);
+               K=i;
+             //  std::cout << " succes replace et i="<<i<<std::endl; 
+              return ;
+            }
+          }  
+     }
+     
+    /*
+     *swap vector position $i$ and $j
+     *
+    */
+     template<typename IntMat,typename IntVec> 
+     void swapVector(IntMat &mat, int &pl , int &K, IntVec tmp){
+        //IntVec tmp;  
+        int ln=mat.NumRows(); 
+        if(pl!=K && pl!=ln-1){
+         tmp=mat[pl];
+         mat[pl]=mat[K];
+         mat[K]=tmp; 
+       //  std::cout << " swap position="<<pl<< " position"<<K<<std::endl; 
+       }      
+      }
+
+     /*
+     *
+     *col : column of the GCD
+     * s
+     */
+
+    template<typename IntMat,typename IntVec,typename Int > 
+     void updateMatrive(IntMat &mat, IntVec &vl, int &pl,int &pc, Int &gcd ,Int &mod)
+     {  int lin= mat.NumRows();
+        for(int i=pl+1;i<lin;i++)
+        { if (mat(i,pc)!=0)
+           {  mat[i]=mat[i]-(mat(i,pc)/gcd)*vl;
+              // std::cout << " update line i="<<i<<std::endl; 
+            /*  for(int j=0; j<mat[i].length();j++) 
+               { Int r; 
+                 Modulo(mat(i,pc), mod, r);
+                 mat(i,pc)=r; 
+               }*/
+            }
+        }
+      // std::cout << " =====update end========"<<std::endl; 
+     }
+ 
+    template<typename IntMat,typename IntVec,typename Int > 
+    void Triangularization2(IntMat &mat, Int &mod, IntVec &vec, IntVec &coeff, IntVec &vl, Int &gcd , int &K, IntVec
+     tmp, int &pc, int &pl){
+     //pc=0;
+     //pl=0;
+     int dim1=mat.NumRows();
+     int dim2=mat.NumCols();
+
+     while(pl<dim1 && pc<dim2){
+         
     
- 
- 
- 
- 
- 
- 
+         getMatColumnVec(mat, pc, pl, vec);
+         GCDvect (vec, coeff, gcd);
+         computeVl(mat, coeff,  vl, pl, mod) ;
+         replaceVector(mat,vl,pl, pc, K) ;
+         swapVector(mat, pl , K,tmp);
+         updateMatrive(mat, vl, pl, pc, gcd ,mod);
+         vec.clear() ;
+         coeff.clear();
+         vl.clear();
+         gcd.kill();
+         pl++;
+         pc++;
+       }
+
+    }
  
  
   /**
