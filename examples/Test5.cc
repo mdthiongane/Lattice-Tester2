@@ -23,10 +23,12 @@ namespace {
 }
 
 
-void printBase(IntMat bas_mat, int i, int j){
- 
-     for(int i=0;i<4;i++)
-     {for(int j=0;j<4;j++){
+void printBase(IntMat bas_mat){
+     int L=bas_mat.NumRows();
+     int C=bas_mat.NumCols();
+
+     for(int i=0;i<L;i++)
+     {for(int j=0;j<C;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
      }
       std::cout << ""<< std::endl;
@@ -37,7 +39,7 @@ void printBase(IntMat bas_mat, int i, int j){
 int main() {
 
   IntLatticeBase<Int, Real, RealRed> *lattice;
-  IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
+  //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, dua_mat;
   IntMat m_v,m_v2;
@@ -73,35 +75,40 @@ int main() {
    
   
        std::cout << " The initial base\n"; 
-       printBase(bas_mat, 4, 4);
+       printBase(bas_mat);
 
      
        // BKZ reduction before shortest vector search
         red->redBKZ();
 
         std::cout << " The base after reduction\n"; 
-       printBase((red->getIntLatticeBase())->getBasis(), 4, 4); 
+        printBase((red->getIntLatticeBase())->getBasis()); 
 
-    // Tringular GCD basis 
+    // We copy the base in m_v and m_v2
 	      m_v.SetDims(numlines, numlines);
-        m_v2.SetDims(numlines, numlines);
-		    m_latCopie = new IntLatticeBase<Int, Real, RealRed>((red->getIntLatticeBase())->getBasis(),(red->getIntLatticeBase())->getBasis(),
-        (red->getIntLatticeBase())->getModulo(),(red->getIntLatticeBase())->getDim());
-             // Tringular basis from util
-        // Triangularization(m_latCopie->getBasis() ,m_v, numlines,numlines,m_latCopie->getModulo());
-         Triangularization2<IntMat,IntVec, Int> (m_latCopie->getBasis(), m, vec,  coeff, vl, G, K,tmp,pc,pl);
+       // m_v2.SetDims(numlines, numlines);
+		
+         //copy base to m_v
+         m_v= (red->getIntLatticeBase())->getBasis();  
 
-        std::cout << " The base V after Util triangularization\n";  
-        printBase(m_v, 4, 4);
-         std::cout << " The base W \n";  
-        printBase(red->getIntLatticeBase()->getBasis(), 4, 4);
-         std::cout << " The copie W' after Triangularization \n";  
-        printBase(m_latCopie->getBasis(), 4, 4);
-
-       // Triangularization2(m_v,m_v2, numlines,numlines,m_latCopie->getModulo());
+       
+        std::cout << " The base m_v before triangularization\n";  
+        printBase(m_v);
+       
+       
+        //Triangularization of m_v
+       
         Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-        std::cout << " The base after second Util triangularization\n";  
-         printBase(m_v, 4, 4);
+
+        std::cout << " The base m_v after  triangularization2\n";  
+        printBase(m_v);
+         std::cout << " The base i \n";  
+ 
+
+      
+     //   Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+        std::cout << " The base after second  triangularization\n";  
+        printBase(m_v);
     
 
  

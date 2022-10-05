@@ -102,9 +102,9 @@ int main() {
      IntVec vec, coeff,vl ;
      IntVec tmp;
      int pc,pl;
-     //IntMat &mat, Int &mod, IntVec &vec, IntVec &coeff, IntVec &vl, Int &gcd , Int &K
-      //IntMat &mat, Int &mod, IntVec &vec, IntVec &coeff, IntVec &vl, Int &gcd , int &K, IntVec tmp
-     Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+  
+     
+    Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
      
      std::cout << " Print Base after triangularization:"<<std::endl; 
 

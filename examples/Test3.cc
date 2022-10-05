@@ -96,7 +96,7 @@ int main() {
    
      IntVec l, c;
      Int mod(1021);
-     getMatColumnVec(bas_mat,numlines, numlines, 0, 0, c);
+    // getMatColumnVec<std::vector<std::int64_t,>(bas_mat,numlines, numlines, 0, 0, c);
      getMatRowVec(bas_mat,numlines, numlines, 0,0, l);
 
      std::cout << " print Base \n"; 
@@ -112,6 +112,10 @@ int main() {
 
      //coeff.SetLength(4);
      GCDvect (c, coeff, G);
+     
+     //std::vector<std::int64_t> t=c;
+    // GCD2vect (c, 0, c.length());
+  
      
      //vl.SetLength(4);
     std::cout << " G="<<G<<std::endl; 

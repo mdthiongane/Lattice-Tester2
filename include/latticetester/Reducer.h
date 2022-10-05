@@ -1948,6 +1948,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
     std::string s1("cholesky");
     std::string s2("GCDTriangular");
 	std::string s3("UtilTriangular");
+	std::string s4("UtilTriangular2");
 	BasisConstruction<Int> constr;
     if(decomp==s1){
     /* Perform the Cholesky decomposition; if it fails we exit. */
@@ -1972,8 +1973,8 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
           m_dc2[i] = m_c0(i, i)*m_c0(i, i);
 		}
         
-     }
-	    else if(decomp==s3){
+        }
+   else if(decomp==s3){
        
 		IntMat m_v;
 		m_v.resize(dim, dim);
@@ -2000,6 +2001,12 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 		}
         
 		}
+
+
+
+       
+
+
 
     /* Perform the branch and bound.  */
 	/* m_n2[j] will be the sum of terms |z*k|^2 ||v*k||^2 for k > j.  */
