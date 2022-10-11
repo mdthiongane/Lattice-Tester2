@@ -67,7 +67,7 @@ void getMatRowVec(IntMat mat,int lin, int col, int numRo, int pos, IntVec &vec){
 
 int main() {
  
-  IntMat bas_mat, dua_mat;
+  IntMat bas_mat, bas_mat2, dua_mat;
   IntMat m_v,m_v2;
   Int m(1021); 
   //clock_t tmp;
@@ -88,6 +88,7 @@ int main() {
       reader.readInt(numlines, 0, 0);
     
       bas_mat.SetDims(numlines, numlines);
+      bas_mat2.SetDims(numlines, numlines);
       dua_mat.SetDims(numlines, numlines);
       ln = 1;
       //! Filling the matrix
@@ -104,11 +105,12 @@ int main() {
      int pc,pl;
   
      
-    Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+   // Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+    Triangularization2<IntMat,IntVec, Int> (bas_mat, bas_mat2, m);
      
      std::cout << " Print Base after triangularization:"<<std::endl; 
 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat2, 4, 4);
 
     /***
      coeff.SetLength(c.length());

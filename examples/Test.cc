@@ -23,10 +23,11 @@ namespace {
 }
 
 
-void printBase(IntMat bas_mat, int i, int j){
- 
-     for(int i=0;i<4;i++)
-     {for(int j=0;j<4;j++){
+void printBase(IntMat bas_mat){
+    int l=bas_mat.size1();
+    int c=bas_mat.size2();
+     for(int i=0;i<l;i++)
+     {for(int j=0;j<c;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
      }
       std::cout << ""<< std::endl;
@@ -34,20 +35,30 @@ void printBase(IntMat bas_mat, int i, int j){
 
 }
 
+void copy(IntMat &b1, IntMat &b2){
+ 
+     for(int i=0;i<b1.size1();i++)
+     { for(int j=0;j<b1.size2();j++){
+          b2(i,j)=b1(i,j);
+         }   
+     }
+
+}
+
 int main() {
 
   IntLatticeBase<Int, Real, RealRed> *lattice;
-  IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
+ // IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, dua_mat;
-  IntMat m_v,m_v2;
-  Int m(7); 
+  IntMat w_copie, m_v,m_v2;
+  Int m(101); 
 
  
  
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
-      std::string name = "bench/" + prime+ "_4" + "_002" ;
-      //  std::string name = "bench/"  + prime+"_5_0" ;
+     // std::string name = "bench/" + prime+ "_4" + "_001" ;
+    std::string name = "bench/" + prime+ "_4" + "_002" ;
+   //   std::string name = "bench/"  + prime+"_5_0" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                       
@@ -64,43 +75,46 @@ int main() {
 
       // Creating a lattice basis
       lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
-      //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines);
+     
       
       red = new Reducer<Int, Real, RealRed>(*lattice);
        
    
   
        std::cout << " The initial base\n"; 
-       printBase(bas_mat, 4, 4);
+       printBase(bas_mat);
 
      
        // BKZ reduction before shortest vector search
         red->redBKZ();
 
         std::cout << " The base after reduction\n"; 
-       printBase((red->getIntLatticeBase())->getBasis(), 4, 4); 
+         printBase((red->getIntLatticeBase())->getBasis()); 
 
     // Tringular GCD basis 
-	    m_v.SetDims(numlines, numlines);
+	      m_v.SetDims(numlines, numlines);
         m_v2.SetDims(numlines, numlines);
-		m_latCopie = new IntLatticeBase<Int, Real, RealRed>((red->getIntLatticeBase())->getBasis(),(red->getIntLatticeBase())->getBasis(),
-        (red->getIntLatticeBase())->getModulo(),(red->getIntLatticeBase())->getDim());
+        w_copie.SetDims(numlines, numlines);
+	
              // Tringular basis from util
-        Triangularization(m_latCopie->getBasis() ,m_v, numlines,numlines,m_latCopie->getModulo());
+        copy((red->getIntLatticeBase())->getBasis(), w_copie);    
+       
+         std::cout << " Print w_copie which is a copy of reducer with bkz \n"; 
+        printBase(w_copie);
+
+        Triangularization(w_copie ,m_v, numlines,numlines,m);
         std::cout << " The base V after Util triangularization\n";  
-        printBase(m_v, 4, 4);
+        printBase(m_v);
          std::cout << " The base W \n";  
-        printBase(red->getIntLatticeBase()->getBasis(), 4, 4);
-         std::cout << " The copie W' after Triangularization \n";  
-        printBase(m_latCopie->getBasis(), 4, 4);
-
-        Triangularization(m_v,m_v2, numlines,numlines,m_latCopie->getModulo());
-        std::cout << " The base after second Util triangularization\n";  
-         printBase(m_v2, 4, 4);
+        printBase(red->getIntLatticeBase()->getBasis());
+         std::cout << " The copie W_copie after Triangularization \n"; 
     
+        printBase(w_copie);
 
- 
-  //std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
+        Triangularization(m_v,m_v2, numlines,numlines,m);
+        std::cout << " The base after second Util triangularization\n";  
+         printBase(m_v2);
+    
 
   return 0;
 }

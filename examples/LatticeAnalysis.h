@@ -451,9 +451,10 @@ namespace LatticeTester {
   template<typename Int, typename Real, typename RealRed>
     bool LatticeAnalysis<Int, Real, RealRed>::performBasis(
         Config<Int, IntMat>& config) {
+          Int m(1021);
       BasisConstruction<Int> basis;
       if (config.config.basis.method) {
-        basis.GCDTriangularBasis(config.basis);
+        basis.GCDTriangularBasis(config.basis,m);
       } else {
         basis.LLLConstruction(config.basis);
       }

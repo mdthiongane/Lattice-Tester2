@@ -96,7 +96,7 @@ public:
 	 * very large, so the method may require a lot of memory.
 	 *  ***  But everything should be done modulo m ???
 	 */
-	void GCDTriangularBasis(IntMat &matrix);
+	void GCDTriangularBasis(IntMat &matrix, Int mod);
 
 	/**
 	 * This function does essentially the same thing as `Util::CalcDual`.
@@ -165,7 +165,7 @@ void BasisConstruction<Int>::LLLConstruction(IntMat &matrix) {
 }
 
 template<typename Int>
-void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix) {
+void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix, Int mod) {
 	// It is important to note that the lines of matrix are the basis vectors
 	long rows = matrix.NumRows();
 	long cols = matrix.NumCols();
@@ -173,6 +173,7 @@ void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix) {
 	long rank = 0;
 	// The basis will have at most max_rank vectors.
 	Int q;
+	//Int r;
 	for (long i = 0; i < max_rank; i++) {
 		// We find gcd(matrix[i][i], ..., matrix[rows-1][i]) using Euclid
 		// algorithm and applying transformations to the matrix
@@ -181,6 +182,7 @@ void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix) {
 				matrix[i].swap(matrix[j]);
 				q = matrix[j][i] / matrix[i][i];
 				matrix[j] -= q * matrix[i];
+			    ModuloVec (matrix[j] , mod);
 			}
 		}
 		// We make sure that the coefficients are positive.
@@ -255,7 +257,7 @@ void BasisConstruction<Int>::mDualTriangular(IntMat &matrix, IntMat &dualMatrix,
 		Int m) {
 	// We need to have a triangular basis matrix
 	if (!CheckTriangular(matrix, matrix.NumRows(), Int(0)))
-		GCDTriangularBasis(matrix);
+		GCDTriangularBasis(matrix,m);
 	long dim = matrix.NumRows();
 	if (dim != matrix.NumCols()) {
 		std::cout << "matrix has to be square, but dimensions do not fit.\n";

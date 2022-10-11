@@ -48,14 +48,15 @@ int main() {
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, dua_mat;
   IntMat m_v,m_v2;
-  Int m(1021); 
+  Int m(7); 
   //clock_t tmp;
  
       //! Reader shenanigans
      // std::string name = "bench/" + prime[0] + "_" + std::to_string((j+1)*5) + "_" + std::to_string(k);
       //std::string name = "bench/" + prime+ "_4" + "_001" ;
      // std::string name = "bench/" + prime+ "_4" + "_002" ;
-      std::string name = "bench/"  + prime+"_5_0" ;
+     // std::string name = "bench/"  + prime+"_5_0" ;
+      std::string name = "bench/" + prime+ "_4" + "_002" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                       
@@ -92,12 +93,12 @@ int main() {
     // Tringular GCD basis 
    
     
-     constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis());
+     constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m);
      std::cout << " The base after GCD triangularization\n";  
      printBase((red->getIntLatticeBase())->getBasis(), 4, 4);
      
      // Tringular GCD basis agian
-     constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis()); 
+     constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m); 
      std::cout << " The base after second GCD triangularization\n";  
      printBase((red->getIntLatticeBase())->getBasis(), 4, 4);
      

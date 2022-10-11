@@ -232,6 +232,13 @@ namespace LatticeTester {
 
 #define SEPAR "===============================================================\n"
 
+
+//	typedef NTL::vector<Int> IntVec;
+//	typedef NTL::matrix<Int> IntMat;
+
+ 
+ 
+ 
   /**
    * Maximum integer that can be represented exactly as a `double`:
    * \f$2^{53}\f$.
@@ -493,6 +500,61 @@ namespace LatticeTester {
     if (r < 0)
       r -= b;
   }
+
+ /*void ModuloVec ( NTL::vector<NTL::ZZ>  &a,  NTL::ZZ & b)
+ // void ModuloVec ( NTL::vector<NTL::ZZ>  &a, const NTL::ZZ & b, NTL::ZZ & r)
+  {
+    for(long i=0;i<a.length();i++)
+      a[i] = a[i] % b;
+    
+  }*/
+
+
+/**
+   * This method return true if the vector is a $m.e_i$ else return false;
+   **
+   */
+
+  template <typename IntVec, typename Int>
+  bool IsMei(IntVec vec, Int mod) {
+    int n=vec.length();
+    int cpt=0;
+    Int val;
+    for(int i=0;i<n;i++) 
+    { if(vec[i]==0)
+        cpt++;
+      else{
+        val=vec[i];
+        if(val!=mod)
+          return false;
+       }
+    }
+    if(cpt==n-1 && val==mod)
+      return true;
+    return false;  
+  }
+
+/**
+   * This remplace each element $a[i]$ of the vector $a$ by a[i] modulo m.
+   **But we don't compute the modulo for me_i vector
+   */
+
+ template <typename IntVec, typename Int>
+ void ModuloVec ( IntVec  &a,  Int & m)
+ // void ModuloVec ( NTL::vector<NTL::ZZ>  &a, const NTL::ZZ & b, NTL::ZZ & r)
+  {  Int r;
+
+    if(!IsMei(a,m)){
+      for(int i=0;i<a.length();i++)
+       {  r = a[i] % m;
+          if(a[i]<0)
+            a[i]=r-m;
+          else
+             a[i]=r; 
+       }
+    }
+  }
+
   /// \endcond
 
   /**
@@ -682,11 +744,45 @@ namespace LatticeTester {
         Y = X * D;
         F += Y;
       }
+      
+      }
 
-      //cout << "             " << C << " x A + " << D << " x B = " << G << endl;
-      //cout << "             " << E << " x A + " << F << " x B = 0" << endl;
-      //cout << "      outputs: A=" << A << ", B=" << B << ", C=" << C << ", D=" << D << ", E=" << E << ", F=" << F << ", G=" << G << endl;
-      //cout << endl;
+    template<typename Int>
+    void Euclide (const Int & A, const Int & B, Int & C, Int & D, Int & G)
+    {
+      //Int oldA = A;
+      //Int oldB = B;
+
+      Int X, Y, Z, E,F;
+      G = A;
+      Z = B;
+      NTL::set (C);
+      NTL::clear (D);
+      NTL::clear (E);
+      NTL::set (F);
+
+ 
+      if (NTL::IsZero(A)) {
+        swap9<Int>(G, Z);
+        swap9<Int>(C, E);
+        swap9<Int>(D, F);
+        return;
+      }
+
+      while (!NTL::IsZero(Z)) {
+        swap9<Int>(G, Z);
+        swap9<Int>(C, E);
+        swap9<Int>(D, F);
+        Quotient (Z, G, X);
+        X = -X;
+        Y = X * G;
+        Z += Y;
+        Y = X * C;
+        E += Y;
+        Y = X * D;
+        F += Y;
+      }
+
     }
 
   ///Begin implementation for Triangularization2
@@ -703,6 +799,7 @@ namespace LatticeTester {
     }
 
 
+
     template<typename IntMat> 
     void printBase(IntMat &mat){
      int l=mat.NumRows();
@@ -713,6 +810,8 @@ namespace LatticeTester {
       std::cout << ""<<std::endl;    
      }   
     }
+
+
 
   template<typename IntMat,typename IntVec> 
    int vlIsEqualToOneVector(IntMat &mat, IntVec &vl, int &pl){
@@ -725,7 +824,7 @@ namespace LatticeTester {
    }
 
 
-     template<typename IntMat,typename IntVec> 
+    template<typename IntMat,typename IntVec> 
     void getMatColumnVec(IntMat mat, int pc, int pl, IntVec &vec){
        int k=0;
        long ln=mat.NumRows();
@@ -737,12 +836,13 @@ namespace LatticeTester {
 
      
 
+
     template<typename IntVec, typename Int> 
     void GCDvect (IntVec &col, IntVec &coeff, Int &G){  
       Int C, D, E, F,val;
     
       coeff.SetLength(col.length());
-      Euclide (col[0], col[1], C, D , E, F, G);
+      Euclide (col[0], col[1], C, D , G);
       coeff[0]=C;
       coeff[1]=D;
       val=G;
@@ -764,24 +864,50 @@ namespace LatticeTester {
       * compule vl'=a_{1,1}.v11+...  +a_{s,1}.v_s
       * 
      */
-      template<typename IntMat,typename IntVec,typename Int> 
+
+     template<typename IntMat,typename IntVec,typename Int> 
       void computeVl(IntMat &mat, IntVec &coeff, IntVec &vl, int &pl ,Int &mod){
           vl.SetLength(mat[0].length());
           int ln=mat.NumRows();
          // int col= mat.NumCols();
-          
+           Int r;
            int k=0; 
-           Int r; 
-           for(int i=pl;i<ln;i++) 
-            {   vl=vl+coeff[k++]*mat[i];
-          
+           IntVec vv;
+           ///Int r;
+           std::cout <<" Computing vl: "<<std::endl;
+            
+           for(int i=0;i<ln;i++) 
+            { std::cout <<" vl en entre: "<<i<<":";   
+              printVl(vl); 
+              std::cout <<" Coff["<<k<<"]:"<<coeff[k]<<" x ";
+              //printVl(mat[i]); 
+               vv=mat[i];
+               printVl(vv); 
+              std::cout <<""<<std::endl;  
+
+              vl=vl+coeff[k]*mat[i];
+              std::cout <<"After calcul vl+coeff[k]*mat[i]"<<k<<" vl:";
+              printVl(vl); 
+              ModuloVec(vl,mod);
+
+              std::cout <<"After Modulo vl="<<std::endl; 
+               printVl(vl);
+              std::cout <<""<<std::endl; 
+              k++;
             }   
-            for(int j=0; j<vl.length();j++) 
+         /*   for(int j=0; j<vl.length();j++) 
              {  
-                   Modulo(vl[j], mod, r);
-                    vl[j]=r;
+                  // Modulo(vl[j], mod, r);
+                  //  vl[j]=r;
+                  // vl[j]= vl[j]%mod;
+                  // vl[j] = fmod ( vl[j], mod);
+                  r= vl[j]%mod;
+                  if(vl[j]<0)
+                     vl[j]=r-mod;
+                   else
+                      vl[j]=r;            
                    
-               } 
+               } */
             std::cout <<" vl: ";   
             printVl(vl);
 
@@ -837,55 +963,97 @@ namespace LatticeTester {
      * s
      */
 
-    template<typename IntMat,typename IntVec,typename Int > 
+     template<typename IntMat,typename IntVec,typename Int >  
      void updateMatrive(IntMat &mat, IntVec &vl, int &pl,int &pc, Int &gcd ,Int &mod)
      {  int lin= mat.NumRows();
          Int r; 
-        for(int i=pl+1;i<lin;i++)
-        {
-             mat[i]=mat[i]-(mat(i,pc)/gcd)*vl;
-              std::cout << " update line i="<<i<<std::endl; 
-              for(int j=0; j<mat[i].length();j++) 
-               {  
-                    Modulo(mat(i,j), mod, r);
-                    mat(i,j)=r; 
-                  
-               }
+         Int fact;
+         IntVec vv, vv2, vv3;
+         std::cout << " Begin update line ="<<std::endl;
+        //for(int i=pl+1;i<lin;i++)
+        for(int i=0;i<lin;i++)
+        {   
+              std::cout <<"vl= ";
+              printVl(vl);
+              std::cout << " update line ="<<i<<std::endl;
+              vv=mat[i];
+              fact=mat(i,pc)/gcd;
+              std::cout << " fact="<<fact<<" and m["<<i<<"]=";
+              printVl(vv);
+
+              mat[i]=mat[i]-(mat(i,pc)/gcd)*vl;
+
+              vv2=mat[i];
+              std::cout <<""<<std::endl;
+              std::cout <<" After update m["<<i<<"]="<<std::endl;
+              printVl(vv2);
+
+              ModuloVec(mat[i],mod);
+
+              vv3=mat[i];
+              std::cout <<" After modulo m["<<i<<"]="<<std::endl;
+              printVl(vv3);
             
         }
   
      }
  
-    template<typename IntMat,typename IntVec,typename Int > 
-    void Triangularization2(IntMat &mat, Int &mod, IntVec &vec, IntVec &coeff, IntVec &vl, Int &gcd , int &K, IntVec
-     tmp, int &pc, int &pl){
-     //pc=0;
-     //pl=0;
+   template<typename IntMat,typename IntVec,typename Int > 
+   void Triangularization2(IntMat &mat, IntMat &mat2, Int &mod){
+   
+      IntVec vec, coeff, vl, tmp;
+      Int gcd ;
+      int K, pc, pl ;
+
 
      int dim1=mat.NumRows();
      int dim2=mat.NumCols();
+     pl=0;
+     pc=0;
 
      while(pl<dim1 && pc<dim2){
          
     
-         getMatColumnVec(mat, pc, pl, vec);
-         GCDvect (vec, coeff, gcd);
-         std::cout << "Coeff:"; 
-         printVl(coeff);
-         std::cout << ""<<std::endl; 
-         computeVl(mat, coeff,  vl, pl, mod) ;
-         replaceVector(mat,vl,pl, pc, K) ;
-         swapVector(mat, pl , K,tmp);
-         updateMatrive(mat, vl, pl, pc, gcd ,mod);
-        std::cout << " =====update end , See Base now with PL="<<pl<<std::endl; 
-        printBase(mat);
-        std::cout << " =====End of the step========"<<std::endl; 
+         getMatColumnVec(mat, pc, 0 , vec); //pl=0
+         if(!IsZero(vec)){
+           GCDvect (vec, coeff, gcd);
+           
+           std::cout << "GCD:"<<gcd<<std::endl; 
+           std::cout << "Coeff:"; 
+           printVl(coeff);
+           std::cout << ""<<std::endl; 
+            int pl1=0;
+           computeVl(mat, coeff,  vl, pl1, mod) ; //pl=0
+           mat2[pl]=vl;
+
+           // replaceVector(mat,vl,pl, pc, K) ;
+           // swapVector(mat, pl , K,tmp);
+          // int pl=0;
+           updateMatrive(mat, vl, pl1, pc, gcd ,mod); //pl=0
+          
+           std::cout << " =====update end , See Base now with PL="<<pl<<std::endl; 
+           printBase(mat);
+           std::cout << " =====End of the step========"<<std::endl; 
+
+         }
+         else
+         { 
+          
+          for (int j1 = 0; j1 < dim2; j1++) {
+            if (j1 != pl)
+              NTL::clear (mat2(pl,j1));
+            else
+              mat2(pl,j1) = mod;
+          }
+           
+         }
          vec.clear() ;
          coeff.clear();
          vl.clear();
          gcd.kill();
          pl++;
          pc++;
+
        }
 
     }
@@ -969,6 +1137,18 @@ namespace LatticeTester {
     {
       for (int i = 0; i < d; i++)
         A[i] = 0;
+    }
+
+      /**
+   * Sets the first `d` components of `A` to 0.
+   */
+    template <typename Vect>
+    inline bool IsZero (Vect & A)
+    {
+      for (int i = 0; i < A.length(); i++)
+        if( A[i] != 0)
+          return false;
+      return true;    
     }
 
   /**
@@ -1409,6 +1589,23 @@ namespace LatticeTester {
             Modulo (W(lin-1,j1), m, W(lin-1,j1));
           }
         }
+
+       //debut ajout
+        std::cout << "Print W with etape j="<<j<<std::endl; 
+        for(int a=0; a<lin; a++){
+         for(int b=0;b<col;b++)
+            std::cout << W(a,b)<<"   "; 
+           std::cout << " "<<std::endl; 
+        }
+        std::cout << "Print V with etape j="<<j<<std::endl; 
+        for(int a=0; a<lin; a++){
+         for(int b=0;b<col;b++)
+            std::cout << V(a,b)<<"   "; 
+           std::cout << " "<<std::endl; 
+        }
+
+       //fin ajout
+
       }
       //  CheckTriangular (V, col, m);
     }

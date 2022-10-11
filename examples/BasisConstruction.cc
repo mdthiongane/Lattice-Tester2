@@ -59,6 +59,7 @@ int main() {
   // Defining constants for the execution of the algorithms
   BasisConstruction<Int> constr; // The basis constructor we will use
   IntMat bas_mat, dua_mat;
+  Int mod(1021);
 
   clock_t tmp;
   for (int j = 0; j < max_dim; j++) {
@@ -89,7 +90,7 @@ int main() {
 
       // Timing GCDConstruction first
       tmp = clock();
-      constr.GCDTriangularBasis(bas_mat);
+      constr.GCDTriangularBasis(bas_mat,mod);
       Int modulo(1);
       gcd_time[j] += clock() - tmp;
 

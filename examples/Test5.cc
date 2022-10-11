@@ -36,14 +36,27 @@ void printBase(IntMat bas_mat){
 
 }
 
+
+void copy(IntMat &b1, IntMat &b2){
+ 
+     for(int i=0;i<b1.size1();i++)
+     { for(int j=0;j<b1.size2();j++){
+          b2(i,j)=b1(i,j);
+         }   
+     }
+
+}
+
+
+
 int main() {
 
   IntLatticeBase<Int, Real, RealRed> *lattice;
   //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
-  IntMat bas_mat, dua_mat;
+  IntMat bas_mat, bas_mat2, dua_mat;
   IntMat m_v,m_v2;
-  Int m(7), G; 
+  Int m(101), G; 
   IntVec vec, coeff,vl,tmp;
   int pc=0,pl=0,K;
 
@@ -61,6 +74,7 @@ int main() {
       reader.readInt(numlines, 0, 0);
     
       bas_mat.SetDims(numlines, numlines);
+      bas_mat2.SetDims(numlines, numlines);
       dua_mat.SetDims(numlines, numlines);
       ln = 1;
       //! Filling the matrix
@@ -70,7 +84,7 @@ int main() {
       lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
       //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines);
       
-      red = new Reducer<Int, Real, RealRed>(*lattice);
+       red = new Reducer<Int, Real, RealRed>(*lattice);
        
    
   
@@ -84,12 +98,13 @@ int main() {
         std::cout << " The base after reduction\n"; 
         printBase((red->getIntLatticeBase())->getBasis()); 
 
-    // We copy the base in m_v and m_v2
-	      m_v.SetDims(numlines, numlines);
-       // m_v2.SetDims(numlines, numlines);
+       // We copy the base in m_v and m_v2
+	        m_v.SetDims(numlines, numlines);
+          m_v2.SetDims(numlines, numlines);
 		
          //copy base to m_v
-         m_v= (red->getIntLatticeBase())->getBasis();  
+         copy((red->getIntLatticeBase())->getBasis(), m_v);
+    
 
        
         std::cout << " The base m_v before triangularization\n";  
@@ -98,7 +113,7 @@ int main() {
        
         //Triangularization of m_v
        
-        Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
 
         std::cout << " The base m_v after  triangularization2\n";  
         printBase(m_v);
@@ -107,12 +122,9 @@ int main() {
 
       
      //   Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-        std::cout << " The base after second  triangularization\n";  
-        printBase(m_v);
+        std::cout << " The base m_v2 after second  triangularization\n";  
+        printBase(m_v2);
     
-
- 
-  //std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
 
   return 0;
 }

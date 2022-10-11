@@ -19,21 +19,32 @@
 #define LATTICETESTER_REDUCER_H
 
 #include "NTL/LLL.h"
+#include "NTL/tools.h"
+#include "NTL/ZZ.h"
+#include "NTL/RR.h"
 
 #include "latticetester/Const.h"
 #include "latticetester/Util.h"
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/BasisConstruction.h"
+#include "latticetester/NTLWrap.h"
 
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <limits>
 #include <cstdint>
-
-
 #include <iostream>
 #include <ctime>
+#include <string>
+#include <iomanip>
+#include <set>
+#include <map>
+#include <cmath>
+#include <cstdlib>
+#include <type_traits>
+
+
 
 
 
@@ -1949,6 +1960,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
     std::string s2("GCDTriangular");
 	std::string s3("UtilTriangular");
 	std::string s4("UtilTriangular2");
+	
 	BasisConstruction<Int> constr;
     if(decomp==s1){
     /* Perform the Cholesky decomposition; if it fails we exit. */
@@ -1957,7 +1969,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
      }
     else if(decomp==s2){
         /*   ***   Alternative:  triangular basis.   ****/
-        constr.GCDTriangularBasis(m_lat->getBasis());
+        constr.GCDTriangularBasis(m_lat->getBasis(),m_lat->getModulo());
         m_lat->updateScalL2Norm(0, dim);
 		IntMat m_ba=m_lat->getBasis();
 		
@@ -2002,11 +2014,32 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
         
 		}
 
-
-
+	else if(decomp==s4){
        
-
-
+		 IntMat m_v, m_v2;
+		 m_v.resize(dim, dim);
+		 m_v2.resize(dim, dim);
+		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
+		CopyMatr(m_lat->getBasis(), m_v, dim, dim);
+        Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,m_lat->getModulo());
+        m_lat->updateScalL2Norm(0, dim);
+		
+        for (int i = 0; i < dim; i++){
+		  for (int j = 0; j < dim; j++){
+             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
+			 m_c0(i,j)=NTL::conv<RealRed>(m_v(i,j));
+			 std::cout <<  m_c0(i,j)<< "   ";
+		   }
+		    std::cout << ""<< std::endl;
+		}
+	    
+       // m_dc2=getDiagonalVec(m_lat->getBasis());
+        for (int i = 0; i < dim; i++) {
+          m_dc2[i] = m_c0(i, i)*m_c0(i, i);
+		}
+        
+ }
+       
 
     /* Perform the branch and bound.  */
 	/* m_n2[j] will be the sum of terms |z*k|^2 ||v*k||^2 for k > j.  */

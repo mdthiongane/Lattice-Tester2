@@ -30,8 +30,10 @@ namespace {
 }
 
 
-void printBase(IntMat bas_mat, int lin, int col){
+void printBase(IntMat &bas_mat){
  
+     int lin=bas_mat.NumRows();
+     int col=bas_mat.NumCols();
      for(int i=0;i<lin;i++)
      {for(int j=0;j<col;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
@@ -50,14 +52,14 @@ void printVector(IntVec vec){
 }
 
 
-void getMatColumnVec(IntMat mat,int lin, int col, int numCol, int pos, IntVec &vec){
+void getMatColumnVec(IntMat &mat,int lin, int col, int numCol, int pos, IntVec &vec){
   int k=0;
   vec.SetLength(lin-pos);
   for(int i=pos;i<lin;i++)
     vec[k++]=mat(i,numCol);    
 }
 
-void getMatRowVec(IntMat mat,int lin, int col, int numRo, int pos, IntVec &vec){
+void getMatRowVec(IntMat &mat,int lin, int col, int numRo, int pos, IntVec &vec){
   int k=0;
   vec.SetLength(col-pos);
   for(int i=pos;i<col;i++)
@@ -100,7 +102,7 @@ int main() {
      getMatRowVec(bas_mat,numlines, numlines, 0,0, l);
 
      std::cout << " print Base \n"; 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat);
 
 
      std::cout << " print vector colonne \n"; 
@@ -137,7 +139,7 @@ int main() {
      std::cout << " La ligne remplacer K="<<K<<std::endl; 
 
     std::cout << " print Base after set vl in first line \n"; 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat);
      //int pl=0; 
      //int pc=0;
      updateMatrive(bas_mat, vl, pl,pc, G ,mod);
@@ -148,7 +150,7 @@ int main() {
      
     std::cout << " Print matrice after update:"<<std::endl; 
 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat);
 
 
 
@@ -158,7 +160,7 @@ int main() {
 
    std::cout << " Print matrice after swap l=0 et l=3:"<<std::endl; 
 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat);
 
     /***
      coeff.SetLength(c.length());
