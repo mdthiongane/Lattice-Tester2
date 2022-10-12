@@ -65,12 +65,27 @@ void getMatRowVec(IntMat mat,int lin, int col, int numRo, int pos, IntVec &vec){
 }
 
 
+
+void copy(IntMat &b1, IntMat &b2){
+ 
+     for(int i=0;i<b1.size1();i++)
+     { for(int j=0;j<b1.size2();j++){
+          b2(i,j)=b1(i,j);
+         }   
+     }
+
+}
+
+
 int main() {
  
+
+  IntLatticeBase<Int, Real, RealRed> *lattice;
+  //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
+  Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, bas_mat2, dua_mat;
   IntMat m_v,m_v2;
-  Int m(1021); 
-  //clock_t tmp;
+    Int m(7); 
  
       //! Reader shenanigans
      // std::string name = "bench/" + prime[0] + "_" + std::to_string((j+1)*5) + "_" + std::to_string(k);
@@ -78,7 +93,7 @@ int main() {
      // std::string name = "bench/" + prime+ "_4" + "_002" ;
      // std::string name = "bench/"  + prime+"_5_0" ;
 
-      std::string name = "bench/" + prime+ "_4" + "_003" ;
+      std::string name = "bench/" + prime+ "_4" + "_001" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                   
@@ -99,33 +114,45 @@ int main() {
      std::cout << " print initial Base \n"; 
      printBase(bas_mat, 4, 4);
      Int G;
-     int K;
+    // int K;
      IntVec vec, coeff,vl ;
      IntVec tmp;
-     int pc,pl;
+    // int pc,pl;
   
+
+
+      // Creating a lattice basis
+      lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
+      //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines); 
+       red = new Reducer<Int, Real, RealRed>(*lattice);
+       std::cout << " The initial base\n"; 
+       printBase(bas_mat);
+
+     
+       // BKZ reduction before shortest vector search
+        red->redBKZ();
+
+        std::cout << " The base after reduction\n"; 
+        printBase((red->getIntLatticeBase())->getBasis()); 
+
+               // We copy the base in m_v and m_v2
+	        m_v.SetDims(numlines, numlines);
+          m_v2.SetDims(numlines, numlines);
+		
+         //copy base to m_v
+         copy((red->getIntLatticeBase())->getBasis(), m_v);
+    
+
+
+
      
    // Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-    Triangularization2<IntMat,IntVec, Int> (bas_mat, bas_mat2, m);
+        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
      
-     std::cout << " Print Base after triangularization:"<<std::endl; 
+        std::cout << " Print Base after triangularization:"<<std::endl; 
 
-     printBase(bas_mat2, 4, 4);
+        printBase(m_v2, 4, 4);
 
-    /***
-     coeff.SetLength(c.length());
-     GCDvect (c, coeff,  G) ;
-
-     std::cout << "G="<<G<<std::endl; 
-     std::cout << " column vec"<<std::endl; 
-     printVector(c); 
-     std::cout << " coefficient:"<<std::endl; 
-     printVector(coeff); 
-     Int som(0);
-     for(int i=0;i<c.length();i++)
-        som=som+ c[i]*coeff[i];
-     std::cout << "Som="<<som<<std::endl;   
-     **/ 
 
   return 0;
 }

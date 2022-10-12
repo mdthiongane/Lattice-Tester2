@@ -28,6 +28,7 @@
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/NTLWrap.h"
+#include "latticetester/Types.h"
 
 #include <fstream>
 #include <sstream>
@@ -1951,7 +1952,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	}
 
 	/* If we already have a shorter vector than the minimum threshold, we stop right away.
-	 * This is useful for the seek programs in LatMRG.
+	 * This is useful for the seek programs in LatMRG.sss
 	 */
 	if (m_lMin2 <= m_BoundL2[dim - 1])
 		return false;
@@ -2019,9 +2020,11 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 		 IntMat m_v, m_v2;
 		 m_v.resize(dim, dim);
 		 m_v2.resize(dim, dim);
+		 Int mod=m_lat->getModulo();
 		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
 		CopyMatr(m_lat->getBasis(), m_v, dim, dim);
-        Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,m_lat->getModulo());
+        m_lat->updateScalL2Norm(0, dim);
+        Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,mod); //<IntMat,IntVec,Int>
         m_lat->updateScalL2Norm(0, dim);
 		
         for (int i = 0; i < dim; i++){

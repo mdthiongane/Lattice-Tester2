@@ -132,11 +132,11 @@ int main() {
      std::cout << " vecteur vl:"<<std::endl; 
      printVector(vl); 
 
-     int K=0; 
+    // int K=0; 
      int pl=0;
      int pc=0;   
-     replaceVector(bas_mat,vl,pl, pc,K) ;
-     std::cout << " La ligne remplacer K="<<K<<std::endl; 
+   //  replaceVector(bas_mat,vl,pl, pc,K) ;
+   //  std::cout << " La ligne remplacer K="<<K<<std::endl; 
 
     std::cout << " print Base after set vl in first line \n"; 
      printBase(bas_mat);
@@ -155,12 +155,12 @@ int main() {
 
 
     IntVec tmp;
-    int l1=0,l2=3;
-    swapVector(bas_mat, l1 , l2, tmp);
+ //   int l1=0,l2=3;
+   // swapVector(bas_mat, l1 , l2, tmp);
 
-   std::cout << " Print matrice after swap l=0 et l=3:"<<std::endl; 
+  // std::cout << " Print matrice after swap l=0 et l=3:"<<std::endl; 
 
-     printBase(bas_mat);
+   //  printBase(bas_mat);
 
     /***
      coeff.SetLength(c.length());
