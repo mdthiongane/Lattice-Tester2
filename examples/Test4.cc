@@ -30,8 +30,9 @@ namespace {
 }
 
 
-void printBase(IntMat bas_mat, int lin, int col){
- 
+void printBase(IntMat bas_mat){
+   int lin= bas_mat.NumRows();
+   int col=bas_mat.NumCols();
      for(int i=0;i<lin;i++)
      {for(int j=0;j<col;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
@@ -112,11 +113,11 @@ int main() {
    
    
      std::cout << " print initial Base \n"; 
-     printBase(bas_mat, 4, 4);
-     Int G;
+     printBase(bas_mat);
+   //  Int G;
     // int K;
-     IntVec vec, coeff,vl ;
-     IntVec tmp;
+   //  IntVec vec, coeff,vl ;
+  //   IntVec tmp;
     // int pc,pl;
   
 
@@ -135,23 +136,21 @@ int main() {
         std::cout << " The base after reduction\n"; 
         printBase((red->getIntLatticeBase())->getBasis()); 
 
-               // We copy the base in m_v and m_v2
-	        m_v.SetDims(numlines, numlines);
+      	  m_v.SetDims(numlines, numlines);
           m_v2.SetDims(numlines, numlines);
 		
          //copy base to m_v
          copy((red->getIntLatticeBase())->getBasis(), m_v);
     
-
-
-
+         std::cout << " Print the copy basis"<<std::endl; 
+         printBase(m_v);
      
-   // Triangularization2<IntMat,IntVec, Int> (bas_mat, m, vec,  coeff, vl, G, K,tmp,pc,pl);
+        
         Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
      
         std::cout << " Print Base after triangularization:"<<std::endl; 
 
-        printBase(m_v2, 4, 4);
+        printBase(m_v2);
 
 
   return 0;

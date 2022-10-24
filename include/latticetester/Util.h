@@ -37,6 +37,7 @@
 #include <cstdlib>
 #include <cstdint>
 #include <type_traits>
+#include <vector>
 
 #include "NTL/tools.h"
 #include "NTL/ZZ.h"
@@ -560,23 +561,9 @@ namespace LatticeTester {
   
 template <typename IntVec, typename Int>
  void ModuloVec ( IntVec  &a,  Int & m)
- // void ModuloVec ( NTL::vector<NTL::ZZ>  &a, const NTL::ZZ & b, NTL::ZZ & r)
-  {  Int r;
-
-    if(!IsMei(a,m)){
-      for(int i=0;i<a.length();i++)
-       {  Int tmp=a[i];
-         r = a[i] % m;
-           if(a[i]<0)
-               a[i]=r-m;
-            else
-             a[i]=r; 
-
-           if(a[i]==0 && tmp>m)
-               a[i]=m;
-
-       }
-    }
+  {  
+   for(int i=0;i<a.length();i++)
+       Modulo (a[i], m, a[i]);
   }
   
 
@@ -773,7 +760,7 @@ template <typename IntVec, typename Int>
       }
 
     template<typename Int>
-    void Euclide (const Int & A, const Int & B, Int & C, Int & D, Int & G)
+ void Euclide (const Int & A, const Int & B, Int & C, Int & D, Int & G)
     {
       //Int oldA = A;
       //Int oldB = B;
@@ -803,338 +790,109 @@ template <typename IntVec, typename Int>
         Y = X * G;
         Z += Y;
         Y = X * C;
-        E += Y;
-        Y = X * D;
-        F += Y;
+       E += Y;
+       Y = X * D;
+       F += Y;
       }
 
     }
 
+ 
   ///Begin implementation for Triangularization2
-   /*
-     Put in vector $vec$  the value matrix of th column number $numCol$. We take of matrice $mat$
-  
-   */
-    template<typename IntVec> 
-    void printVl(IntVec &vv){
-    //std::cout <<" vl: ";  
-    for(int i=0; i<vv.length();i++)
-        std::cout << vv(i)<<"   "; 
-     std::cout << ""<<std::endl;    
-    }
-
-
-
-    template<typename IntMat> 
-    void printBase(IntMat &mat){
-     int l=mat.NumRows();
-     int c=mat.NumCols();
-    for(int i=0; i<l;i++){
-      for(int j=0; j<c;j++)
-         std::cout << mat(i,j)<<"   "; 
-      std::cout << ""<<std::endl;    
-     }   
-    }
-
 
 /**
-  template<typename IntMat2,typename IntVec2> 
-   int vlIsEqualToOneVector(IntMat2 &mat, IntVec2 &vl, int &pl){
-      for(int i=pl;i<mat.NumRows();i++)
-      {
-        if(vl==mat[i])
-           return i;
-      } 
-      return -1;
-   }
-*/
+ * @brief 
+ * 
+ * @param mat 
+ * @param mat2 
+ * @param mod 
+ */
 
-
-  template <typename IntVec, typename Int>
-  void addVector(IntVec &v1, IntVec &v2 , Int &k){
-      if(v1.length()!=v2.length())
-          std::cout <<" addVector not the same length  "; 
-      for(int i=0;i<v1.length();i++)
-       { v2[i]=k*v2[i]; 
-         v1[i]=v1[i]+v2[i];
-          
-       }
-   }
-
- template <typename IntVec>
-  void subVector(IntVec &v1, IntVec &v2 ){
-      if(v1.length()!=v2.length())
-          std::cout <<" addVector not the same length  "; 
-      for(int i=0;i<v1.length();i++)
-       {   v1[i]=v1[i]-v2[i];
-           
-       }
-   }
-   
-
-  template <typename IntVec>
-  IntVec mulplyByMinusOne(IntVec &v ){
-      IntVec v2;
-      v2.SetLength(v.length());
-      for(int i=0;i<v.length();i++)
-          v2[i]=-v[i];
-
-    return v2;             
-   }
-   
-   
-   template <typename IntVec2>
-   bool IsZero2 (IntVec2  A)
-    {
-      for (int i = 0; i < A.length(); i++)
-        if( A[i] != 0)
-          return false;
-      return true;    
-    }
-
-    template<typename IntMat2,typename IntVec2> 
-    void getMatColumnVec(IntMat2 mat, int pc, int pl, IntVec2 &vec){
-       int k=0;
-       long ln=mat.NumRows();
-       long taille=ln-pl;
-       vec.SetLength(taille);
-       for(int i=pl;i<ln;i++)
-          vec[k++]=mat(i,pc);    
-       }
-
-     
-
-
-    template<typename IntVec2, typename Int> 
-    void GCDvect (IntVec2 &col, IntVec2 &coeff, Int &G){  
-      Int C, D, E, F,val;
-    
-      coeff.SetLength(col.length());
-      Euclide (col[0], col[1], C, D , G);
-      coeff[0]=C;
-      coeff[1]=D;
-      val=G;
-      for(int i=2;i<col.length() ;i++){
-         if(col[i]==0)
-         {coeff[i]= 0;
-          continue;
-         }    
-         Euclide (val, col[i], C, D , E, F, G);
-         coeff[i]= D;
-         for(int j=0;j<i;j++)
-             coeff[j]*=C;
-        val=G; 
-       }
-       if(G<0)
-        { G=-G;
-          for(int i=0;i<coeff.length();i++)
-            if(coeff[i]!=0)
-              coeff[i]=-coeff[i];
-        }
-
-      }
-
-     /*
-      * compule vl'=a_{1,1}.v11+...  +a_{s,1}.v_s
-      * 
-     */
-
-     template<typename IntMat2,typename IntVec2,typename Int> 
-      void computeVl(IntMat2 &mat, IntVec2 &coeff, IntVec2 &vl, int &pl ,Int &mod){
-          vl.SetLength(mat[0].length());
-          int ln=mat.NumRows();
-         // int col= mat.NumCols();
-          // Int r;
-           int k=0; 
-           IntVec2 vv, vv3;
-           ///Int r;
-           std::cout <<" Computing vl: "<<std::endl;
-            
-           for(int i=0;i<ln;i++) 
-            { std::cout <<" vl en entre: "<<i<<":";   
-              printVl(vl); 
-              std::cout <<" Coff["<<k<<"]:"<<coeff[k]<<" x ";
-              //printVl(mat[i]); 
-               vv=mat[i];
-               printVl(vv); 
-              std::cout <<""<<std::endl;  
-
-               addVector(vl, vv , coeff[k]);
-              // vl=vl+coeff[k]*mat[i];
-
-              std::cout <<"After calcul vl+coeff[k]*mat[i]"<<k<<" vl:";
-              printVl(vl); 
-              ModuloVec(vl,mod);
-
-              std::cout <<"After Modulo vl="<<std::endl; 
-               printVl(vl);
-              std::cout <<""<<std::endl; 
-              k++;
-            }   
- 
-            std::cout <<" vl: ";   
-            printVl(vl);
-
-        }
-
-     
-    // we put in $K$ the line that we replace by vl. 
-    // We swap this line by pl line before we update other vector v_i
-  /**   template<typename IntMat,typename IntVec> 
-     void replaceVector(IntMat &mat, IntVec &vl, int &pl,int &pc, int &K){
-         int ln=mat.NumRows();
-
-        if(vl.length()!=mat[pl].length())
-            std::cout << " replaceVector --length not equal:"<<std::endl; 
-         //for(int i=0;i<coeff.length();i++) 
-        int val=vlIsEqualToOneVector(mat, vl,  pl); 
-        if(val!=-1)
-         {  K=val;
-            return; 
-         }
-         else{
-              for(int i=pl;i<ln;i++) 
-               { if(mat(i,pc)!=0 )  
-                 { mat[pl]=vl;
-                   // swapVector(mat, pl, pl+i);
-                   K=i;
-                    std::cout << " succes replace et i="<<i<<std::endl; 
-                   return ;
-                  }
-               } 
-            } 
-     }*/
-     
-    /*
-     *swap vector position $i$ and $j
-     *
-    */
-   /**  template<typename IntMat,typename IntVec> 
-     void swapVector(IntMat &mat, int &pl , int &K, IntVec tmp){
-        //IntVec tmp;  
-        int ln=mat.NumRows(); 
-        if(pl!=K && pl!=ln-1){
-         tmp=mat[pl];
-         mat[pl]=mat[K];
-         mat[K]=tmp; 
-         std::cout << " swap position="<<pl<< " position"<<K<<std::endl; 
-       }      
-      }
-      **/
-
-     /*
-     *
-     *col : column of the GCD
-     * s
-     */
-
-
-
-
-     template<typename IntMat2,typename IntVec2,typename Int >  
-     void updateMatrive(IntMat2 &mat, IntVec2 &vl, int &pl,int &pc, Int &gcd ,Int &mod)
-     {  int lin= mat.NumRows();
-        // Int r; 
-         Int fact;
-         IntVec2 vv,vv4, vv2, vv3;
-         std::cout << " Begin update line ="<<std::endl;
-        //for(int i=pl+1;i<lin;i++)
-        for(int i=0;i<lin;i++)
-        {   
-              std::cout <<"vl= ";
-              printVl(vl);
-              std::cout << " update line ="<<i<<std::endl;
-              if(mat(i,pc)!=0){
-                 vv=mat[i];
-                 fact=mat(i,pc)/gcd;
-                 std::cout << " fact="<<fact<<" and m["<<i<<"]=";
-                 printVl(vv);
-              
-             
-             
-               // mat[i]=mat[i]-(mat(i,pc)/gcd)*vl;
-                vv4= (mat(i,pc)/gcd)*vl;
-                subVector(vv, vv4 );
-                mat[i]=vv;
-
-                vv2=mat[i];
-                std::cout <<""<<std::endl;
-                std::cout <<" After update m["<<i<<"]="<<std::endl;
-                printVl(vv2);
-
-                ModuloVec(mat[i],mod);
-
-               vv3=mat[i];
-               std::cout <<" After modulo m["<<i<<"]="<<std::endl;
-               printVl(vv3);
-             }
-
-            
-        }
-  
-     }
- 
-   template<typename IntMat2,typename IntVec2,typename Int > 
-   void Triangularization2(IntMat2 &mat, IntMat2 &mat2, Int &mod){
-   
-      IntVec2 vec, coeff, vl, tmp;
-      Int gcd ;
-      int pc, pl ;
-
-
+   template<typename IntMat,typename IntVec,typename Int > 
+   void Triangularization2(IntMat &mat, IntMat &mat2, Int &mod){
+     IntVec coeff, vl,v2; 
+     Int C, D, val, gcd;  
+     int pc, pl, k;
      int dim1=mat.NumRows();
      int dim2=mat.NumCols();
+    
      pl=0;
      pc=0;
-
      while(pl<dim1 && pc<dim2){
-         
-    
-         getMatColumnVec(mat, pc, 0 , vec); //pl=0    <IntVec>
-         if(!IsZero2(vec)){
-           GCDvect (vec, coeff, gcd);
+           for(int i=0;i<dim1;i++)
+              Modulo (mat(i,pc), mod, mat(i,pc));
+            coeff.SetLength(dim2);
+            k=0;     
+            while( k<dim1 && mat(k,pc)==0)
+             { coeff[k]=0; 
+               k++;
+             }
+                
+           if(k<dim1)
+            { gcd=mat(k,pc);
+              coeff[k]=1;
+              val=gcd;
+             
+             for(int i=k+1;i<dim1; i++){
+               if(mat(i,pc)==0)
+               { coeff[i]= 0;
+                 continue;
+                }   
            
-           std::cout << "GCD:"<<gcd<<std::endl; 
-           std::cout << "Coeff:"; 
-           printVl(coeff);
-           std::cout << ""<<std::endl; 
-            int pl1=0;
-           computeVl(mat, coeff,  vl, pl1, mod) ; //pl=0
-           if(gcd<0)
-              mat2[pl]=mulplyByMinusOne(vl);
-            else
-              mat2[pl]=vl;  
+              Euclide (val, mat(i,pc), C, D , gcd);
+              coeff[i]= D;
+              for(int j=0;j<i;j++) 
+                  coeff[j]*=C;
+              val=gcd; 
+              }     
+            
+              int coeffN[dim2];
+              int nb=0;
+              for(int a=0;a<dim1;a++) 
+              { if(coeff[a]!=0)
+                 { coeffN[nb]=a;
+                   nb++;
+                  }
+               } 
+             
+            vl.SetLength(dim2);
+            int ind=0;
+            for(int j=0;j<dim2;j++) {
+              for(int i=0;i<nb;i++)
+              { ind=coeffN[i];
+                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);   
+                 
+              } 
+              Modulo (vl[j], mod, vl[j]);  
+             }
 
-           // replaceVector(mat,vl,pl, pc, K) ;
-           // swapVector(mat, pl , K,tmp);
-          // int pl=0;
-           updateMatrive(mat, vl, pl1, pc, gcd ,mod); //pl=0
-          
-           std::cout << " =====update end , See Base now with PL="<<pl<<std::endl; 
-           printBase(mat);
-           std::cout << " =====End of the step========"<<std::endl; 
-
-         }
-         else
-         { 
-          
-          for (int j1 = 0; j1 < dim2; j1++) {
-            if (j1 != pl)
-              NTL::clear (mat2(pl,j1));
-            else
-              mat2(pl,j1) = mod;
+             for(int i=0;i<dim1;i++)
+             {  if(mat(i,pc)!=0){
+                v2= (mat(i,pc)/gcd)*vl;
+                for(int j=0;j<dim2;j++)
+                    Modulo (v2[j], mod, v2[j]);
+                for(int j=0;j<dim2;j++)
+                 {   
+                   mat(i,j)=mat(i,j)-v2[j];  
+                   Modulo (mat(i,j), mod, mat(i,j));
+                 } 
+                }    
+             }
+             mat2[pl]=vl; 
           }
-           
-         }
-         vec.clear() ;
-         coeff.clear();
-         vl.clear();
-         //gcd.kill();
-         pl++;
-         pc++;
-
+          else
+          {  for (int j1 = 0; j1 < dim2; j1++) {
+             if (j1 != pl)
+               NTL::clear (mat2(pl,j1));
+             else
+               mat2(pl,j1) = mod;
+             }   
+          }
+          coeff.clear();
+          vl.clear();
+          pl++; 
+          pc++;
        }
-
     }
  
  
@@ -1668,11 +1426,13 @@ template <typename IntVec, typename Int>
           }
         } else {
           Euclide (W(lin-1,j), m, T1, T2, T3, T4, V(j,j));
+          
           for (int j1 = 0; j1 < j; j1++)
             NTL::clear (V(j,j1));
           for (int j1 = j + 1; j1 < col; j1++) {
             T2 = W(lin-1,j1) * T1;
             Modulo (T2, m, V(j,j1));
+            
           }
           Quotient (m, V(j,j), T1);
           for (int j1 = j + 1; j1 < col; j1++) {
@@ -1682,7 +1442,7 @@ template <typename IntVec, typename Int>
         }
 
        //debut ajout
-        std::cout << "Print W with etape j="<<j<<std::endl; 
+     /*   std::cout << "Print W with etape j="<<j<<std::endl; 
         for(int a=0; a<lin; a++){
          for(int b=0;b<col;b++)
             std::cout << W(a,b)<<"   "; 
@@ -1694,7 +1454,7 @@ template <typename IntVec, typename Int>
             std::cout << V(a,b)<<"   "; 
            std::cout << " "<<std::endl; 
         }
-
+       */
        //fin ajout
 
       }

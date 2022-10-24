@@ -52,13 +52,14 @@ int main() {
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, dua_mat;
   IntMat w_copie, m_v,m_v2;
-  Int m(101); 
+  Int m(1021); 
 
  
  
      // std::string name = "bench/" + prime+ "_4" + "_001" ;
-    std::string name = "bench/" + prime+ "_4" + "_002" ;
-   //   std::string name = "bench/"  + prime+"_5_0" ;
+   // std::string name = "bench/" + prime+ "_4" + "_002" ;
+    // std::string name = "bench/" + prime+ "_2" + "_001" ;
+      std::string name = "bench/"  + prime+"_5_0" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                       

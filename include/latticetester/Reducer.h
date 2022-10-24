@@ -296,7 +296,7 @@ private:
 	 * The lattice that this object is working on.
 	 */
 	IntLatticeBase<Int, Real, RealRed> *m_lat;
-	IntLatticeBase<Int, Real, RealRed> *m_lat2;
+//	IntLatticeBase<Int, Real, RealRed> *m_lat2;
 
 	/**
 	 * Contains specialized implementations of member methods depending on
@@ -938,6 +938,7 @@ bool Reducer<Int, Real, RealRed>::calculCholesky(RealRedVec &DC2,
 				NTL::matrix_row<IntMat> row2(m_lat->getBasis(), j);
 				ProdScal<Int>(row1, row2, dim, m_c2(i, j));
 			}
+			
 			for (k = 0; k < i; k++)
 				m_c2(i, j) -= C0(k, i) * m_c2(k, j);
 			if (i == j) {
@@ -948,7 +949,15 @@ bool Reducer<Int, Real, RealRed>::calculCholesky(RealRedVec &DC2,
 				}
 			} else
 				C0(i, j) = m_c2(i, j) / DC2[i];
+		//add for test		
+		/**  if(i!=j && i<j)		
+	       std::cout<< "C0("<<i<<","<<j<<")="<<C0(i,j)<<" ";	
+		  else if (i==j) 	
+		    std::cout<< "C0("<<i<<","<<j<<")="<<DC2[i]<<" ";	
+		  else
+		     std::cout<< "C0("<<i<<","<<j<<")="<<"0"<<" ";	*/		
 		}
+	  // std::cout<<""<<std::endl;
 	}
 
 	// Compute the d last lines of C0 with the dual Basis.
@@ -1830,6 +1839,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 	if (x < 0.0)
 		--max0;
 
+    std::cout << "Borne Min="<<min0<<"     Borne Max="<<max0<<"     j="<<j<<std::endl;
 	// Compute initial values of zlow and zhigh, the search pointers on each side of the interval.
 	if (min0 > max0)
 		return true;
@@ -1850,6 +1860,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 	}
 
 	// We try each zj in the interval, starting in the center and alternating between left and right.
+
 	while (zlow >= min0 || zhigh <= max0) {
 		if (high)
 			m_zLI[j] = zhigh;
@@ -1908,7 +1919,8 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 			if (zhigh <= max0)
 				high = true;
 		}
-	}
+	}  
+	
 	return true;
 }
 
@@ -1967,6 +1979,25 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
     /* Perform the Cholesky decomposition; if it fails we exit. */
          if (!calculCholesky(m_dc2, m_c0))
            return false;
+       
+	   //Debut Ajout
+	    std::cout << "### The matrice C0 after Cholesky decomposition ##########"<< std::endl;
+	    for (int i = 0; i < dim; i++){
+		  for (int j = 0; j < dim; j++){
+					//add for test		
+		    if(i!=j && i<j)		
+	          std::cout<< "C0("<<i<<","<<j<<")="<<m_c0(i,j)<<"  ";	
+		    else if (i==j) 	
+		        std::cout<< "C0("<<i<<","<<j<<")="<<m_dc2[i]<<"  ";	
+		    else
+		       std::cout<< "C0("<<i<<","<<j<<")="<<"0"<<"  ";	
+		   }
+
+		    std::cout << ""<< std::endl;
+		} 
+
+	std::cout << "### The end of printing C0 ##########"<< std::endl;
+	  //fin Ajout
      }
     else if(decomp==s2){
         /*   ***   Alternative:  triangular basis.   ****/
@@ -1988,21 +2019,20 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
         
         }
    else if(decomp==s3){
-       
-		IntMat m_v;
-		m_v.resize(dim, dim);
-		 m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
-		//IntMat m_w=m_lat->copyBasis();
-        Triangularization(m_lat2->getBasis(),m_v, dim,dim,m_lat->getModulo());
-		//Triangularization(m_w,m_v, dim,dim,m_lat->getModulo());
-		//m_lat->getBasis()=m_v;
         m_lat->updateScalL2Norm(0, dim);
-		//IntMat m_ba=m_lat->getBasis();
+
+		IntMat m_v,m_v2;
+		m_v.resize(dim, dim);
+		m_v2.resize(dim, dim);
+		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
+		CopyMatr(m_v,m_lat->getBasis(), dim, dim);
+		Triangularization(m_v,m_v2, dim,dim,m_lat->getModulo());
+    
 		
         for (int i = 0; i < dim; i++){
 		  for (int j = 0; j < dim; j++){
-             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
-			 m_c0(i,j)=NTL::conv<RealRed>(m_v(i,j));
+             // NTL::conv(m_c0(i,j),m_v2(i,j)); ou
+			 m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j));
 			 std::cout <<  m_c0(i,j)<< "   ";
 		   }
 		    std::cout << ""<< std::endl;
@@ -2013,24 +2043,25 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
           m_dc2[i] = m_c0(i, i)*m_c0(i, i);
 		}
         
-		}
+	}
 
 	else if(decomp==s4){
-       
+         std::cout <<" Util Triangularization2 "<<std::endl; 
 		 IntMat m_v, m_v2;
 		 m_v.resize(dim, dim);
 		 m_v2.resize(dim, dim);
 		 Int mod=m_lat->getModulo();
 		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
-		CopyMatr(m_lat->getBasis(), m_v, dim, dim);
+		CopyMatr(m_v,m_lat->getBasis(), dim, dim);
         m_lat->updateScalL2Norm(0, dim);
+
         Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,mod); //<IntMat,IntVec,Int>
         m_lat->updateScalL2Norm(0, dim);
 		
         for (int i = 0; i < dim; i++){
 		  for (int j = 0; j < dim; j++){
              // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
-			 m_c0(i,j)=NTL::conv<RealRed>(m_v(i,j));
+			 m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j));
 			 std::cout <<  m_c0(i,j)<< "   ";
 		   }
 		    std::cout << ""<< std::endl;
@@ -2041,7 +2072,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
           m_dc2[i] = m_c0(i, i)*m_c0(i, i);
 		}
         
- }
+   }
        
 
     /* Perform the branch and bound.  */

@@ -64,9 +64,10 @@ int main() {
  
       //std::string name = "bench/" + prime+ "_4" + "_001" ;
      // std::string name = "bench/" + prime+ "_4" + "_002" ;
+   //  std::string name = "bench/" + prime+ "_4" + "_001" ;
       std::string name = "bench/"  + prime+"_5_0" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
-
+     std::cout <<name<<std::endl; 
                       
       reader.getLines();
       int numlines;

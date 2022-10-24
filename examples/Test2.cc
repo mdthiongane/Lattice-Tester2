@@ -23,10 +23,11 @@ namespace {
 }
 
 
-void printBase(IntMat bas_mat, int i, int j){
- 
-     for(int i=0;i<4;i++)
-     {for(int j=0;j<4;j++){
+void printBase(IntMat bas_mat){
+    int l=bas_mat.size1();
+    int c=bas_mat.size2();
+     for(int i=0;i<l;i++)
+     {for(int j=0;j<c;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
      }
       std::cout << ""<< std::endl;
@@ -48,15 +49,16 @@ int main() {
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, dua_mat;
   IntMat m_v,m_v2;
-  Int m(7); 
+  Int m(101); 
   //clock_t tmp;
  
       //! Reader shenanigans
      // std::string name = "bench/" + prime[0] + "_" + std::to_string((j+1)*5) + "_" + std::to_string(k);
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
+     // std::string name = "bench/" + prime+ "_4" + "_001" ;
+      std::string name = "bench/" + prime+ "_2" + "_001" ;
      // std::string name = "bench/" + prime+ "_4" + "_002" ;
      // std::string name = "bench/"  + prime+"_5_0" ;
-      std::string name = "bench/" + prime+ "_4" + "_002" ;
+     // std::string name = "bench/" + prime+ "_4" + "_002" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                       
@@ -79,14 +81,14 @@ int main() {
        
      
      std::cout << " The initial base\n"; 
-     printBase(bas_mat, 4, 4);
+     printBase(bas_mat);
 
      
        // BKZ reduction before shortest vector search
      red->redBKZ();
 
      std::cout << " The base after reduction\n"; 
-     printBase((red->getIntLatticeBase())->getBasis(), 4, 4); 
+     printBase((red->getIntLatticeBase())->getBasis()); 
 
       
      
@@ -95,12 +97,12 @@ int main() {
     
      constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m);
      std::cout << " The base after GCD triangularization\n";  
-     printBase((red->getIntLatticeBase())->getBasis(), 4, 4);
+     printBase((red->getIntLatticeBase())->getBasis());
      
      // Tringular GCD basis agian
      constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m); 
      std::cout << " The base after second GCD triangularization\n";  
-     printBase((red->getIntLatticeBase())->getBasis(), 4, 4);
+     printBase((red->getIntLatticeBase())->getBasis());
      
     
  
