@@ -113,7 +113,9 @@ int main() {
        
         //Triangularization of m_v
        
-        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+       // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+        TriangularizationLower<IntMat,IntVec, Int> (m_v, m_v2, m);
+
 
         std::cout << " The base m_v after  triangularization2\n";  
         printBase(m_v);

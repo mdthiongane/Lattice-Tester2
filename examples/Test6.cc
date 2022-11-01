@@ -65,7 +65,7 @@ int main() {
       //std::string name = "bench/" + prime+ "_4" + "_001" ;
      // std::string name = "bench/" + prime+ "_4" + "_002" ;
    //  std::string name = "bench/" + prime+ "_4" + "_001" ;
-      std::string name = "bench/"  + prime+"_5_0" ;
+      std::string name = "bench/"  + prime+"_5_4" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
      std::cout <<name<<std::endl; 
                       
@@ -114,7 +114,8 @@ int main() {
        
         //Triangularization of m_v
        
-        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+      //  Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+         TriangularizationLower<IntMat,IntVec, Int> (m_v, m_v2, m);
 
         std::cout << " The base m_v after  triangularization2\n";  
         printBase(m_v);

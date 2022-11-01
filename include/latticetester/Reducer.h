@@ -377,7 +377,7 @@ private:
 	/**
 	 * Tries to find a shorter vector; recursive procedure used in `shortestVector`.
 	 */
-	bool tryZShortVec(int j, bool &smaller);
+	bool tryZShortVec(int j, bool &smaller, NormType norm, std::string decomp);
 
 	/**
 	 * Computes a Cholesky decomposition of the basis. Returns in `C0` the
@@ -510,7 +510,7 @@ private:
 };
 // End class Reducer
 
-//============================================================================
+
 
 /// \cond specReducerSpec
 // Structure specialization
@@ -1787,7 +1787,7 @@ bool Reducer<Int, Real, RealRed>::redBBMink(int i, int d, int Stage,
 //=========================================================================
 
 template<typename Int, typename Real, typename RealRed>
-bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
+bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType norm, std::string decomp) {
 	/*
 	 * This recursive procedure uses the Cholesky decomposition and works for the
 	 * L1NORM and L2NORM.  It is called initially with j=dim-1 by redBBShortVec
@@ -1806,6 +1806,10 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 	bool high; // Indicates if we are on the right (true) or the left of the center.
 	int k;
 	std::int64_t temp;
+	//
+	std::string Choles("cholesky");
+	std::string Triang("UtilTriangular2");
+
 
 	const int dim = m_lat->getDim();
 	++m_countNodes;
@@ -1814,17 +1818,44 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 				<< std::endl;
 		return false;
 	}
+	
+	
 	/* Compute an interval that contains the admissible values of zj. */
 	/* This computation is for the L2 norm, but also works for the L1 norm. */
 	/* 1. Compute the center of the interval.  */
-	center = 0.0;
-	for (k = j + 1; k < dim; ++k)
-		center -= m_c0(j, k) * m_zLR[k];
+	if (decomp==Choles){
+	   center = 0.0;
+	   for (k = j + 1; k < dim; ++k)
+		  {center -= m_c0(j, k) * m_zLR[k];
+		   std::cout <<  m_c0(j,k)<< "   et  "<<m_zLR[k]<<std::endl;
+		  }
 
 	// Distance from the center to the boundaries.
 	// m_lMin2 contains the square length of current shortest vector with the selected norm.
-	dc = sqrt((m_lMin2 - m_n2[j]) / m_dc2[j]);
+	    dc = sqrt((m_lMin2 - m_n2[j]) / m_dc2[j]);
 
+	 }
+	 if(decomp==Triang && norm==L2NORM){
+           
+       center = 0.0;
+	   for (k = j + 1; k < dim; ++k)
+	 	{ std::cout <<  m_c0(k,j)<< "   et  "<<m_zLR[k]<<std::endl;
+		  center -= m_c0(k,j) * m_zLR[k];}
+        center=center/m_c0(j,j);
+	  
+	    dc = sqrt((m_lMin2 - m_n2[j]) ) / m_c0(j,j);
+	  
+	  }	
+     if(decomp==Triang && norm==L1NORM){
+           
+       center = 0.0;
+	   for (k = j + 1; k < dim; ++k)
+		  center -= m_c0(k, j) * m_zLR[k];
+        center=center/m_c0(j,j);
+	  
+	    dc = (m_lMin - m_n2[j])  / m_c0(j,j);
+	  
+	  }	
 	// Compute two integers min0 and max0 that are the min and max integers in the interval.
 	if (!m_foundZero)
 		min0 = 0;     // We are at the beginning, min will be zero.
@@ -1838,6 +1869,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 	NTL::conv(max0, trunc(x));
 	if (x < 0.0)
 		--max0;
+
 
     std::cout << "Borne Min="<<min0<<"     Borne Max="<<max0<<"     j="<<j<<std::endl;
 	// Compute initial values of zlow and zhigh, the search pointers on each side of the interval.
@@ -1906,7 +1938,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller) {
 		} else if (m_lMin2 > m_n2[j] + x * x * m_dc2[j]) {
 			// There is still hope; we continue the recursion.
 			m_n2[j - 1] = m_n2[j] + x * x * m_dc2[j];
-			if (!tryZShortVec(j - 1, smaller))
+			if (!tryZShortVec(j - 1, smaller,norm, decomp))
 				return false;
 		} else
 			m_n2[j - 1] = m_n2[j] + x * x * m_dc2[j];
@@ -1944,8 +1976,8 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	RealRed x;
     // Here we sort the basis, otherwise Cholesky will fail more rapidly
     // due to floating-point errors.
-	m_lat->updateScalL2Norm(0, dim);
-	m_lat->sortNoDual(0);
+//	m_lat->updateScalL2Norm(0, dim);
+//	m_lat->sortNoDual(0);
 
     // Approximate the square norm of the current shortest vector.
 	if (norm == L2NORM) {
@@ -1973,6 +2005,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
     std::string s2("GCDTriangular");
 	std::string s3("UtilTriangular");
 	std::string s4("UtilTriangular2");
+
 	
 	BasisConstruction<Int> constr;
     if(decomp==s1){
@@ -2047,30 +2080,31 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 
 	else if(decomp==s4){
          std::cout <<" Util Triangularization2 "<<std::endl; 
-		 IntMat m_v, m_v2;
+		 IntMat m_v, m_v2,m_v3;
 		 m_v.resize(dim, dim);
 		 m_v2.resize(dim, dim);
+		 m_v3.resize(dim, dim);
 		 Int mod=m_lat->getModulo();
 		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
 		CopyMatr(m_v,m_lat->getBasis(), dim, dim);
         m_lat->updateScalL2Norm(0, dim);
-
-        Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,mod); //<IntMat,IntVec,Int>
-        m_lat->updateScalL2Norm(0, dim);
-		
+        
+        // Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,mod); //<IntMat,IntVec,Int>
+        TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v3 ,mod);
+		CopyMatr(m_lat->getBasis(), m_v3,dim, dim);
+		//TransposeMatrix(m_v3, m_v2);
         for (int i = 0; i < dim; i++){
 		  for (int j = 0; j < dim; j++){
-             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
-			 m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j));
-			 std::cout <<  m_c0(i,j)<< "   ";
+			 m_c0(i,j)=NTL::conv<RealRed>(m_v3(i,j));
+			 std::cout <<  m_c0(i,j)<< "   ";			
 		   }
 		    std::cout << ""<< std::endl;
 		}
 	    
-       // m_dc2=getDiagonalVec(m_lat->getBasis());
         for (int i = 0; i < dim; i++) {
           m_dc2[i] = m_c0(i, i)*m_c0(i, i);
 		}
+		//return false;
         
    }
        
@@ -2081,11 +2115,11 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	m_countNodes = 0;
 	smaller = false;
 	m_foundZero = false;
-	if (!tryZShortVec(dim - 1, smaller))   // Here we search for a shortest vector.
+	if (!tryZShortVec(dim - 1, smaller,norm, decomp))   // Here we search for a shortest vector.
 		return false;
 	if (smaller) {
 		// We found a shorter vector. Its square length is in m_lMin2.
-		transformStage3ShortVec(m_zShort, k); // Is this useful and OK for L1 ???
+	///	transformStage3ShortVec(m_zShort, k); // Is this useful and OK for L1 ???
 		NTL::matrix_row<IntMat> row1(m_lat->getBasis(), k);
 		for (h = 0; h < dim; h++)
 			row1(h) = m_bw[h];

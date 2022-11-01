@@ -80,7 +80,7 @@ int main() {
        //name = "bench/" + prime+ "_2" + "_002" ;
       // name = "bench/" + prime+ "_4" + "_001" ;
      //name = "bench/" + prime+ "_4" + "_002" ;
-       name = "bench/" + prime+ "_5" + "_4" ;
+       name = "bench/" + prime+ "_5" + "_2" ;
 
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
@@ -94,11 +94,14 @@ int main() {
       Int m(1021);
       basis = new IntLatticeBase<Int, Real, RealRed>(matrix1,matrix1,m, numlines);
       red = new Reducer<Int, Real, RealRed>(*basis);
-      red->redBKZ();
+     // red->redBKZ(0.7, 10, QUADRUPLE, 0);
       basis->updateVecNorm();
     ///  vec_length[2] += average(basis->getVecNorm());
+       std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
+  
+
       tmp = clock();
-      if (!red->shortestVector(L1NORM,s4)) {
+      if (!red->shortestVector(L2NORM,s4)) {
         bkz_fails++;
       }
       sho_bkz[j] += clock() - tmp;

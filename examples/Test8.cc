@@ -47,6 +47,30 @@ void copy(IntMat &b1, IntMat &b2){
 
 }
 
+/**
+void GetUfromV(IntMat &m1, IntMat &m2){
+     IntMat m3, m4; 
+     int dim1=m1.size1();
+     int dim2=m1.size2();
+     m3.SetDims(dim1,dim2);
+     m4.SetDims(dim1,dim2);
+     for(int i=0;i<dim1;i++)
+     { for(int j=0;j<dim2;j++)
+          m3(i,j)=m1(j,i);   
+     }
+    
+     for(int i=0;i<dim1;i++) 
+       m4[i]=m3[dim1-i-1];
+      
+     for(int i=0;i<dim1;i++)
+      { for(int j=0;j<dim2;j++)
+          m2(i,j)=m4(i,dim2-j-1);   
+       }
+     
+
+}
+
+*/
 
 
 int main() {
@@ -116,19 +140,25 @@ int main() {
        
         //Triangularization of m_v
        
-       // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
-         Triangularization(m_v ,m_v2, numlines,numlines,m);
+        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+         //Triangularization(m_v ,m_v2, numlines,numlines,m);
 
         std::cout << " The base m_v after  triangularization2\n";  
         printBase(m_v);
         std::cout << " The base i \n";  
+
+     
  
 
       
      //   Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-        std::cout << " The base m_v2 after second  triangularization\n";  
+        std::cout << " The base m_v2 after  triangularization\n";  
         printBase(m_v2);
-    
+
+       // std::cout << " The matrix U after triangularization and transform\n";  
+       // GetUfromV(m_v2, m_v);
+        std::cout << " The matrix U after triangularization and transform\n"; 
+         printBase(m_v);
 
   return 0;
 }

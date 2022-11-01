@@ -96,7 +96,7 @@ int main() {
       Int m(1021);
       basis = new IntLatticeBase<Int, Real, RealRed>(matrix1,matrix1,m, numlines);
       red = new Reducer<Int, Real, RealRed>(*basis);
-      red->redBKZ();
+      //red->redBKZ();
       basis->updateVecNorm();
     ///  vec_length[2] += average(basis->getVecNorm());
       tmp = clock();

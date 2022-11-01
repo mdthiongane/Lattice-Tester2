@@ -146,7 +146,8 @@ int main() {
          printBase(m_v);
      
         
-        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+       // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+         TriangularizationLower<IntMat,IntVec, Int> (m_v, m_v2, m);
      
         std::cout << " Print Base after triangularization:"<<std::endl; 
 

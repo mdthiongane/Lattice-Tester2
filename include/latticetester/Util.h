@@ -896,6 +896,170 @@ template <typename IntVec, typename Int>
     }
  
  
+ 
+  
+  ///Lower triangularization
+
+
+   template<typename IntMat> 
+   void TransposeMatrix(IntMat &mat, IntMat &mat2){
+     int dim1=mat.size1();
+     int dim2=mat.size2();
+     for(int i=0;i<dim1;i++)
+     { for(int j=0;j<dim2;j++)
+          mat2(i,j)=mat(j,i);   
+     }
+   }
+
+
+template<typename Int> 
+void gcdExtended(Int &a, Int &b, Int &x, Int &y, Int &gcd)
+{  
+  //Int z(0);
+  if(b==0)
+   {  x=0;
+      y=1;
+      gcd=a;  
+    }
+   else{
+   Int x1, y1, r;
+   Modulo(a,b,r);
+   gcdExtended(b,r,x1,y1,gcd);
+   x=y1-(a/b)*x1;
+   y=x1;
+   } 
+}
+  
+  
+template<typename Int> 
+void modInverse(Int &A, Int &M, Int &res){
+   Int x, y, gcd;
+   gcdExtended(M,A,x,y, gcd);
+   if(gcd!=1)
+    {  std::cout <<"modulo inverse of"<<A<<" does not exist"<<std::endl; 
+        return ;
+    }
+    else
+    {  Int r1;
+       Modulo(x,M,r1);
+       Modulo(r1,M,res);
+
+    }
+  }	
+
+
+
+
+/**
+ * @brief 
+ * 
+ * @param mat 
+ * @param mat2 
+ * @param mod 
+ */
+
+   template<typename IntMat,typename IntVec,typename Int > 
+   void TriangularizationLower(IntMat &mat, IntMat &mat2, Int &mod){
+     IntVec coeff, vl,v2; 
+     Int C, D, val, gcd;  
+     int pc, pl, k;
+     int dim1=mat.NumRows();
+     int dim2=mat.NumCols();
+    
+     pl=dim1-1;
+     pc=dim2-1;
+     while(pl>=0 && pc>=0){
+           for(int i=0;i<dim1;i++)
+              Modulo (mat(i,pc), mod, mat(i,pc));
+            coeff.SetLength(dim2);
+            k=0;     
+            while( k<dim1 && mat(k,pc)==0)
+             { coeff[k]=0; 
+               k++;
+             }
+                
+           if(k<dim1)
+            { gcd=mat(k,pc);
+              coeff[k]=1;
+              val=gcd;
+             
+             for(int i=k+1;i<dim1; i++){
+               if(mat(i,pc)==0)
+               { coeff[i]= 0;
+                 continue;
+                }   
+           
+              Euclide (val, mat(i,pc), C, D , gcd);
+              coeff[i]= D;
+              for(int j=0;j<i;j++) 
+                  coeff[j]*=C;
+              val=gcd; 
+              }     
+            
+              int coeffN[dim2];
+              int nb=0;
+              for(int a=0;a<dim1;a++) 
+              { if(coeff[a]!=0)
+                 { coeffN[nb]=a;
+                   nb++;
+                  }
+               } 
+             
+            vl.SetLength(dim2);
+            int ind=0;
+            for(int j=0;j<dim2;j++) {
+              for(int i=0;i<nb;i++)
+              { ind=coeffN[i];
+                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);   
+                 
+              } 
+              Modulo (vl[j], mod, vl[j]);  
+             }
+
+             for(int i=0;i<dim1;i++)
+             {  if(mat(i,pc)!=0){
+                v2= (mat(i,pc)/gcd)*vl;
+                for(int j=0;j<dim2;j++)
+                    Modulo (v2[j], mod, v2[j]);
+                for(int j=0;j<dim2;j++)
+                 {   
+                   mat(i,j)=mat(i,j)-v2[j];  
+                   Modulo (mat(i,j), mod, mat(i,j));
+                 } 
+                }    
+             }
+             mat2[pl]=vl; 
+          }
+          else
+          {  for (int j1 = 0; j1 < dim2; j1++) {
+             if (j1 != pl)
+               NTL::clear (mat2(pl,j1));
+             else
+               mat2(pl,j1) = mod;
+             }   
+          }
+          coeff.clear();
+          vl.clear();
+          pl--; 
+          pc--;
+       }
+     
+       for(int i=0; i<dim1;i++)
+       { Int res,q;
+         modInverse(mat2(i,i),mod,res); 
+         Modulo((mod-1)*res,mod, q);
+         for(int j=0;j<dim2;j++)
+          { mat2(i,j)=q*mat2(i,j); 
+            Modulo(mat2(i,j),mod, mat2(i,j));
+          }
+        }
+   }
+ 
+
+
+
+
+
   /**
    * @}
    */
