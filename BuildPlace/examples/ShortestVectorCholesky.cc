@@ -35,12 +35,12 @@ void printRes (RealMat mat, int lin, int col){
    out.close();
 }
 
-void printBase(IntMat bas_mat){
-     int L=bas_mat.NumRows();
-     int C=bas_mat.NumCols();
 
-     for(int i=0;i<L;i++)
-     {for(int j=0;j<C;j++){
+void printBase(IntMat bas_mat){
+    int l=bas_mat.size1();
+    int c=bas_mat.size2();
+     for(int i=0;i<l;i++)
+     {for(int j=0;j<c;j++){
        std::cout <<  bas_mat(i,j)<< "   ";
      }
       std::cout << ""<< std::endl;
@@ -78,23 +78,24 @@ int main() {
       Reducer<Int, Real, RealRed>* red;
 
       //! Variables definition
-      ParamReader<Int, RealRed> reader;
+      ParamReader<Int, RealRed> reader, reader2;
       std::string name;
       int numlines;
       IntMat matrix1;
       unsigned int ln;
       
  
-       std::string s4("UtilTriangular2");
+       std::string s1("cholesky");
 
-      //! Reader shenanigans
-     // name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
-      //  name = "bench/" + prime+ "_2" + "_001" ;
-       //name = "bench/" + prime+ "_2" + "_002" ;
-      // name = "bench/" + prime+ "_4" + "_001" ;
-      //name = "bench/" + prime+ "_4" + "_002" ;
-      // name = "bench/" + prime+ "_5" + "_2" ;
-         name = "bench/" + prime+ "_4" + "_001" ;
+       //! Reader shenanigans
+       //name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
+       // name = "bench/" + prime+ "_2" + "_001" ;
+       // name = "bench/" + prime+ "_2" + "_002" ;
+        //name = "bench/" + prime+ "_4" + "_001" ;
+       // name = "bench/" + prime+ "_4" + "_002" ;
+       name = "bench/" + prime+ "_5" + "_33" ;
+      //  name = "bench/" + prime+ "_2" + "_002" ;
+
 
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
@@ -113,20 +114,20 @@ int main() {
       printBase((red->getIntLatticeBase())->getBasis()); 
 
 
-     // red->redBKZ(0.5, 10, QUADRUPLE, 0);
-
+     // red->redBKZ();
+      red->redLLL(0.999,1000000,numlines);
+      basis->updateVecNorm();
 
       std::cout << " The base after reduction\n"; 
       printBase((red->getIntLatticeBase())->getBasis()); 
+    
 
-
-      basis->updateVecNorm();
     ///  vec_length[2] += average(basis->getVecNorm());
-       std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
-  
+      std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
+      
 
       tmp = clock();
-      if (!red->shortestVector(L2NORM,s4)) {
+      if (!red->shortestVector(L2NORM,s1)) {
         bkz_fails++;
       }
       sho_bkz[j] += clock() - tmp;
@@ -138,6 +139,7 @@ int main() {
   }
 
   //! Printing the results in a somewhat formated way.
+
 
   std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
   for(int i=0;i<10;i++)

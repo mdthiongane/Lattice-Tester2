@@ -42,6 +42,7 @@
 #include "NTL/tools.h"
 #include "NTL/ZZ.h"
 #include "NTL/RR.h"
+#include <NTL/mat_GF2.h>
 
 #include "latticetester/Const.h"
 #include "latticetester/NTLWrap.h"
@@ -469,7 +470,7 @@ namespace LatticeTester {
       //exit(1);
       r = fmod (a, b);
       if (r < 0) {
-        if (b < 0)
+        if (b <= 0)
           r -= b;
         else
           r += b;
@@ -798,15 +799,20 @@ template <typename IntVec, typename Int>
     }
 
  
-  ///Begin implementation for Triangularization2
-
-/**
- * @brief 
- * 
- * @param mat 
- * @param mat2 
- * @param mod 
- */
+  /**
+   * Takes a set of generating vectors in the matrix `mat` and iteratively
+   * transforms it into an upper triangular lattice basis into the matrix `mat2`.
+   * `mat` and `mat2` have to have the same number of rows and the same number of columns.
+   *  All the computations will be done modulo `mod`, which means that you
+   * must know the rescaling factor for the vector system to call this function.
+   * After the execution, `mat` will be a matrix containing irrelevant information
+   * and `mat2` will contain an upper triangular basis.
+   *
+   * For more details please look at \cite latTesterGide. This algorithm basically
+   * implements what is written in this guide. The matrix
+   * `mat` contains the set of vectors that is used and modified at each step to
+   * get a new vector from the basis.
+   */
 
    template<typename IntMat,typename IntVec,typename Int > 
    void Triangularization2(IntMat &mat, IntMat &mat2, Int &mod){
@@ -820,7 +826,8 @@ template <typename IntVec, typename Int>
      pc=0;
      while(pl<dim1 && pc<dim2){
            for(int i=0;i<dim1;i++)
-              Modulo (mat(i,pc), mod, mat(i,pc));
+             Modulo (mat(i,pc), mod, mat(i,pc));
+                
             coeff.SetLength(dim2);
             k=0;     
             while( k<dim1 && mat(k,pc)==0)
@@ -900,7 +907,9 @@ template <typename IntVec, typename Int>
   
   ///Lower triangularization
 
-
+   /*
+   *Put the natrix transpose of 'mat' into 'mat2'
+   */
    template<typename IntMat> 
    void TransposeMatrix(IntMat &mat, IntMat &mat2){
      int dim1=mat.size1();
@@ -912,6 +921,13 @@ template <typename IntVec, typename Int>
    }
 
 
+
+/*
+* Compute the gcd of 'a' and 'b' and put this value in 'gcd'.
+* 'x' and 'y' contains some values that help to compute the 'a'
+* inverse modulo of 'b'. 
+* This method is called to in 'modIverse' method
+*/
 template<typename Int> 
 void gcdExtended(Int &a, Int &b, Int &x, Int &y, Int &gcd)
 {  
@@ -930,7 +946,11 @@ void gcdExtended(Int &a, Int &b, Int &x, Int &y, Int &gcd)
    } 
 }
   
-  
+
+/*
+* Compute the 'M' modulo inverse of 'A' if it exist and put it to 'res'
+* If the modulo inverse of A does not exist return a message 
+*/  
 template<typename Int> 
 void modInverse(Int &A, Int &M, Int &res){
    Int x, y, gcd;
@@ -948,16 +968,20 @@ void modInverse(Int &A, Int &M, Int &res){
   }	
 
 
-
-
-/**
- * @brief 
- * 
- * @param mat 
- * @param mat2 
- * @param mod 
- */
-
+  /**
+   * Takes a set of generating vectors in the matrix `mat` and iteratively
+   * transforms it into a lower triangular lattice basis into the matrix `mat2`.
+   * `mat` and `mat2` have to have the same number of rows and the same number of columns.
+   *  All the computations will be done modulo `mod`, which means that you
+   * must know the rescaling factor for the vector system to call this function.
+   * After the execution, `mat` will be a matrix containing irrelevant information
+   * and `mat2` will contain an upper triangular basis.
+   *
+   * For more details please look at \cite latTesterGide. This algorithm basically
+   * implements what is written in this guide. The matrix
+   * `mat` contains the set of vectors that is used and modified at each step to
+   * get a new vector from the basis.
+   */
    template<typename IntMat,typename IntVec,typename Int > 
    void TriangularizationLower(IntMat &mat, IntMat &mat2, Int &mod){
      IntVec coeff, vl,v2; 
@@ -971,6 +995,7 @@ void modInverse(Int &A, Int &M, Int &res){
      while(pl>=0 && pc>=0){
            for(int i=0;i<dim1;i++)
               Modulo (mat(i,pc), mod, mat(i,pc));
+            
             coeff.SetLength(dim2);
             k=0;     
             while( k<dim1 && mat(k,pc)==0)
@@ -1044,21 +1069,20 @@ void modInverse(Int &A, Int &M, Int &res){
           pc--;
        }
      
-       for(int i=0; i<dim1;i++)
+    /**   for(int i=0; i<dim1;i++)
        { Int res,q;
-         modInverse(mat2(i,i),mod,res); 
-         Modulo((mod-1)*res,mod, q);
-         for(int j=0;j<dim2;j++)
-          { mat2(i,j)=q*mat2(i,j); 
-            Modulo(mat2(i,j),mod, mat2(i,j));
-          }
-        }
+         if(mat2(i,i)!=mod){
+            modInverse(mat2(i,i),mod,res); 
+            Modulo((mod-1)*res,mod, q);
+           for(int j=0;j<dim2;j++)
+            { 
+              mat2(i,j)=q*mat2(i,j); 
+              Modulo(mat2(i,j),mod, mat2(i,j));
+            }
+           } 
+        } **/
    }
  
-
-
-
-
 
   /**
    * @}
@@ -1598,7 +1622,7 @@ void modInverse(Int &A, Int &M, Int &res){
             Modulo (T2, m, V(j,j1));
             
           }
-          Quotient (m, V(j,j), T1);
+         Quotient (m, V(j,j), T1);
           for (int j1 = j + 1; j1 < col; j1++) {
             W(lin-1,j1) *= T1;
             Modulo (W(lin-1,j1), m, W(lin-1,j1));
@@ -1626,6 +1650,30 @@ void modInverse(Int &A, Int &M, Int &res){
     }
 
 
+  
+    /**
+   * Takes a basis `A` and computes an m-dual lattice basis B.
+   * The matrix B is the m-dual basis of A.
+   */
+   template <typename Matr, typename Int>
+    void CalcDual2 (const Matr & A, Matr & B, const Int & m) {
+      Int d, mult;
+      Matr C;
+      int dim1=A.NumRows();
+      int dim2=A.NumCols();
+      C.SetDims(dim1, dim2);
+      inv(d,B,A);
+      transpose(C,B);
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++)
+           B(i,j)= (m*C(i,j))/d;
+          
+        }
+     }
+  
+
+  
+  
   /**
    * Takes an upper triangular basis `A` and computes an m-dual lattice basis
    * to this matrix. For this algorithm to work, `A` has to be upper

@@ -35,6 +35,19 @@ void printRes (RealMat mat, int lin, int col){
    out.close();
 }
 
+
+void printBase(IntMat bas_mat){
+    int l=bas_mat.size1();
+    int c=bas_mat.size2();
+     for(int i=0;i<l;i++)
+     {for(int j=0;j<c;j++){
+       std::cout <<  bas_mat(i,j)<< "   ";
+     }
+      std::cout << ""<< std::endl;
+     }
+
+}
+
 }
 
 int main() {
@@ -65,7 +78,7 @@ int main() {
       Reducer<Int, Real, RealRed>* red;
 
       //! Variables definition
-      ParamReader<Int, RealRed> reader;
+      ParamReader<Int, RealRed> reader, reader2;
       std::string name;
       int numlines;
       IntMat matrix1;
@@ -80,8 +93,8 @@ int main() {
        // name = "bench/" + prime+ "_2" + "_002" ;
         //name = "bench/" + prime+ "_4" + "_001" ;
        // name = "bench/" + prime+ "_4" + "_002" ;
-       name = "bench/" + prime+ "_5" + "_2" ;
-
+       name = "bench/" + prime+ "_4" + "_002" ;
+      //  name = "bench/" + prime+ "_2" + "_002" ;
 
 
       reader = ParamReader<Int, RealRed>(name + ".dat");
@@ -96,8 +109,19 @@ int main() {
       Int m(1021);
       basis = new IntLatticeBase<Int, Real, RealRed>(matrix1,matrix1,m, numlines);
       red = new Reducer<Int, Real, RealRed>(*basis);
+
+      std::cout << " The base before reduction\n"; 
+      printBase((red->getIntLatticeBase())->getBasis()); 
+
+
      // red->redBKZ();
+      red->redLLL(0.999,1000000,numlines);
       basis->updateVecNorm();
+
+      std::cout << " The base after reduction\n"; 
+      printBase((red->getIntLatticeBase())->getBasis()); 
+    
+
     ///  vec_length[2] += average(basis->getVecNorm());
       std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
       

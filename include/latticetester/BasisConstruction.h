@@ -97,6 +97,7 @@ public:
 	 *  ***  But everything should be done modulo m ???
 	 */
 	void GCDTriangularBasis(IntMat &matrix, Int mod);
+	void GCDTriangularBasis(IntMat &matrix);
 
 	/**
 	 * This function does essentially the same thing as `Util::CalcDual`.
@@ -182,7 +183,53 @@ void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix, Int mod) {
 				matrix[i].swap(matrix[j]);
 				q = matrix[j][i] / matrix[i][i];
 				matrix[j] -= q * matrix[i];
-			    ModuloVec (matrix[j] , mod);
+				for(int k=0;k<max_rank;k++)
+				  Modulo(matrix[j][k], mod, matrix[j][k]);
+			}
+		}
+		// We make sure that the coefficients are positive.
+		// This is because the algorithms we use work for positive vectors.
+		// if (matrix[i][i] < 0) matrix[i] *= -1;
+		// for (long j = i-1; j >= 0; j--) {
+		//   if (matrix[j][i] < 0) {
+		//     if (-matrix[j][i] > matrix[i][i]){
+		//       q = -matrix[j][i]/matrix[i][i] + 1;
+		//       matrix[j] += q * matrix[i];
+		//     } else {
+		//       matrix[j] += matrix[i];
+		//     }
+		//   }
+		// }
+		if (matrix[i][i] != 0) {
+			rank++;
+			if (matrix[i][i] < 0)
+				matrix[i] *= Int(-1);
+		}
+	}
+	// We remove zero vectors from the basis.
+	matrix.SetDims(rank, cols);
+}
+
+
+template<typename Int>
+void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix) {
+	// It is important to note that the lines of matrix are the basis vectors
+	long rows = matrix.NumRows();
+	long cols = matrix.NumCols();
+	long max_rank = rows < cols ? rows : cols;
+	long rank = 0;
+	// The basis will have at most max_rank vectors.
+	Int q;
+	//Int r;
+	for (long i = 0; i < max_rank; i++) {
+		// We find gcd(matrix[i][i], ..., matrix[rows-1][i]) using Euclid
+		// algorithm and applying transformations to the matrix
+		for (long j = i + 1; j < rows; j++) {
+			while (matrix[j][i] != 0) {
+				matrix[i].swap(matrix[j]);
+				q = matrix[j][i] / matrix[i][i];
+				matrix[j] -= q * matrix[i];
+			 
 			}
 		}
 		// We make sure that the coefficients are positive.

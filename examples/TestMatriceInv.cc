@@ -11,10 +11,15 @@
 #include "latticetester/Reducer.h"
 
 #include "latticetester/Const.h"
-
+#include <NTL/vector.h>
+#include <NTL/matrix.h>
+#include <NTL/ZZ.h>
+#include <NTL/mat_ZZ.h>
+#include <NTL/mat_GF2.h>
 
 
 #include "Examples.h"
+
 
 using namespace LatticeTester;
 
@@ -49,27 +54,21 @@ void copy(IntMat &b1, IntMat &b2){
 
 
 
+
+
+
 int main() {
 
-  IntLatticeBase<Int, Real, RealRed> *lattice;
-  //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
-  Reducer<Int, Real, RealRed>* red;
-  IntMat bas_mat, bas_mat2, dua_mat;
-  IntMat m_v,m_v2;
-  //Int m(101), G; 
-   Int m(101), G; 
-  IntVec vec, coeff,vl,tmp;
-  //int pc=0,pl=0,K;
 
- 
- 
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
-      std::string name = "bench/"  + prime+"_5_2" ;
-    //  std::string name = "bench/" + prime+ "_2" + "_002" ;
-    //  std::string name = "bench/" + prime+ "_10" + "_1" ;
-      ParamReader<Int, RealRed> reader(name + ".dat");
-     std::cout <<name<<std::endl; 
+  IntMat bas_mat, bas_mat2, dua_mat;
+  IntMat m_v,m_v2,m_v3;
+  //Int m(101), G; 
+  Int m(100), G, d; 
+  IntVec vec, coeff,vl,tmp;
+  std::string name = "bench/"  + prime+"_5_001" ;
+
+  ParamReader<Int, RealRed> reader(name + ".dat");
+  std::cout <<name<<std::endl; 
                       
       reader.getLines();
       int numlines;
@@ -83,41 +82,32 @@ int main() {
       //! Filling the matrix
       reader.readBMat(bas_mat, ln, 0, numlines);
 
-      // Creating a lattice basis
-      lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
-      //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines);
-      
-       red = new Reducer<Int, Real, RealRed>(*lattice);
+  
+     
              // We copy the base in m_v and m_v2
 	     m_v.SetDims(numlines, numlines);
        m_v2.SetDims(numlines, numlines);
+       m_v3.SetDims(numlines, numlines);
    
   
        std::cout << " The initial base\n"; 
        printBase(bas_mat);
 
-     
-       // BKZ reduction before shortest vector search
-       // red->redBKZ();
-      // red->redLLL(0.8,1000000,numlines);
-       lattice->updateVecNorm();
 
+       inv(d,m_v,bas_mat);
+       std::cout << " The inverse base with determinanr d="<<d<<std::endl;  
+       printBase(m_v);
 
-        std::cout << " The base after reduction\n"; 
-        printBase((red->getIntLatticeBase())->getBasis()); 
+       std::cout << " The inverse base 2 \n";  
+      // m_v2=inv(bas_mat);
+       printBase(m_v2); 
+        
 
- 
-		
-          
-           
-       // Copie et triangularization de la base reduite
-         copy((red->getIntLatticeBase())->getBasis(), m_v);
-         Triangularization(m_v ,m_v2, numlines,numlines,m);
+       CalcDual2 (bas_mat, m_v3, m) ;
 
-        std::cout << " The base m_v after triangularization of reducer\n";  
-        printBase(m_v2);
-        std::cout << " The base i \n";  
-  
+       std::cout << " The m-dual basis \n"; 
+       printBase(m_v3); 
+
 
   return 0;
 }

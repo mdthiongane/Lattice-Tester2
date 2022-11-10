@@ -157,6 +157,8 @@ public:
 	 *
 	 * It is strongly recommended to use `redBKZ` or `redLLLNTL` to pre-reduce
 	 * the basis before invoking this method; this is not done automatically.
+	 * The param 'decomp' acepted are 'cholesky' or 'triangular'. It specify 
+	 * the decompistion used in the Branch-and-Bound algorithm.
 	 */
 	bool shortestVector(NormType norm,std::string decomp);
 
@@ -366,6 +368,8 @@ private:
 	/**
 	 * Tries to shorten the smallest vector of the primal basis using
 	 * branch-and-bound.  Used in `shortestVector`.
+	 * The param 'decomp' accepted are only 'cholesky' and 'triangular' decompostion. 
+	 * The branch-and-bound is more faster with 'cholesky' than  'triangular'.
 	 */
 	bool redBBShortVec(NormType norm,std::string decomp);
 
@@ -376,6 +380,8 @@ private:
 
 	/**
 	 * Tries to find a shorter vector; recursive procedure used in `shortestVector`.
+	 * The param 'decomp' accepted are only 'cholesky' and 'triangular'. The better
+	 * The 'cholesky' decomposition is more faster than the triangular decomposition .  
 	 */
 	bool tryZShortVec(int j, bool &smaller, NormType norm, std::string decomp);
 
@@ -1786,6 +1792,10 @@ bool Reducer<Int, Real, RealRed>::redBBMink(int i, int d, int Stage,
 
 //=========================================================================
 
+/**
+* @decomp take std::string Choles("cholesky") or std::string Triang("triangular");
+* @norm take value 'L1NORM' or 'L2NORM'
+*/
 template<typename Int, typename Real, typename RealRed>
 bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType norm, std::string decomp) {
 	/*
@@ -1808,7 +1818,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType no
 	std::int64_t temp;
 	//
 	std::string Choles("cholesky");
-	std::string Triang("UtilTriangular2");
+	std::string Triang("triangular");
 
 
 	const int dim = m_lat->getDim();
@@ -1826,24 +1836,17 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType no
 	if (decomp==Choles){
 	   center = 0.0;
 	   for (k = j + 1; k < dim; ++k)
-		  {center -= m_c0(j, k) * m_zLR[k];
-		   std::cout <<  m_c0(j,k)<< "   et  "<<m_zLR[k]<<std::endl;
-		  }
-
+		  center -= m_c0(j, k) * m_zLR[k];
+		  
 	// Distance from the center to the boundaries.
 	// m_lMin2 contains the square length of current shortest vector with the selected norm.
 	    dc = sqrt((m_lMin2 - m_n2[j]) / m_dc2[j]);
-
 	 }
-	 if(decomp==Triang && norm==L2NORM){
-           
-       center = 0.0;
-	   for (k = j + 1; k < dim; ++k)
-	 	{ std::cout <<  m_c0(k,j)<< "   et  "<<m_zLR[k]<<std::endl;
-		  center -= m_c0(k,j) * m_zLR[k];}
-        center=center/m_c0(j,j);
-	  
-	    dc = sqrt((m_lMin2 - m_n2[j]) ) / m_c0(j,j);
+	 if(decomp==Triang && norm==L2NORM){    
+        center = 0.0;
+	    for (k = j + 1; k < dim; ++k)
+	 		center -= m_c0(k,j) * m_zLR[k];
+       	  dc = sqrt((m_lMin2 - m_n2[j]) / m_dc2[j]);
 	  
 	  }	
      if(decomp==Triang && norm==L1NORM){
@@ -1851,8 +1854,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType no
        center = 0.0;
 	   for (k = j + 1; k < dim; ++k)
 		  center -= m_c0(k, j) * m_zLR[k];
-        center=center/m_c0(j,j);
-	  
+     
 	    dc = (m_lMin - m_n2[j])  / m_c0(j,j);
 	  
 	  }	
@@ -1871,7 +1873,7 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType no
 		--max0;
 
 
-    std::cout << "Borne Min="<<min0<<"     Borne Max="<<max0<<"     j="<<j<<std::endl;
+    //   std::cout << "Borne Min="<<min0<<"     Borne Max="<<max0<<"     j="<<j<<std::endl;
 	// Compute initial values of zlow and zhigh, the search pointers on each side of the interval.
 	if (min0 > max0)
 		return true;
@@ -1958,6 +1960,12 @@ bool Reducer<Int, Real, RealRed>::tryZShortVec(int j, bool &smaller, NormType no
 
 //=========================================================================
 
+
+/**
+* @decomp take std::string Choles("cholesky") or std::string Triang("triangular");
+* @norm take value 'L1NORM' or 'L2NORM'
+*/
+
 template<typename Int, typename Real, typename RealRed>
 bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decomp) {
 	/*
@@ -1966,6 +1974,11 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	 * branch-and-bound tree.  When succeeds, returns true, and the squared shortest
 	 * vector length will be in m_lMin2.
 	 */
+     
+    std::string cholesky("cholesky");
+	std::string triangular("triangular");
+
+
 	if ((norm != L1NORM) & (norm != L2NORM)) {
 		std::cerr << "RedBBShortVec: only L1 and L2 norms are supported";
 		return false;
@@ -1976,8 +1989,8 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	RealRed x;
     // Here we sort the basis, otherwise Cholesky will fail more rapidly
     // due to floating-point errors.
-//	m_lat->updateScalL2Norm(0, dim);
-//	m_lat->sortNoDual(0);
+	m_lat->updateScalL2Norm(0, dim);
+	m_lat->sortNoDual(0);
 
     // Approximate the square norm of the current shortest vector.
 	if (norm == L2NORM) {
@@ -2001,114 +2014,43 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	if (m_lMin2 <= m_BoundL2[dim - 1])
 		return false;
 
-    std::string s1("cholesky");
-    std::string s2("GCDTriangular");
-	std::string s3("UtilTriangular");
-	std::string s4("UtilTriangular2");
 
-	
-	BasisConstruction<Int> constr;
-    if(decomp==s1){
+    if(decomp==cholesky){
     /* Perform the Cholesky decomposition; if it fails we exit. */
          if (!calculCholesky(m_dc2, m_c0))
-           return false;
-       
-	   //Debut Ajout
-	    std::cout << "### The matrice C0 after Cholesky decomposition ##########"<< std::endl;
-	    for (int i = 0; i < dim; i++){
-		  for (int j = 0; j < dim; j++){
-					//add for test		
-		    if(i!=j && i<j)		
-	          std::cout<< "C0("<<i<<","<<j<<")="<<m_c0(i,j)<<"  ";	
-		    else if (i==j) 	
-		        std::cout<< "C0("<<i<<","<<j<<")="<<m_dc2[i]<<"  ";	
-		    else
-		       std::cout<< "C0("<<i<<","<<j<<")="<<"0"<<"  ";	
-		   }
-
-		    std::cout << ""<< std::endl;
-		} 
-
-	std::cout << "### The end of printing C0 ##########"<< std::endl;
-	  //fin Ajout
-     }
-    else if(decomp==s2){
-        /*   ***   Alternative:  triangular basis.   ****/
-        constr.GCDTriangularBasis(m_lat->getBasis(),m_lat->getModulo());
-        m_lat->updateScalL2Norm(0, dim);
-		IntMat m_ba=m_lat->getBasis();
-		
-        for (int i = 0; i < dim; i++){
-		  for (int j = 0; j < dim; j++){
-             // NTL::conv(m_c0(i,j),m_ba(i,j)); ou
-			 m_c0(i,j)=NTL::conv<RealRed>(m_ba(i,j));
-		   }
-		}
-	    
-       // m_dc2=getDiagonalVec(m_lat->getBasis());
-        for (int i = 0; i < dim; i++) {
-          m_dc2[i] = m_c0(i, i)*m_c0(i, i);
-		}
-        
-        }
-   else if(decomp==s3){
-        m_lat->updateScalL2Norm(0, dim);
-
-		IntMat m_v,m_v2;
-		m_v.resize(dim, dim);
-		m_v2.resize(dim, dim);
-		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
-		CopyMatr(m_v,m_lat->getBasis(), dim, dim);
-		Triangularization(m_v,m_v2, dim,dim,m_lat->getModulo());
-    
-		
-        for (int i = 0; i < dim; i++){
-		  for (int j = 0; j < dim; j++){
-             // NTL::conv(m_c0(i,j),m_v2(i,j)); ou
-			 m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j));
-			 std::cout <<  m_c0(i,j)<< "   ";
-		   }
-		    std::cout << ""<< std::endl;
-		}
-	    
-       // m_dc2=getDiagonalVec(m_lat->getBasis());
-        for (int i = 0; i < dim; i++) {
-          m_dc2[i] = m_c0(i, i)*m_c0(i, i);
-		}
-        
-	}
-
-	else if(decomp==s4){
-         std::cout <<" Util Triangularization2 "<<std::endl; 
-		 IntMat m_v, m_v2,m_v3;
+           return false;    
+    }
+    else if(decomp==triangular){
+		/* Perform a triangular decomposition */
+		 IntMat m_v, m_v2;
 		 m_v.resize(dim, dim);
 		 m_v2.resize(dim, dim);
-		 m_v3.resize(dim, dim);
 		 Int mod=m_lat->getModulo();
-		// m_lat2 = new IntLatticeBase<Int, Real, RealRed>(m_lat->getBasis(),m_lat->getDim());
-		CopyMatr(m_v,m_lat->getBasis(), dim, dim);
-        m_lat->updateScalL2Norm(0, dim);
-        
-        // Triangularization2<IntMat,IntVec,Int>(m_v, m_v2 ,mod); //<IntMat,IntVec,Int>
-        TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v3 ,mod);
-		CopyMatr(m_lat->getBasis(), m_v3,dim, dim);
-		//TransposeMatrix(m_v3, m_v2);
-        for (int i = 0; i < dim; i++){
-		  for (int j = 0; j < dim; j++){
-			 m_c0(i,j)=NTL::conv<RealRed>(m_v3(i,j));
-			 std::cout <<  m_c0(i,j)<< "   ";			
-		   }
-		    std::cout << ""<< std::endl;
-		}
-	    
+	  	 CopyMatr(m_v,m_lat->getBasis(), dim, dim);
+         TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v2 ,mod);
+		 CopyMatr(m_lat->getBasis(), m_v2,dim, dim);
+	     for (int i = 0; i < dim; i++){
+		   for (int j = 0; j < dim; j++){
+			if(i!=j){
+			  m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j))/NTL::conv<RealRed>(m_v2(i,i));		
+		     }
+		    else{
+			   m_c0(i,j)=NTL::conv<RealRed>(m_v2(i,j));
+		     }
+		    
+		   } 
+        }
+  
         for (int i = 0; i < dim; i++) {
           m_dc2[i] = m_c0(i, i)*m_c0(i, i);
-		}
-		//return false;
-        
+		  }
+  
+   }
+   else{
+        std::cerr << "RedBBShortVec:decomp only 'cholesky' and 'triangular' decomposition are supported";
+	    return false;
    }
        
-
     /* Perform the branch and bound.  */
 	/* m_n2[j] will be the sum of terms |z*k|^2 ||v*k||^2 for k > j.  */
 	m_n2[dim - 1] = 0.0;
@@ -2119,7 +2061,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 		return false;
 	if (smaller) {
 		// We found a shorter vector. Its square length is in m_lMin2.
-	///	transformStage3ShortVec(m_zShort, k); // Is this useful and OK for L1 ???
+		transformStage3ShortVec(m_zShort, k); // Is this useful and OK for L1 ???
 		NTL::matrix_row<IntMat> row1(m_lat->getBasis(), k);
 		for (h = 0; h < dim; h++)
 			row1(h) = m_bw[h];
@@ -2211,6 +2153,8 @@ bool Reducer<Int, Real, RealRed>::reductMinkowski(int d) {
 
 // On successful exit, the basis vectors are sorted by lengths and the norms are updated.
 // The square length of the shortest vector can be recovered in m_lMin2.
+// The acepted param for 'decomp' are 'cholesky' or 'triangular'. 
+// It specify the decompisition basis matrix using in Brach-and-Bound.
 template<typename Int, typename Real, typename RealRed>
 bool Reducer<Int, Real, RealRed>::shortestVector(NormType norm,std::string decomp) {
 
