@@ -821,7 +821,7 @@ template <typename IntVec, typename Int>
      int pc, pl, k;
      int dim1=mat.NumRows();
      int dim2=mat.NumCols();
-    
+
      pl=0;
      pc=0;
      while(pl<dim1 && pc<dim2){
@@ -876,9 +876,9 @@ template <typename IntVec, typename Int>
              for(int i=0;i<dim1;i++)
              {  if(mat(i,pc)!=0){
                 v2= (mat(i,pc)/gcd)*vl;
-                for(int j=0;j<dim2;j++)
+                for(int j=pc;j<dim2;j++)
                     Modulo (v2[j], mod, v2[j]);
-                for(int j=0;j<dim2;j++)
+                for(int j=pc;j<dim2;j++)
                  {   
                    mat(i,j)=mat(i,j)-v2[j];  
                    Modulo (mat(i,j), mod, mat(i,j));

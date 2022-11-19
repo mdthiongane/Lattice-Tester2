@@ -55,7 +55,7 @@ int main() {
   RealMat matTriangularTime;
   matTriangularTime.resize(15, 10);
 
-  std::string prime = primes[0];
+  std::string prime = primes[2];
 
   for (int j = 0; j < max_dim; j++) {
     for (int k = 0; k < 10; k++) {

@@ -93,7 +93,7 @@ int main() {
        // name = "bench/" + prime+ "_2" + "_002" ;
         //name = "bench/" + prime+ "_4" + "_001" ;
        // name = "bench/" + prime+ "_4" + "_002" ;
-       name = "bench/" + prime+ "_4" + "_002" ;
+       name = "bench/" + prime+ "_5" + "_2" ;
       //  name = "bench/" + prime+ "_2" + "_002" ;
 
 

@@ -65,17 +65,16 @@ int main() {
     //  IntLatticeBase<Int, Real, RealRed>* basis;
      // Reducer<Int, Real, RealRed>* red;
 
-
       //! Variables definition
       ParamReader<Int, RealRed> reader;
       std::string name;
       int numlines;
       IntMat matrix1,matrix2;
       unsigned int ln;
-      BasisConstruction<Int> constr;
+     // BasisConstruction<Int> constr;
       Int m(1021);
+    // std::string s2("GCDTriangular");
 
-    
       //! Reader shenanigans
       name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
       std::cout << name<<std::endl;
@@ -92,8 +91,11 @@ int main() {
 
       tmp = clock(); 
 
-     // constr.GCDTriangularBasis(matrix1,m);
-      constr.GCDTriangularBasis(matrix1);
+       // Triangularization(matrix1 ,matrix2, numlines,numlines,m);
+
+      // CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
+       Triangularization2<IntMat,IntVec, Int> (matrix1, matrix2, m);
+     //  TriangularizationLower<IntMat,IntVec,Int>(matrix1, matrix2 ,m);
 
       double tps=(double)(clock() - tmp); //(CLOCKS_PER_SEC);
       matTriangularTime(j,k)=tps;
@@ -102,6 +104,23 @@ int main() {
     }
   }
 
+  //! Printing the results in a somewhat formated way.
+/*  std::cout << "ALL THE RESULTS ARE NUMBERED IN TERMS OF SYSTEM CLOCK TICKS\n";
+  std::cout << "          ";
+  int width6 = getWidth(sho_bkz, max_dim, "SV BKZ and Util Trangularization", total_times, 0);
+  std::cout << std::endl;
+
+  std::cout << "Total time" << std::setw(width6) << total_times[0]
+     << total_times[5] << std::endl;
+  for (int i = 0; i < max_dim; i++) {
+    std::cout << "Dim " << std::setw(6) << (i+1)*5 
+      << std::setw(width6) << sho_bkz[i] 
+      << std::endl;
+  }
+  std::cout << "Fails     "
+    << std::setw(width6) << bkz_fails 
+    << std::endl;
+**/
 
 
   std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
