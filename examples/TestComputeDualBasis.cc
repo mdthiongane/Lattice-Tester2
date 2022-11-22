@@ -1,3 +1,6 @@
+
+//Compare time to compute the m-dual with an upper triangular basis 
+// and without a triangular basis
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -47,52 +50,29 @@ void copy(IntMat &b1, IntMat &b2){
 
 }
 
-/**
-void GetUfromV(IntMat &m1, IntMat &m2){
-     IntMat m3, m4; 
-     int dim1=m1.size1();
-     int dim2=m1.size2();
-     m3.SetDims(dim1,dim2);
-     m4.SetDims(dim1,dim2);
-     for(int i=0;i<dim1;i++)
-     { for(int j=0;j<dim2;j++)
-          m3(i,j)=m1(j,i);   
-     }
-    
-     for(int i=0;i<dim1;i++) 
-       m4[i]=m3[dim1-i-1];
-      
-     for(int i=0;i<dim1;i++)
-      { for(int j=0;j<dim2;j++)
-          m2(i,j)=m4(i,dim2-j-1);   
-       }
-     
 
-}
-
-*/
 
 
 int main() {
 
+//  clock_t timer = clock();
+  clock_t tmps;
   IntLatticeBase<Int, Real, RealRed> *lattice;
   //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, bas_mat2, dua_mat;
-  IntMat m_v,m_v2;
+  IntMat m_v,m_v2,m_v3,m_v4;
   //Int m(101), G; 
-   Int m(1021), G; 
-  IntVec vec, coeff,vl,tmp;
-  //int pc=0,pl=0,K;
+   Int m(1048573);
+ //  Int m(1021);
+   Int G; 
+   IntVec vec, coeff,vl,tmp;
+ 
 
  
  
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
-      std::string name = "bench/"  + prime+"_5_4" ;
-     // std::string name = "bench/" + prime+ "_2" + "_001" ;
-    //  std::string name = "bench/" + prime+ "_10" + "_1" ;
-      ParamReader<Int, RealRed> reader(name + ".dat");
+     std::string name = "bench/"  + prime+"_30_4" ;
+     ParamReader<Int, RealRed> reader(name + ".dat");
      std::cout <<name<<std::endl; 
                       
       reader.getLines();
@@ -113,52 +93,39 @@ int main() {
       
        red = new Reducer<Int, Real, RealRed>(*lattice);
        
-   
-  
-       std::cout << " The initial base\n"; 
-       printBase(bas_mat);
-
-     
        // BKZ reduction before shortest vector search
-        red->redBKZ();
-
-        std::cout << " The base after reduction\n"; 
-        printBase((red->getIntLatticeBase())->getBasis()); 
+       //   red->redBKZ();
 
        // We copy the base in m_v and m_v2
 	        m_v.SetDims(numlines, numlines);
           m_v2.SetDims(numlines, numlines);
+          m_v3.SetDims(numlines, numlines);
+          m_v4.SetDims(numlines, numlines);
 		
          //copy base to m_v
          copy((red->getIntLatticeBase())->getBasis(), m_v);
+         copy((red->getIntLatticeBase())->getBasis(), m_v3);
     
-
-       
-        std::cout << " The base m_v before triangularization\n";  
-        printBase(m_v);
-       
-       
-        //Triangularization of m_v
-       
-        Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
-         //Triangularization(m_v ,m_v2, numlines,numlines,m);
-
-        std::cout << " The base m_v after  triangularization2\n";  
-        printBase(m_v);
-        std::cout << " The base i \n";  
-
      
- 
+            
+         double tps=0;
+         Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+         tmps = clock(); 
+         for(int i=0; i<200;i++){
+           CalcDual (m_v2, m_v3, numlines, m); 
+         //  m_v2(i,i)= m_v2(i,i)+1;
+         }
+         tps=(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+         std::cout << " Time clock calcul m-dual with upper triangular basis: "<<tps<<std::endl;  
+   
 
-      
-     //   Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-        std::cout << " The base m_v2 after  triangularization\n";  
-        printBase(m_v2);
-
-       // std::cout << " The matrix U after triangularization and transform\n";  
-       // GetUfromV(m_v2, m_v);
-        std::cout << " The matrix U after triangularization and transform\n"; 
-         printBase(m_v);
-
+         tmps = clock(); 
+         for(int i=0; i<200;i++){
+            CalcDual2 (m_v3, m_v4, m); 
+         //   m_v2(i,i)= m_v2(i,i)+1;
+         }  
+         tps=(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+         std::cout << " Time clock calcul m-dual without traingular basis: "<<tps<<std::endl;  
+    
   return 0;
 }

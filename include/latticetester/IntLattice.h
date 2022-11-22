@@ -26,14 +26,14 @@
 #include "latticetester/NormaRogers.h"
 #include "latticetester/NormaMinkL1.h"
 #include "latticetester/NormaPalpha.h"
-#include "latticetester/NormaMinkowski.h"
+#include "latticetester/NormaMinkL2.h"
 #include "latticetester/Normalizer.h"
 #include "latticetester/Coordinates.h"
 #include "latticetester/Lacunary.h"
 #include "latticetester/Util.h"
 #include "latticetester/BasisConstruction.h"
-
 #include <cassert>
+
 
 namespace LatticeTester {
 
@@ -539,7 +539,7 @@ namespace LatticeTester {
           normal = new NormaMinkL1<RealRed> (logDensity, dim);
           break;
         case MINK:
-          normal = new NormaMinkowski<RealRed> (logDensity, dim);
+          normal = new NormaMinkL2<RealRed> (logDensity, dim);
           break;
         case NONE:
           normal = new Normalizer<RealRed> (logDensity, dim, "Norma_generic");

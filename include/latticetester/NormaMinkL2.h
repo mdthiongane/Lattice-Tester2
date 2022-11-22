@@ -31,22 +31,22 @@ namespace LatticeTester {
    * This class is to be used with the L2NORM (the Euclidean norm) exclusively.
    */
   //template<typename RealRed>
-    class NormaMinkowski : public Normalizer {
+    class NormaMinkL2 : public Normalizer {
       public:
 
         /**
-		 * Constructs a `NormaMinkowski` for up to `maxDim` dimensions, by assuming that the
+		 * Constructs a `NormaMinkL2` for up to `maxDim` dimensions, by assuming that the
 		 * log density is `logDensity` in all dimensions.
 		 * Restriction: `maxDim`\f$ \le 48\f$.
          */
-        NormaMinkowski (double logDensity, int maxDim);
+        NormaMinkL2 (double logDensity, int maxDim);
 
     	/**
     	 * This constructor assumes that the primal lattice has scaling factor \f$m\f$
     	 * and order \f$k\f$, so its density is \f$m^k\f$ for \f$t\geq k\f$, and cannot
     	 * exceed  \f$m^s\f$ for projections in \f$s < k\f$ dimensions.
     	 */
-    	NormaMinkowski (double logm, int k, int maxDim);
+    	NormaMinkL2 (double logm, int k, int maxDim);
 
     	/**
          * Returns the value of the lattice constant \f$\gamma_j\f$ in
@@ -61,7 +61,7 @@ namespace LatticeTester {
          * dimension \f$j\f$.
          */
         static const double m_gamma[1 + Normalizer::MAX_DIM];
-    }; // End class NormaMinkowski
+    }; // End class NormaMinkL2
 
   //===========================================================================
 
@@ -69,7 +69,7 @@ namespace LatticeTester {
    * This is (2/V_n)^(2/n) which seems wrong.
    * */
   //template<typename RealRed>
-    const double NormaMinkowski::m_gamma[ ] =
+    const double NormaMinkL2::m_gamma[ ] =
     {
       /* GamMinkowski[0] = */     0.00000000000000,
       /* GamMinkowski[1] = */     0.00000000000000,
@@ -126,17 +126,17 @@ namespace LatticeTester {
 
   /*=========================================================================*/
 
-    NormaMinkowski::NormaMinkowski (double logDensity, int maxDim):
+    NormaMinkL2::NormaMinkL2 (double logDensity, int maxDim):
       Normalizer (maxDim, "Minkowski", L2NORM)
     {
       if (maxDim > this->MAX_DIM)
-        throw std::invalid_argument("NormaMinkowski:   dimension > MAX_DIM");
+        throw std::invalid_argument("NormaMinkL2:   dimension > MAX_DIM");
       Normalizer::computeBounds (logDensity);
     }
 
     /*=========================================================================*/
 
-      NormaMinkowski::NormaMinkowski (double logm, int k, int maxDim)
+      NormaMinkL2::NormaMinkL2 (double logm, int k, int maxDim)
       : Normalizer (maxDim, "BestLat", L2NORM)
       {
         if (maxDim > this->MAX_DIM)
@@ -146,10 +146,10 @@ namespace LatticeTester {
 
   /*=========================================================================*/
 
-    inline double NormaMinkowski::getGamma (int j) const
+    inline double NormaMinkL2::getGamma (int j) const
     {
       if (j < 1 || j > this->MAX_DIM)
-        throw std::out_of_range("NormaMinkowski::getGamma");
+        throw std::out_of_range("NormaMinkL2::getGamma");
       return m_gamma[j];
     }
 

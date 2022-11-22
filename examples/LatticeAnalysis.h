@@ -32,7 +32,7 @@
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/NormaBestBound.h"
 #include "latticetester/NormaLaminated.h"
-#include "latticetester/NormaMinkowski.h"
+#include "latticetester/NormaMinkL2.h"
 #include "latticetester/NormaMinkL1.h"
 #include "latticetester/NormaPalpha.h"
 #include "latticetester/NormaRogers.h"
@@ -567,8 +567,8 @@ namespace LatticeTester {
           normalizer = new NormaBestBound(density, config.NumCols);
           m_merit = NTL::conv<double>(Red.getMinLength())
             / normalizer->getBound(config.NumCols);
-        } else if (norma == MINK) {
-          normalizer = new NormaMinkowski(density, config.NumCols);
+        } else if (norma == MINKL2) {
+          normalizer = new NormaMinkL2(density, config.NumCols);
           m_merit = NTL::conv<double>(Red.getMinLength())
             / normalizer->getBound(config.NumCols);
         } else if (norma == LAMINATED) {

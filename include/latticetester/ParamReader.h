@@ -908,12 +908,12 @@ namespace LatticeTester {
         field = ROGERS;
       else if (0 == strcasecmp(val.c_str(), "MINKL1"))
         field = MINKL1;
-      else if (0 == strcasecmp(val.c_str(), "MINK"))
-        field = MINK;
-      else if (0 == strcasecmp(val.c_str(), "L1"))
-        field = L1;
-      else if (0 == strcasecmp(val.c_str(), "L2"))
-        field = L2;
+      else if (0 == strcasecmp(val.c_str(), "MINKL2"))
+        field = MINKL2;
+     // else if (0 == strcasecmp(val.c_str(), "L1"))
+     //   field = L1;
+    //  else if (0 == strcasecmp(val.c_str(), "L2"))
+     //   field = L2;
       else if (0 == strcasecmp(val.c_str(), "NONE"))
         field = NONE;
       else
@@ -934,12 +934,12 @@ namespace LatticeTester {
         field = DOUBLE;
       else if (0 == strcasecmp(val.c_str(), "QUADRUPLE"))
         field = QUADRUPLE;
-      else if (0 == strcasecmp(val.c_str(), "EXPONENT"))
-        field = EXPONENT;
-      else if (0 == strcasecmp(val.c_str(), "ARBITRARY"))
-        field = ARBITRARY;
-      else if (0 == strcasecmp(val.c_str(), "EXACT"))
-        field = EXACT;
+      else if (0 == strcasecmp(val.c_str(), "XDOUBLE"))
+        field = XDOUBLE;
+      else if (0 == strcasecmp(val.c_str(), "RR"))
+        field = RR;
+      //else if (0 == strcasecmp(val.c_str(), "EXACT"))
+       // field = EXACT;
       else
         MyExit(1, "readPrecisionType:   NO SUCH CASE");
     }

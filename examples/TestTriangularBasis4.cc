@@ -1,3 +1,7 @@
+// An example for test the Lower Traingular method 
+// Util::TriangularizationLower
+
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -114,14 +118,8 @@ int main() {
    
      std::cout << " print initial Base \n"; 
      printBase(bas_mat);
-   //  Int G;
-    // int K;
-   //  IntVec vec, coeff,vl ;
-  //   IntVec tmp;
-    // int pc,pl;
+
   
-
-
       // Creating a lattice basis
       lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
       //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines); 

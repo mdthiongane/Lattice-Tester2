@@ -54,7 +54,7 @@
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/NormaBestBound.h"
 #include "latticetester/NormaLaminated.h"
-#include "latticetester/NormaMinkowski.h"
+#include "latticetester/NormaMinkL2.h"
 #include "latticetester/NormaMinkL1.h"
 #include "latticetester/NormaPalpha.h"
 #include "latticetester/NormaRogers.h"

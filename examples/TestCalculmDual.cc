@@ -1,3 +1,6 @@
+//An example of program to compute the m-dual of  a basis
+//with Util::calcDual2 (Lecuyer method)
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -48,25 +51,30 @@ void copy(IntMat &b1, IntMat &b2){
 }
 
 
-
 int main() {
 
+  clock_t timer = clock();
+  clock_t tmps;
   IntLatticeBase<Int, Real, RealRed> *lattice;
   //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, bas_mat2, dua_mat;
   IntMat m_v,m_v2;
-  Int m(101), G; 
-  IntVec vec, coeff,vl,tmp;
- // int pc=0,pl=0,K;
+  //Int m(101), G; 
+     Int m(1021);
+     Int G; 
+     IntVec vec, coeff,vl,tmp;
+     //int pc=0,pl=0,K;
 
  
  
       //std::string name = "bench/" + prime+ "_4" + "_001" ;
-      std::string name = "bench/" + prime+ "_4" + "_002" ;
-      //  std::string name = "bench/"  + prime+"_5_0" ;
+     // std::string name = "bench/" + prime+ "_4" + "_002" ;
+      std::string name = "bench/"  + prime+"_5_4" ;
+     // std::string name = "bench/" + prime+ "_2" + "_001" ;
+    //  std::string name = "bench/" + prime+ "_10" + "_1" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
-
+      std::cout <<name<<std::endl; 
                       
       reader.getLines();
       int numlines;
@@ -88,45 +96,30 @@ int main() {
        
    
   
-       std::cout << " The initial base\n"; 
-       printBase(bas_mat);
+        std::cout << " The initial base\n"; 
+        printBase(bas_mat);
 
      
        // BKZ reduction before shortest vector search
-        red->redBKZ();
+         red->redBKZ();
 
-        std::cout << " The base after reduction\n"; 
-        printBase((red->getIntLatticeBase())->getBasis()); 
+         std::cout << " The base after reduction\n"; 
+          printBase((red->getIntLatticeBase())->getBasis()); 
 
        // We copy the base in m_v and m_v2
 	        m_v.SetDims(numlines, numlines);
           m_v2.SetDims(numlines, numlines);
 		
          //copy base to m_v
-         copy((red->getIntLatticeBase())->getBasis(), m_v);
+          copy((red->getIntLatticeBase())->getBasis(), m_v);
     
-
+          CalcDual2 (m_v, m_v2, m) ;
        
-        std::cout << " The base m_v before triangularization\n";  
-        printBase(m_v);
+          std::cout << " The base m_v before triangularization\n";  
+          printBase(m_v2);
        
-       
-        //Triangularization of m_v
-       
-       // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
-        TriangularizationLower<IntMat,IntVec, Int> (m_v, m_v2, m);
-
-
-        std::cout << " The base m_v after  triangularization2\n";  
-        printBase(m_v);
-         std::cout << " The base i \n";  
+  
  
-
-      
-     //   Triangularization2<IntMat,IntVec, Int> (m_v, m, vec,  coeff, vl, G, K,tmp,pc,pl);
-        std::cout << " The base m_v2 after second  triangularization\n";  
-        printBase(m_v2);
-    
 
   return 0;
 }

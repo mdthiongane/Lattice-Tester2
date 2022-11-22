@@ -1,3 +1,8 @@
+//An example of program to test the speed of upper triangularization
+//method ---- Util::Triangularization2 (Lecuyer method)
+
+
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>

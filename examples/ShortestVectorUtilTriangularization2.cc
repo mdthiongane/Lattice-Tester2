@@ -1,3 +1,6 @@
+//An example programm to compute the shortest vector with the
+//a triangular decomposition
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -24,16 +27,7 @@ namespace {
     return sum/Real(vector.length());
   }
 
-void printRes (RealMat mat, int lin, int col){
-   std::ofstream out("ResultatUtilTriang.csv");
 
-    for (int j=0;j<lin;j++) {
-      for (int k=0;k<col;j++) 
-        out << j <<',';
-     out << '\n';
-    }
-   out.close();
-}
 
 void printBase(IntMat bas_mat){
      int L=bas_mat.NumRows();

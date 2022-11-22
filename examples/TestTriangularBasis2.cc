@@ -1,3 +1,8 @@
+// Traingular a basis with Mark-Antoine method
+// BasisConstruction::GCDTriangular
+
+
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -94,8 +99,10 @@ int main() {
      
     // Tringular GCD basis 
    
-    
-     constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m);
+    //All operation is done modulo m. This is the modified version
+         constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis(),m);
+    //There is no modulo m in operation. this is the initial version 
+         //constr.GCDTriangularBasis((red->getIntLatticeBase())->getBasis());
      std::cout << " The base after GCD triangularization\n";  
      printBase((red->getIntLatticeBase())->getBasis());
      

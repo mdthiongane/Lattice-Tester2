@@ -1664,6 +1664,13 @@ void modInverse(Int &A, Int &M, Int &res){
       C.SetDims(dim1, dim2);
       inv(d,B,A);
       transpose(C,B);
+     /** std::cout<<"determinant d: "<<d<<std::endl; 
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++)
+               std::cout << C(i,j)<<" ";
+         std::cout<<" "<<std::endl; 
+        }*/
+
       for (int i = 0; i < dim1; i++) {
         for (int j = 0; j < dim2; j++)
            B(i,j)= (m*C(i,j))/d;

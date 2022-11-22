@@ -1,3 +1,6 @@
+//An example of program to test the speed of triangularization
+//with Util::Triangularization (Couture method)
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -25,16 +28,7 @@ namespace {
     return sum/Real(vector.length());
   }
 
-void printRes (RealMat mat, int lin, int col){
-   std::ofstream out("ResultatUtilTriang.csv");
 
-    for (int j=0;j<lin;j++) {
-      for (int k=0;k<col;j++) 
-        out << j <<',';
-     out << '\n';
-    }
-   out.close();
-}
 
 }
 

@@ -583,14 +583,14 @@ struct specReducer<std::int64_t, Real, RealRed> {
 		case QUADRUPLE:
 			LLL_QP(lattmp->getBasis(), delta);
 			break;
-		case EXPONENT:
+		case XDOUBLE:
 			LLL_XD(lattmp->getBasis(), delta);
 			break;
-		case ARBITRARY:
+		case RR:
 			LLL_RR(lattmp->getBasis(), delta);
 			break;
-		case EXACT:
-			break;
+		//case EXACT:
+		//	break;
 		default:
 			MyExit(1, "Undefined PrecisionType for LLL");
 		}
@@ -658,10 +658,10 @@ struct specReducer<NTL::ZZ, Real, RealRed> {
 		case QUADRUPLE:
 			NTL::BKZ_QP(lattmp->getBasis(), delta, blocksize);
 			break;
-		case EXPONENT:
+		case XDOUBLE:
 			NTL::BKZ_XD(lattmp->getBasis(), delta, blocksize);
 			break;
-		case ARBITRARY:
+		case RR:
 			NTL::BKZ_RR(lattmp->getBasis(), delta, blocksize);
 			break;
 		default:
@@ -682,9 +682,9 @@ struct specReducer<NTL::ZZ, Real, RealRed> {
 			lattmp->copyLattice(*red.getIntLatticeBase(), dim);
 		} else
 			lattmp = red.getIntLatticeBase();
-		if (precision == EXACT)
-			red.redLLLNTLExact(delta);
-		else {
+		//if (precision == EXACT)
+		//	red.redLLLNTLExact(delta);
+		//else {
 			switch (precision) {
 			case DOUBLE:
 				LLL_FP(lattmp->getBasis(), delta, 0, 0);
@@ -692,19 +692,19 @@ struct specReducer<NTL::ZZ, Real, RealRed> {
 			case QUADRUPLE:
 				LLL_QP(lattmp->getBasis(), delta, 0, 0);
 				break;
-			case EXPONENT:
+			case XDOUBLE:
 				LLL_XD(lattmp->getBasis(), delta, 0, 0);
 				break;
-			case ARBITRARY:
+			case RR:
 				LLL_RR(lattmp->getBasis(), delta, 0, 0);
 				break;
-			case EXACT:
-				break;
+			//case EXACT:
+			//	break;
 			default:
 				MyExit(1, "LLL PrecisionType:   NO SUCH CASE");
 			}
 			red.getIntLatticeBase()->copyLattice(*lattmp, dim);
-		}
+		//}
 		if (dim > 0)
 			delete lattmp;
 

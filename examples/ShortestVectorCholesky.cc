@@ -1,3 +1,6 @@
+//An example programm to compute the shortest vector with the
+//Cholesky decomposition
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -23,17 +26,6 @@ namespace {
     }
     return sum/Real(vector.length());
   }
-
-void printRes (RealMat mat, int lin, int col){
-   std::ofstream out("ResultatUtilTriang.csv");
-
-    for (int j=0;j<lin;j++) {
-      for (int k=0;k<col;j++) 
-        out << j <<',';
-     out << '\n';
-    }
-   out.close();
-}
 
 
 void printBase(IntMat bas_mat){
@@ -61,8 +53,6 @@ int main() {
      sho_bkz[i] = 0;
   }
   int bkz_fails=0;
- // Real vec_length[3];
- // vec_length[0] = vec_length[1] = vec_length[2] = 0;
 
   RealMat matShortVecLeng;
   matShortVecLeng.resize(10, 10);
@@ -122,10 +112,6 @@ int main() {
       printBase((red->getIntLatticeBase())->getBasis()); 
     
 
-    ///  vec_length[2] += average(basis->getVecNorm());
-      std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
-      
-
       tmp = clock();
       if (!red->shortestVector(L2NORM,s1)) {
         bkz_fails++;
@@ -148,7 +134,6 @@ int main() {
      }
      std::cout << ""<< std::endl;
    }
-  //printRes(matShortVecLeng,10,10);
-      //printRes(matShortVecLeng,10,10);
+
   return 0;
 }
