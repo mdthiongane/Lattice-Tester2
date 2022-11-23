@@ -1,5 +1,6 @@
-//An example programm to compute the shortest vector with the
-//Cholesky decomposition
+/*An example programm to compute a basis shortest vector using the
+**Cholesky decomposition.
+*/
 
 #define NTL_TYPES_CODE 2
 
@@ -45,13 +46,7 @@ void printBase(IntMat bas_mat){
 int main() {
   clock_t timer = clock();
   int max_dim = 1; //! Actual max dim is 5*max_dim
-  //! This is basically the C method of timing a program. We time globally, but
-  //! also for eache dimension and for each size of integers in the matrix.
-  clock_t sho_bkz[max_dim], tmp;
- // clock_t total_times[1];
-  for (int i = 0; i < max_dim; i++){
-     sho_bkz[i] = 0;
-  }
+
   int bkz_fails=0;
 
   RealMat matShortVecLeng;
@@ -61,9 +56,7 @@ int main() {
 
   for (int j = 0; j < max_dim; j++) {
     for (int k = 0; k < 1; k++) {
-      // We dynamically allocate memory to these two pointers every time we need to
-      // create an object of their type. This is because of the OOP approach
-      // to lattice reduction.
+   
       IntLatticeBase<Int, Real, RealRed>* basis;
       Reducer<Int, Real, RealRed>* red;
 
@@ -77,12 +70,6 @@ int main() {
  
        std::string s1("cholesky");
 
-       //! Reader shenanigans
-       //name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
-       // name = "bench/" + prime+ "_2" + "_001" ;
-       // name = "bench/" + prime+ "_2" + "_002" ;
-        //name = "bench/" + prime+ "_4" + "_001" ;
-       // name = "bench/" + prime+ "_4" + "_002" ;
        name = "bench/" + prime+ "_5" + "_2" ;
       //  name = "bench/" + prime+ "_2" + "_002" ;
 
@@ -112,14 +99,13 @@ int main() {
       printBase((red->getIntLatticeBase())->getBasis()); 
     
 
-      tmp = clock();
+ 
       if (!red->shortestVector(L2NORM,s1)) {
         bkz_fails++;
       }
-      sho_bkz[j] += clock() - tmp;
+     
        matShortVecLeng(j,k)=red->getMinLength();
       delete red;
-      //std::cout << "BKZ: " << average(basis->getVecNorm()) << "\n";
       delete basis;
     }
   }

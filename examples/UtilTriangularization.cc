@@ -1,6 +1,8 @@
-//An example of program to test the speed of triangularization
-//with Util::Triangularization (Couture method)
-
+/**An example of program to test the speed of
+*Util::Triangularization @author Couture. 
+* We use 150 basis. We begin with 5x5 dimension 
+*to 75x75 dimension. 10 different basis for each dimension  
+**/
 #define NTL_TYPES_CODE 2
 
 #include <iostream>

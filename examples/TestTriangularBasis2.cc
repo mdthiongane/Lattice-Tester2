@@ -1,6 +1,8 @@
-// Traingular a basis with Mark-Antoine method
-// BasisConstruction::GCDTriangular
 
+/*
+*An example of program to use the
+*BasisConstruction::GCDTriangular @author Mark-Antoine . 
+**/
 
 
 #define NTL_TYPES_CODE 2
@@ -41,11 +43,6 @@ void printBase(IntMat bas_mat){
 }
 
 int main() {
- // clock_t timer = clock();
-  // The different clocks we will use for benchmarking
-  // We use ctime for implementation simplicity
- // int max_dim = 1; // Actual max dim is 5*max_dim
-  
 
   // Defining constants for the execution of the algorithms
   BasisConstruction<Int> constr; // The basis constructor we will use
@@ -61,9 +58,6 @@ int main() {
      // std::string name = "bench/" + prime[0] + "_" + std::to_string((j+1)*5) + "_" + std::to_string(k);
      // std::string name = "bench/" + prime+ "_4" + "_001" ;
       std::string name = "bench/" + prime+ "_2" + "_001" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
-     // std::string name = "bench/"  + prime+"_5_0" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
                       

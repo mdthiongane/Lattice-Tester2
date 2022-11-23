@@ -1,6 +1,10 @@
-//An example of program to test the speed of upper triangularization
-//method ---- Util::Triangularization2 (Lecuyer method)
 
+/**An example of program to test the speed of
+ * the upper triangularisation method
+*Util::Triangularization2 @author Lecuyer. 
+* We use 150 basis. We begin with 5x5 dimension 
+*to 75x75 dimension. 10 different basis for each dimension  
+**/
 
 
 #define NTL_TYPES_CODE 2
@@ -30,32 +34,13 @@ namespace {
     return sum/Real(vector.length());
   }
 
-void printRes (RealMat mat, int lin, int col){
-   std::ofstream out("ResultatUtilTriang.csv");
-
-    for (int j=0;j<lin;j++) {
-      for (int k=0;k<col;j++) 
-        out << j <<',';
-     out << '\n';
-    }
-   out.close();
-}
-
 }
 
 int main() {
   clock_t timer = clock();
   int max_dim = 15; //! Actual max dim is 5*max_dim
-  //! This is basically the C method of timing a program. We time globally, but
-  //! also for eache dimension and for each size of integers in the matrix.
   clock_t tmp;
- // clock_t total_times[1];
- // for (int i = 0; i < max_dim; i++){
- //    sho_bkz[i] = 0;
- // }
- // int bkz_fails=0;
- // Real vec_length[3];
- // vec_length[0] = vec_length[1] = vec_length[2] = 0;
+
 
   RealMat matTriangularTime;
   matTriangularTime.resize(15, 10);
@@ -64,13 +49,7 @@ int main() {
 
   for (int j = 0; j < max_dim; j++) {
     for (int k = 0; k < 10; k++) {
-      // We dynamically allocate memory to these two pointers every time we need to
-      // create an object of their type. This is because of the OOP approach
-      // to lattice reduction.
-    //  IntLatticeBase<Int, Real, RealRed>* basis;
-     // Reducer<Int, Real, RealRed>* red;
-
-      //! Variables definition
+     //! Variables definition
       ParamReader<Int, RealRed> reader;
       std::string name;
       int numlines;
@@ -96,9 +75,7 @@ int main() {
 
       tmp = clock(); 
 
-       // Triangularization(matrix1 ,matrix2, numlines,numlines,m);
-
-      // CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
+          // CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
        Triangularization2<IntMat,IntVec, Int> (matrix1, matrix2, m);
      //  TriangularizationLower<IntMat,IntVec,Int>(matrix1, matrix2 ,m);
 

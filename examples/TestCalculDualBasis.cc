@@ -1,3 +1,9 @@
+
+/**An example of program to use the m-dual construction method. 
+*Util::CalcDual @author Lecuyer. 
+* The basis can be triangular or not.
+**/
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -93,7 +99,7 @@ int main() {
        std::cout << " The initial base\n"; 
        printBase(bas_mat);
 
-
+      //compute the determinant $d$ and adjoint matrix of the matrix m_v
        inv(d,m_v,bas_mat);
        std::cout << " The inverse base with determinanr d="<<d<<std::endl;  
        printBase(m_v);
@@ -103,7 +109,7 @@ int main() {
        printBase(m_v2); 
         
 
-       CalcDual2 (bas_mat, m_v3, m) ;
+       CalcDual (bas_mat, m_v3, m) ;
 
        std::cout << " The m-dual basis \n"; 
        printBase(m_v3); 

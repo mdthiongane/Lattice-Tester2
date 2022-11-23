@@ -1,3 +1,5 @@
+//An example to use BasisConstruction::GCDTriangular
+//The triangular method implement by Mark-Antoine 
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -25,32 +27,14 @@ namespace {
     return sum/Real(vector.length());
   }
 
-void printRes (RealMat mat, int lin, int col){
-   std::ofstream out("ResultatUtilTriang.csv");
-
-    for (int j=0;j<lin;j++) {
-      for (int k=0;k<col;j++) 
-        out << j <<',';
-     out << '\n';
-    }
-   out.close();
-}
 
 }
 
 int main() {
   clock_t timer = clock();
   int max_dim = 15; //! Actual max dim is 5*max_dim
-  //! This is basically the C method of timing a program. We time globally, but
-  //! also for eache dimension and for each size of integers in the matrix.
+
   clock_t tmp;
- // clock_t total_times[1];
- // for (int i = 0; i < max_dim; i++){
- //    sho_bkz[i] = 0;
- // }
- // int bkz_fails=0;
- // Real vec_length[3];
- // vec_length[0] = vec_length[1] = vec_length[2] = 0;
 
   RealMat matTriangularTime;
   matTriangularTime.resize(15, 10);

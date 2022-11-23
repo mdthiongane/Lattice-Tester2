@@ -1,9 +1,5 @@
-/**An example of program to test the speed of
-*Util::LowerTriangularization @author Lecuyer. 
-* We use 150 basis. We begin with 5x5 dimension 
-*to 75x75 dimension. 10 different basis for each dimension  
-**/
-
+//An example of program to test the speed of triangularization
+//with Util::LowerTriangularization (Lecuyer method)
 
 
 #define NTL_TYPES_CODE 2
@@ -60,7 +56,8 @@ void printBase(IntMat bas_mat){
 
 int main() {
 
-
+      //  clock_t timer = clock();
+      clock_t tmps;
       std::string prime = primes[0];
 
       //! Variables definition
@@ -75,7 +72,7 @@ int main() {
       Int m(1021);
 
       std::cout << name<<std::endl;
-      name = "bench/" + prime+ "_5" + "_2" ;
+      name = "bench/" + prime+ "_75" + "_2" ;
 
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
@@ -87,8 +84,8 @@ int main() {
       ln = 1;
       reader.readBMat(matrix1, ln, 0, numlines);
       
-      std::cout << " The base before reduction\n"; 
-      printBase(matrix1);
+     // std::cout << " The base before reduction\n"; 
+     // printBase(matrix1);
 
       basis = new IntLatticeBase<Int, Real, RealRed>(matrix1,matrix1,m, numlines);
       red = new Reducer<Int, Real, RealRed>(*basis);
@@ -96,13 +93,32 @@ int main() {
       basis->updateVecNorm();
 
 
-      std::cout << " The base after reduction\n"; 
+    //  std::cout << " The base after reduction\n"; 
       
-       printBase((red->getIntLatticeBase())->getBasis()); 
+      // printBase((red->getIntLatticeBase())->getBasis()); 
        CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
-       //Triangularization2<IntMat,IntVec, Int> (matrix2, matrix3, m);
-       TriangularizationLower<IntMat,IntVec,Int>(matrix1, matrix2 ,m);
-       printBase(matrix2) ;
+       double tps=0;
+       for(int i=0;i<500;i++){
+          tmps = clock();
+          TriangularizationLower<IntMat,IntVec,Int>(matrix1, matrix2 ,m);
+          tps=tps+(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+          CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
+        }  
+        std::cout << " The triangular compute time: "<<tps<<std::endl; 
+
+       std::cout << " #############################################################\n"; 
+       tps=0;
+       for(int i=0;i<500;i++){
+          tmps = clock();
+         // TriangularizationLower<IntMat,IntVec,Int>(matrix1, matrix2 ,m);
+          red->redLLL(0.999,1000000,numlines);
+          tps=tps+(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+         // CopyMatr(matrix2,(red->getIntLatticeBase())->getBasis(), numlines, numlines);
+          red = new Reducer<Int, Real, RealRed>(*basis);
+        }  
+        std::cout << " The LLL basis compute time: "<<tps<<std::endl; 
+     
+     
 
  
   return 0;

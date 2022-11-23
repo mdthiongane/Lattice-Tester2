@@ -1,5 +1,10 @@
-//An example of program to compute the m-dual of  a basis
-//with Util::calcDual2 (Lecuyer method)
+
+/*Compare the speed of Util::CalcDual
+* which compute an m-dual basis using any basis in input,
+* and Util::CalcDualUpper which compute an m-dual basis 
+* with an upper triangular basis.
+*/
+
 
 #define NTL_TYPES_CODE 2
 
@@ -7,7 +12,7 @@
 #include <ctime>
 
 #include "latticetester/Types.h"
-#include "latticetester/BasisConstruction.h"
+//#include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/IntLatticeBase.h"
@@ -22,7 +27,7 @@
 using namespace LatticeTester;
 
 namespace {
-  const std::string prime = primes[0];
+  const std::string prime = primes[1];
 }
 
 
@@ -51,30 +56,29 @@ void copy(IntMat &b1, IntMat &b2){
 }
 
 
+
+
 int main() {
 
-  clock_t timer = clock();
+//  clock_t timer = clock();
   clock_t tmps;
   IntLatticeBase<Int, Real, RealRed> *lattice;
   //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
   Reducer<Int, Real, RealRed>* red;
   IntMat bas_mat, bas_mat2, dua_mat;
-  IntMat m_v,m_v2;
+  IntMat m_v,m_v2,m_v3,m_v4;
   //Int m(101), G; 
-     Int m(1021);
-     Int G; 
-     IntVec vec, coeff,vl,tmp;
-     //int pc=0,pl=0,K;
+   Int m(1048573);
+ //  Int m(1021);
+   Int G; 
+   IntVec vec, coeff,vl,tmp;
+ 
 
  
  
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
-      std::string name = "bench/"  + prime+"_5_4" ;
-     // std::string name = "bench/" + prime+ "_2" + "_001" ;
-    //  std::string name = "bench/" + prime+ "_10" + "_1" ;
-      ParamReader<Int, RealRed> reader(name + ".dat");
-      std::cout <<name<<std::endl; 
+     std::string name = "bench/"  + prime+"_30_4" ;
+     ParamReader<Int, RealRed> reader(name + ".dat");
+     std::cout <<name<<std::endl; 
                       
       reader.getLines();
       int numlines;
@@ -94,32 +98,39 @@ int main() {
       
        red = new Reducer<Int, Real, RealRed>(*lattice);
        
-   
-  
-        std::cout << " The initial base\n"; 
-        printBase(bas_mat);
-
-     
        // BKZ reduction before shortest vector search
-         red->redBKZ();
-
-         std::cout << " The base after reduction\n"; 
-          printBase((red->getIntLatticeBase())->getBasis()); 
+       //   red->redBKZ();
 
        // We copy the base in m_v and m_v2
 	        m_v.SetDims(numlines, numlines);
           m_v2.SetDims(numlines, numlines);
+          m_v3.SetDims(numlines, numlines);
+          m_v4.SetDims(numlines, numlines);
 		
          //copy base to m_v
-          copy((red->getIntLatticeBase())->getBasis(), m_v);
+         copy((red->getIntLatticeBase())->getBasis(), m_v);
+         copy((red->getIntLatticeBase())->getBasis(), m_v3);
     
-          CalcDual2 (m_v, m_v2, m) ;
-       
-          std::cout << " The base m_v before triangularization\n";  
-          printBase(m_v2);
-       
-  
- 
+     
+            
+         double tps=0;
+         Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+         tmps = clock(); 
+         for(int i=0; i<200;i++){
+           CalcDual(m_v2, m_v3, numlines, m); 
+         //  m_v2(i,i)= m_v2(i,i)+1;
+         }
+         tps=(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+         std::cout << " Time clock calcul m-dual with upper triangular basis: "<<tps<<std::endl;  
+   
 
+         tmps = clock(); 
+         for(int i=0; i<200;i++){
+            CalcDual2(m_v3, m_v4, m); 
+         //   m_v2(i,i)= m_v2(i,i)+1;
+         }  
+         tps=(double)(clock() - tmps)/(CLOCKS_PER_SEC*60) ; 
+         std::cout << " Time clock calcul m-dual without traingular basis: "<<tps<<std::endl;  
+    
   return 0;
 }

@@ -1,5 +1,8 @@
-//An example programm to compute the shortest vector with the
-//a triangular decomposition
+/*
+**An example programm to compute a shortest vector using 
+* a triangular decomposition method. The implemented method
+* is discribe in LatticeGuide section 8.2
+*/
 
 #define NTL_TYPES_CODE 2
 

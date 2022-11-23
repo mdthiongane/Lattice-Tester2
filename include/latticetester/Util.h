@@ -1656,7 +1656,7 @@ void modInverse(Int &A, Int &M, Int &res){
    * The matrix B is the m-dual basis of A.
    */
    template <typename Matr, typename Int>
-    void CalcDual2 (const Matr & A, Matr & B, const Int & m) {
+    void CalcDual2(const Matr & A, Matr & B, const Int & m) {
       Int d, mult;
       Matr C;
       int dim1=A.NumRows();

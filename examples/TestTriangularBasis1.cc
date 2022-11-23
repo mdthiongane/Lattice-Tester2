@@ -1,3 +1,9 @@
+
+/**An example of program to use the
+*Util::Triangularization @author Couture. 
+**/
+
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -57,8 +63,8 @@ int main() {
  
  
      // std::string name = "bench/" + prime+ "_4" + "_001" ;
-   // std::string name = "bench/" + prime+ "_4" + "_002" ;
-    // std::string name = "bench/" + prime+ "_2" + "_001" ;
+     // std::string name = "bench/" + prime+ "_4" + "_002" ;
+     // std::string name = "bench/" + prime+ "_2" + "_001" ;
       std::string name = "bench/"  + prime+"_5_0" ;
       ParamReader<Int, RealRed> reader(name + ".dat");
 
@@ -93,11 +99,11 @@ int main() {
          printBase((red->getIntLatticeBase())->getBasis()); 
 
     // Tringular GCD basis 
-	      m_v.SetDims(numlines, numlines);
+	   m_v.SetDims(numlines, numlines);
         m_v2.SetDims(numlines, numlines);
         w_copie.SetDims(numlines, numlines);
 	
-             // Tringular basis from util
+        // Tringular basis from util
         copy((red->getIntLatticeBase())->getBasis(), w_copie);    
        
          std::cout << " Print w_copie which is a copy of reducer with bkz \n"; 

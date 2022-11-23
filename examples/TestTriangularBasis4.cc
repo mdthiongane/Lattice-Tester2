@@ -1,6 +1,7 @@
-// An example for test the Lower Traingular method 
-// Util::TriangularizationLower
-
+/*
+*An example of program to use the
+*Util::TriangularizationLower  @author Lecuyer. 
+**/
 
 #define NTL_TYPES_CODE 2
 
