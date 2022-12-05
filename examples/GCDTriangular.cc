@@ -43,13 +43,6 @@ int main() {
 
   for (int j = 0; j < max_dim; j++) {
     for (int k = 0; k < 10; k++) {
-      // We dynamically allocate memory to these two pointers every time we need to
-      // create an object of their type. This is because of the OOP approach
-      // to lattice reduction.
-    //  IntLatticeBase<Int, Real, RealRed>* basis;
-     // Reducer<Int, Real, RealRed>* red;
-
-
       //! Variables definition
       ParamReader<Int, RealRed> reader;
       std::string name;
@@ -85,8 +78,6 @@ int main() {
   
     }
   }
-
-
 
   std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
   for(int i=0;i<15;i++)

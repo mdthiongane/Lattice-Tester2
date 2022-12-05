@@ -34,13 +34,13 @@ def configure(ctx):
     ctx.env.append_unique('CFLAGS', ['-std=c99', '-Wall'])
     ctx.env.INCLUDES_TEST      = ['examples'] #/usr/include
 
-    if sys.platform != 'win32': 
-           ctx.env.DEFINES_TEST   = ['TEST']
-           ctx.env.CFLAGS_TEST    = ['-O0'] 
-           ctx.env.LIB_TEST       = ['m']
-           ctx.env.LIBPATH_TEST   = ['/usr/lib']
-           ctx.env.LINKFLAGS_TEST = ['-g']
-           ctx.env.INCLUDES_TEST  = ['examples']  #/opt/gnome/include
+   # if sys.platform != 'win32': 
+         #  ctx.env.DEFINES_TEST   = ['TEST']
+         #  ctx.env.CFLAGS_TEST    = ['-O0'] 
+         #  ctx.env.LIB_TEST       = ['m']
+          # ctx.env.LIBPATH_TEST   = ['/usr/lib']
+          # ctx.env.LINKFLAGS_TEST = ['-g']
+          # ctx.env.INCLUDES_TEST  = ['examples']  #/opt/gnome/include
 
     # suppress Boost ublas warnings
     compiler.add_cxx_flag_if_supported(ctx, '-Wno-unused-local-typedefs')

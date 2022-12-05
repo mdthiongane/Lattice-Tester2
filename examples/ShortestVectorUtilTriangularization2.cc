@@ -84,11 +84,6 @@ int main() {
  
        std::string s4("UtilTriangular2");
 
-      //! Reader shenanigans
-     // name = "bench/" + prime + "_" + std::to_string(5*(j+1)) + "_" + std::to_string(k);
-      //  name = "bench/" + prime+ "_2" + "_001" ;
-       //name = "bench/" + prime+ "_2" + "_002" ;
-      // name = "bench/" + prime+ "_4" + "_001" ;
       //name = "bench/" + prime+ "_4" + "_002" ;
       // name = "bench/" + prime+ "_5" + "_2" ;
          name = "bench/" + prime+ "_4" + "_001" ;
@@ -109,32 +104,26 @@ int main() {
       std::cout << " The base before reduction\n"; 
       printBase((red->getIntLatticeBase())->getBasis()); 
 
-
-     // red->redBKZ(0.5, 10, QUADRUPLE, 0);
-
+     // red->redBKZ(0.9, 10, QUADRUPLE, 0);
 
       std::cout << " The base after reduction\n"; 
       printBase((red->getIntLatticeBase())->getBasis()); 
 
-
       basis->updateVecNorm();
     ///  vec_length[2] += average(basis->getVecNorm());
        std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
-  
 
       tmp = clock();
       if (!red->shortestVector(L2NORM,s4)) {
         bkz_fails++;
       }
       sho_bkz[j] += clock() - tmp;
-       matShortVecLeng(j,k)=red->getMinLength();
+      matShortVecLeng(j,k)=red->getMinLength();
       delete red;
       //std::cout << "BKZ: " << average(basis->getVecNorm()) << "\n";
       delete basis;
     }
   }
-
-  //! Printing the results in a somewhat formated way.
 
   std::cout << "Total time: " << (double)(clock()-timer)/(CLOCKS_PER_SEC*60) << " minutes\n";
   for(int i=0;i<10;i++)
@@ -143,7 +132,5 @@ int main() {
      }
      std::cout << ""<< std::endl;
    }
-  //printRes(matShortVecLeng,10,10);
-      //printRes(matShortVecLeng,10,10);
   return 0;
 }

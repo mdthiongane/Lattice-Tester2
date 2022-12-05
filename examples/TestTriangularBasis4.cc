@@ -1,7 +1,7 @@
 /*
-*An example of program to use the
-*Util::TriangularizationLower  @author Lecuyer. 
-**/
+ *An example of program to use the
+ *Util::TriangularizationLower  @author Lecuyer.
+ **/
 
 #define NTL_TYPES_CODE 2
 
@@ -24,134 +24,124 @@
 #include "latticetester/Const.h"
 #include "latticetester/NTLWrap.h"
 
-
-
 #include "Examples.h"
 
 using namespace LatticeTester;
 
-namespace {
+namespace
+{
   const std::string prime = primes[0];
 }
 
-
-void printBase(IntMat bas_mat){
-   int lin= bas_mat.NumRows();
-   int col=bas_mat.NumCols();
-     for(int i=0;i<lin;i++)
-     {for(int j=0;j<col;j++){
-       std::cout <<  bas_mat(i,j)<< "   ";
-     }
-      std::cout << ""<< std::endl;
-     }
-
+void printBase(IntMat bas_mat)
+{
+  int lin = bas_mat.NumRows();
+  int col = bas_mat.NumCols();
+  for (int i = 0; i < lin; i++)
+  {
+    for (int j = 0; j < col; j++)
+    {
+      std::cout << bas_mat(i, j) << "   ";
+    }
+    std::cout << "" << std::endl;
+  }
 }
 
-void printVector(IntVec vec){
- 
-     for(int i=0;i<vec.length();i++)
-    
-       std::cout <<  vec[i]<< "    ";  
-     std::cout << " "<<std::endl;            
+void printVector(IntVec vec)
+{
+
+  for (int i = 0; i < vec.length(); i++)
+
+    std::cout << vec[i] << "    ";
+  std::cout << " " << std::endl;
 }
 
-
-void getMatColumnVec(IntMat mat,int lin, int col, int numCol, int pos, IntVec &vec){
-  int k=0;
-  vec.SetLength(lin-pos);
-  for(int i=pos;i<lin;i++)
-    vec[k++]=mat(i,numCol);    
+void getMatColumnVec(IntMat mat, int lin, int col, int numCol, int pos, IntVec &vec)
+{
+  int k = 0;
+  vec.SetLength(lin - pos);
+  for (int i = pos; i < lin; i++)
+    vec[k++] = mat(i, numCol);
 }
 
-void getMatRowVec(IntMat mat,int lin, int col, int numRo, int pos, IntVec &vec){
-  int k=0;
-  vec.SetLength(col-pos);
-  for(int i=pos;i<col;i++)
-    vec[k++]=mat(numRo,i);    
+void getMatRowVec(IntMat mat, int lin, int col, int numRo, int pos, IntVec &vec)
+{
+  int k = 0;
+  vec.SetLength(col - pos);
+  for (int i = pos; i < col; i++)
+    vec[k++] = mat(numRo, i);
 }
 
+void copy(IntMat &b1, IntMat &b2)
+{
 
-
-void copy(IntMat &b1, IntMat &b2){
- 
-     for(int i=0;i<b1.size1();i++)
-     { for(int j=0;j<b1.size2();j++){
-          b2(i,j)=b1(i,j);
-         }   
-     }
-
+  for (int i = 0; i < b1.size1(); i++)
+  {
+    for (int j = 0; j < b1.size2(); j++)
+    {
+      b2(i, j) = b1(i, j);
+    }
+  }
 }
 
-
-int main() {
- 
+int main()
+{
 
   IntLatticeBase<Int, Real, RealRed> *lattice;
-  //IntLatticeBase<Int, Real, RealRed> *m_latCopie; 
-  Reducer<Int, Real, RealRed>* red;
+  // IntLatticeBase<Int, Real, RealRed> *m_latCopie;
+  Reducer<Int, Real, RealRed> *red;
   IntMat bas_mat, bas_mat2, dua_mat;
-  IntMat m_v,m_v2;
-    Int m(7); 
- 
-      //! Reader shenanigans
-     // std::string name = "bench/" + prime[0] + "_" + std::to_string((j+1)*5) + "_" + std::to_string(k);
-      //std::string name = "bench/" + prime+ "_4" + "_001" ;
-     // std::string name = "bench/" + prime+ "_4" + "_002" ;
-     // std::string name = "bench/"  + prime+"_5_0" ;
+  IntMat m_v, m_v2;
+  Int m(7);
 
-      std::string name = "bench/" + prime+ "_4" + "_001" ;
-      ParamReader<Int, RealRed> reader(name + ".dat");
+  // std::string name = "bench/"  + prime+"_5_0" ;
 
-                  
-      reader.getLines();
-      int numlines;
-      unsigned int ln;
-      reader.readInt(numlines, 0, 0);
-    
-      bas_mat.SetDims(numlines, numlines);
-      bas_mat2.SetDims(numlines, numlines);
-      dua_mat.SetDims(numlines, numlines);
-      ln = 1;
-      //! Filling the matrix
-      reader.readBMat(bas_mat, ln, 0, numlines);
-      
-   
-   
-     std::cout << " print initial Base \n"; 
-     printBase(bas_mat);
+  std::string name = "bench/" + prime + "_4" + "_001";
+  ParamReader<Int, RealRed> reader(name + ".dat");
 
-  
-      // Creating a lattice basis
-      lattice= new IntLatticeBase<Int, Real, RealRed>(bas_mat,bas_mat,m, numlines);
-      //IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines); 
-       red = new Reducer<Int, Real, RealRed>(*lattice);
-       std::cout << " The initial base\n"; 
-       printBase(bas_mat);
+  reader.getLines();
+  int numlines;
+  unsigned int ln;
+  reader.readInt(numlines, 0, 0);
 
-     
-       // BKZ reduction before shortest vector search
-        red->redBKZ();
+  bas_mat.SetDims(numlines, numlines);
+  bas_mat2.SetDims(numlines, numlines);
+  dua_mat.SetDims(numlines, numlines);
+  ln = 1;
+  //! Filling the matrix
+  reader.readBMat(bas_mat, ln, 0, numlines);
 
-        std::cout << " The base after reduction\n"; 
-        printBase((red->getIntLatticeBase())->getBasis()); 
+  std::cout << " print initial Base \n";
+  printBase(bas_mat);
 
-      	  m_v.SetDims(numlines, numlines);
-          m_v2.SetDims(numlines, numlines);
-		
-         //copy base to m_v
-         copy((red->getIntLatticeBase())->getBasis(), m_v);
-    
-         std::cout << " Print the copy basis"<<std::endl; 
-         printBase(m_v);
-     
-        
-       // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
-         TriangularizationLower<IntMat,IntVec, Int> (m_v, m_v2, m);
-     
-        std::cout << " Print Base after triangularization:"<<std::endl; 
+  // Creating a lattice basis
+  lattice = new IntLatticeBase<Int, Real, RealRed>(bas_mat, bas_mat, m, numlines);
+  // IntLatticeBase<Int, Real, RealRed> lattice(bas_mat,bas_mat,m, numlines);
+  red = new Reducer<Int, Real, RealRed>(*lattice);
+  std::cout << " The initial base\n";
+  printBase(bas_mat);
 
-        printBase(m_v2);
+  // BKZ reduction before shortest vector search
+  red->redBKZ();
 
+  std::cout << " The base after reduction\n";
+  printBase((red->getIntLatticeBase())->getBasis());
+
+  m_v.SetDims(numlines, numlines);
+  m_v2.SetDims(numlines, numlines);
+
+  // copy base to m_v
+  copy((red->getIntLatticeBase())->getBasis(), m_v);
+
+  std::cout << " Print the copy basis" << std::endl;
+  printBase(m_v);
+
+  // Triangularization2<IntMat,IntVec, Int> (m_v, m_v2, m);
+  TriangularizationLower<IntMat, IntVec, Int>(m_v, m_v2, m);
+
+  std::cout << " Print Base after triangularization:" << std::endl;
+
+  printBase(m_v2);
 
   return 0;
 }
