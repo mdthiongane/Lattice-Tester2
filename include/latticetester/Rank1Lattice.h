@@ -231,7 +231,7 @@ namespace LatticeTester {
          dualize ();
       }
       //constr.mDualTriangular(this->m_basis, this->m_dualbasis, this->m_modulo);
-      CalcDual (this->m_basis, this->m_dualbasis, d, this->m_modulo);
+      calcDual (this->m_basis, this->m_dualbasis, d, this->m_modulo);
       this->setNegativeNorm ();
       this->setDualNegativeNorm ();
     }

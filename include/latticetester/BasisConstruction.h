@@ -46,7 +46,7 @@ struct LLLConstr {
  * To compute the $m$-dual of a given basis, we have a general method implemented in
  * `mDualComputation`, and a faster method in `mDualTriangular` that works only when
  * the basis is upper-triangular.
- * The methods `Util::Triangularization` and `Util::CalcDual` do essentially the same
+ * The methods `Util::Triangularization` and `Util::calcDual` do essentially the same
  * things; however, the methods given here perform more verifications.
  *  ***  We should compare the speeds
  *
@@ -96,23 +96,30 @@ public:
 	 * very large, so the method may require a lot of memory.
 	 *  ***  But everything should be done modulo m ???
 	 */
-	void GCDTriangularBasis(IntMat &matrix, Int m);
-	void GCDTriangularBasis(IntMat &matrix);
+  void GCDTriangularBasis(IntMat &matrix);
 
 
-	/**
-	 * This function does essentially the same thing as `Util::CalcDual`.
-	 * It assumes that `matrix` contains a triangular basis of the primal lattice
-	 * scaled by the factor `m`.  It computes and returns the `m`-dual basis
-	 * in `dualMatrix`.  This function uses the method described in \cite rCOU96a.
-	 * Since `A=matrix` is upper triangular, `B=mdualMatrix` will be lower triangular
-	 * with `A(i,i)*B(i,i) = m` for all `i` and \f$ A_i \cdot B_j = 0\f$ for
-	 * \f$i\neq j\f$. To get the second condition, we simply have to
-	 * recursively take for each line
-	 * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
-	 * This is much faster than a traditional solving of a linear system.
+
+
+  	/**
+	 * This function does essentially the same thing as `Util::Triangularization`.
+	 * It uses a form of Gaussian elimination to obtain an upper triangular basis
+	 * for the smallest lattice that contains the generating vectors which are the
+	 * rows of the given matrix `matrix`.
+	 * In each column, it applies Euclid's algorithm to the elements under the
+	 * diagonal and change the corresponding rows to set all these elements to
+	 * zero except the one in the diagonal. The allowed row operations are only
+	 *   - Multiply a row by \f$-1\f$,
+	 *   - Add an integer multiple of row \f$i\f$ to row \f$j\f$ for \f$i \neq j\f$,
+	 *   - Swap row \f$i\f$ with row \f$j\f$.
+	 * All these operations can be performed modulo the scaling factor `m`.
+	 * After constructing this basis, the algorithm eliminates negative
+	 * coefficients in the matrix.
+   * All computational operation is done modulo 'm'. 
 	 */
-	void mDualTriangular(IntMat &matrix, IntMat &dualMatrix, Int m);
+  	void GCDTriangularBasis(IntMat &matrix, Int m);
+
+
 
 	/**
 	 * This does the same thing as mDualTriangular(), but is much slower. This
@@ -135,7 +142,7 @@ public:
 	 * It computes and returns the `m`-dual basis in `dualMatrix`.
 	 * ***  TO BE IMPLEMENTED **
 	 */
-	void mDualComputation(IntMat &matrix, IntMat &dualMatrix, Int m);
+	//void mDualComputation(IntMat &matrix, IntMat &dualMatrix, Int m);
 
 	/**
 	 * This method constructs a basis for the projection `proj` of the basis `in`.
@@ -145,7 +152,7 @@ public:
 	 */
 	//template<typename Int, typename Real, typename RealRed>
 	//template<typename Int>
-    template<typename Real, typename RealRed>
+  template<typename Real, typename RealRed>
 	void ProjectionConstruction(IntLatticeBase<Int, Real, RealRed> &in,
 			IntLatticeBase<Int, Real, RealRed> &out, const Coordinates &proj);
 
@@ -166,8 +173,8 @@ public:
    * `mat` contains the set of vectors that is used and modified at each step to
    * get a new vector from the basis.
    */
-   template<typename IntMat,typename IntVec> 
-   void LowerTriangularBasis(IntMat &mat, IntMat &mat2, Int &mod);	
+  // template<typename IntMat,typename IntVec> 
+   void lowerTriangular(IntMat &mat, IntMat &mat2, Int &mod);	
 
 
 
@@ -186,8 +193,8 @@ public:
    * get a new vector from the basis.
    */
 
-  template<typename IntMat,typename IntVec> 
-   void UpperTriangularBasis(IntMat &mat, IntMat &mat2, Int &mod);		
+  //template<typename IntMat,typename IntVec> 
+   void upperTriangular(IntMat &mat, IntMat &mat2, Int &mod);		
 
   /**
    * Takes an upper triangular basis `A` and computes an m-dual lattice basis
@@ -201,17 +208,32 @@ public:
    * we simply have to recursively take for each line
    * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
    */
-   template <typename IntMat>
-    void CalcDualUpperTriangularBasis (const IntMat & A, IntMat & B, int d, const Int & m);
+   //template <typename IntMat>
+   void calcDualUpperTriangular (const IntMat & A, IntMat & B, int d, const Int & m);
 
-  /**
-   * Takes a basis `A` and computes an m-dual lattice basis B.
+  	/**
+	 * This function assumes that `matrix` contains a basis of the primal lattice
+	 * scaled by the factor `m`, not necessarily triangular.
+   * Takes a basis `A` and computes an m-dual lattice basis and put it to 'B'.
    * The matrix B is the m-dual basis of A.
    */
-   template <typename IntMat>
-    void CalcDualBasis (const IntMat & A, IntMat & B, const Int & m);
+  // template <typename IntMat>
+    void calcDual (const IntMat & A, IntMat & B, const Int & m);
+        
 
-
+    	/**
+	 * This function does essentially the same thing as `CalcDualUpperTriangularBasis`.
+	 * It assumes that `matrix` contains a triangular basis of the primal lattice
+	 * scaled by the factor `m`.  It computes and returns the `m`-dual basis
+	 * in `dualMatrix`.  This function uses the method described in \cite rCOU96a.
+	 * Since `A=matrix` is upper triangular, `B=mdualMatrix` will be lower triangular
+	 * with `A(i,i)*B(i,i) = m` for all `i` and \f$ A_i \cdot B_j = 0\f$ for
+	 * \f$i\neq j\f$. To get the second condition, we simply have to
+	 * recursively take for each line
+	 * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
+	 * This is much faster than a traditional solving of a linear system.
+	 */
+	void mDualTriangular(IntMat &matrix, IntMat &dualMatrix, Int m);
 
 };
 
@@ -410,11 +432,11 @@ void BasisConstruction<Int>::mDualTriangular(IntMat &matrix, IntMat &dualMatrix,
 
 //============================================================================
 
-template<typename Int>
+/*template<typename Int>
 void BasisConstruction<Int>::mDualComputation(IntMat &matrix,
 		IntMat &dualMatrix, Int m) {
 	// **  TO BE IMPLEMENTED  **
-}
+}*/
 
 //============================================================================
 
@@ -462,8 +484,9 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * get a new vector from the basis.
    */
 
-   template<typename IntMat,typename IntVec, typename Int> 
-   void UpperTriangular(IntMat &mat, IntMat &mat2, Int &mod){
+   //template<typename IntMat,typename IntVec, typename Int> 
+   template<typename Int> 
+   void BasisConstruction<Int>::upperTriangular(IntMat &mat, IntMat &mat2, Int &mod){
      IntVec coeff, vl,v2; 
      Int C, D, val, gcd;  
      int pc, pl, k;
@@ -487,20 +510,17 @@ void BasisConstruction<Int>::ProjectionConstruction(
             { gcd=mat(k,pc);
               coeff[k]=1;
               val=gcd;
-             
              for(int i=k+1;i<dim1; i++){
                if(mat(i,pc)==0)
                { coeff[i]= 0;
                  continue;
-                }   
-           
+                }           
               Euclide (val, mat(i,pc), C, D , gcd);
               coeff[i]= D;
               for(int j=0;j<i;j++) 
                   coeff[j]*=C;
               val=gcd; 
-              }     
-            
+              }       
               int coeffN[dim2];
               int nb=0;
               for(int a=0;a<dim1;a++) 
@@ -508,19 +528,16 @@ void BasisConstruction<Int>::ProjectionConstruction(
                  { coeffN[nb]=a;
                    nb++;
                   }
-               } 
-             
+               }    
             vl.SetLength(dim2);
             int ind=0;
             for(int j=0;j<dim2;j++) {
               for(int i=0;i<nb;i++)
               { ind=coeffN[i];
-                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);   
-                 
+                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);      
               } 
               Modulo (vl[j], mod, vl[j]);  
              }
-
              for(int i=0;i<dim1;i++)
              {  if(mat(i,pc)!=0){
                 v2= (mat(i,pc)/gcd)*vl;
@@ -565,45 +582,40 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * `mat` contains the set of vectors that is used and modified at each step to
    * get a new vector from the basis.
    */
-   template<typename IntMat,typename IntVec,typename Int > 
-   void LowerTriangular(IntMat &mat, IntMat &mat2, Int &mod){
+  // template<typename IntMat,typename IntVec,typename Int > 
+   template<typename Int> 
+   void  BasisConstruction<Int>::lowerTriangular(IntMat &mat, IntMat &mat2, Int &mod){
      IntVec coeff, vl,v2; 
      Int C, D, val, gcd;  
      int pc, pl, k;
      int dim1=mat.NumRows();
-     int dim2=mat.NumCols();
-    
+     int dim2=mat.NumCols();   
      pl=dim1-1;
      pc=dim2-1;
      while(pl>=0 && pc>=0){
            for(int i=0;i<dim1;i++)
-              Modulo (mat(i,pc), mod, mat(i,pc));
-            
+              Modulo (mat(i,pc), mod, mat(i,pc));  
             coeff.SetLength(dim2);
             k=0;     
             while( k<dim1 && mat(k,pc)==0)
              { coeff[k]=0; 
                k++;
-             }
-                
+             }     
            if(k<dim1)
             { gcd=mat(k,pc);
               coeff[k]=1;
-              val=gcd;
-             
+              val=gcd;      
              for(int i=k+1;i<dim1; i++){
                if(mat(i,pc)==0)
                { coeff[i]= 0;
                  continue;
                 }   
-           
               Euclide (val, mat(i,pc), C, D , gcd);
               coeff[i]= D;
               for(int j=0;j<i;j++) 
                   coeff[j]*=C;
               val=gcd; 
-              }     
-            
+              }      
               int coeffN[dim2];
               int nb=0;
               for(int a=0;a<dim1;a++) 
@@ -611,19 +623,16 @@ void BasisConstruction<Int>::ProjectionConstruction(
                  { coeffN[nb]=a;
                    nb++;
                   }
-               } 
-             
+               }        
             vl.SetLength(dim2);
             int ind=0;
             for(int j=0;j<dim2;j++) {
               for(int i=0;i<nb;i++)
               { ind=coeffN[i];
-                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);   
-                 
+                 vl[j]=vl[j]+coeff[ind]*mat(ind,j);       
               } 
               Modulo (vl[j], mod, vl[j]);  
              }
-
              for(int i=0;i<dim1;i++)
              {  if(mat(i,pc)!=0){
                 v2= (mat(i,pc)/gcd)*vl;
@@ -658,10 +667,10 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * Takes a basis `A` and computes an m-dual lattice basis B.
    * The matrix B is the m-dual basis of A.
    */
-   template <typename Matr, typename Int>
-    void CalcDual (const Matr & A, Matr & B, const Int & m) {
+   template <typename Int>
+    void BasisConstruction<Int>::calcDual (const IntMat & A, IntMat & B, const Int & m) {
       Int d, mult;
-      Matr C;
+      IntMat C;
       int dim1=A.NumRows();
       int dim2=A.NumCols();
       C.SetDims(dim1, dim2);
@@ -688,7 +697,7 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
    */
    template <typename Matr, typename Int>
-    void CalcDualTriangular (const Matr & A, Matr & B, int d, const Int & m) {
+    void calcDualUpperTriangular (const Matr & A, Matr & B, int d, const Int & m) {
       for (int i = 0; i < d; i++) {
         for (int j = i + 1; j < d; j++)
           NTL::clear (B(i,j));
@@ -703,7 +712,6 @@ void BasisConstruction<Int>::ProjectionConstruction(
         }
       }
     }
-
 
 
 extern template class BasisConstruction<std::int64_t> ;

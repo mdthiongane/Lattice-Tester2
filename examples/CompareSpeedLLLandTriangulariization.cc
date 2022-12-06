@@ -5,20 +5,26 @@
 
 #include <iostream>
 #include <ctime>
-
-#include "latticetester/ParamReader.h"
 #include "latticetester/Types.h"
-#include "latticetester/Reducer.h"
-#include "latticetester/IntLatticeBase.h"
-#include "latticetester/WriterRes.h"
-#include "latticetester/Util.h"
 #include "latticetester/BasisConstruction.h"
-
+#include "latticetester/Util.h"
+#include "latticetester/ParamReader.h"
+#include "latticetester/IntLatticeBase.h"
+#include "latticetester/Reducer.h"
+#include "latticetester/Const.h"
 #include "Examples.h"
+#include "latticetester/WriterRes.h"
+
+
 
 using namespace LatticeTester;
 
 namespace
+{
+  const std::string prime = primes[1];
+}
+
+/*namespace
 {
   // Returns the average of the length of this vector
   Real average(RealVec vector)
@@ -59,11 +65,15 @@ namespace
   }
 
 }
+*/
 
 int main()
 {
 
   //  clock_t timer = clock();
+  IntLatticeBase<Int, Real, RealRed> *basis;
+  BasisConstruction<Int> constr; // The basis constructor we will use
+  Reducer<Int, Real, RealRed> *red;
   clock_t tmps;
   std::string prime = primes[0];
 
@@ -73,8 +83,7 @@ int main()
   int numlines;
   IntMat matrix1, matrix2, matrix3;
   unsigned int ln;
-  IntLatticeBase<Int, Real, RealRed> *basis;
-  Reducer<Int, Real, RealRed> *red;
+
 
   Int m(1021);
 
@@ -102,14 +111,14 @@ int main()
   //  std::cout << " The base after reduction\n";
 
   // printBase((red->getIntLatticeBase())->getBasis());
-  CopyMatr(matrix2, (red->getIntLatticeBase())->getBasis(), numlines, numlines);
+  copy(matrix2, (red->getIntLatticeBase())->getBasis());
   double tps = 0;
   for (int i = 0; i < 500; i++)
   {
     tmps = clock();
     TriangularizationLower<IntMat, IntVec, Int>(matrix1, matrix2, m);
     tps = tps + (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);
-    CopyMatr(matrix2, (red->getIntLatticeBase())->getBasis(), numlines, numlines);
+    copy(matrix2, (red->getIntLatticeBase())->getBasis());
   }
   std::cout << " The triangular compute time: " << tps << std::endl;
 

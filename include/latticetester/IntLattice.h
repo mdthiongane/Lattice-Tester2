@@ -463,7 +463,7 @@ namespace LatticeTester {
          lattice->getPrimalBasis ().setNegativeNorm (true);
          lattice->getPrimalBasis ().updateScalL2Norm (1,proj.size());
          lattice->getPrimalBasis ().write();*/
-      // CalcDual<IntMat> (lattice->m_basis, lattice->m_dualbasis,
+      // calcDual<IntMat> (lattice->m_basis, lattice->m_dualbasis,
       //     static_cast<int>(proj.size()), this->m_modulo);
       /*
          std::cout << "  ***** build 3\n";

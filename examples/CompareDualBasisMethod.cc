@@ -1,24 +1,38 @@
 
-/*Compare the speed of Util::CalcDual
+/* The code compare the speed of Util::calcDual method
  * which compute an m-dual basis using any basis in input,
- * and Util::CalcDualUpper which compute an m-dual basis
- * with an upper triangular basis.
+ * and Util::CalcDualUpper method which compute an m-dual basis
+ * with an upper triangular basis. We triangularize the basis before calling
+ * the Util::CalcDualUpper method.
+ * The used basis is in the 'examples/bench' folder of LatticeTester. 
+ * In 'bench' sub-folder  of 'examples'you can find many basis with different dimension. 
+ * Each basis in a '.dat' file.
+ * The dimension  of 5x5 to 75x75. Here is the contain of the contain of file '1021_5_1.dat'
+ * 
+ *  5
+ *  30 203 244 44 626 
+ *  965 905 182 890 975 
+ *  245 882 657 654 335 
+ *  794 232 968 807 535 
+ *  107 607 513 451 455 
+ * 
+ * This file contain information of 5x5 basis. There are six line of data. 
+ * The first give the dimension of the basis (5 that mean 5x5 basis). Line 2 to line
+ * 6 give the basis vector
+ * 
+ *  
  */
 
 #define NTL_TYPES_CODE 2
-
 #include <iostream>
 #include <ctime>
-
 #include "latticetester/Types.h"
-//#include "latticetester/BasisConstruction.h"
+#include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/Reducer.h"
-
 #include "latticetester/Const.h"
-
 #include "Examples.h"
 
 using namespace LatticeTester;
@@ -28,7 +42,7 @@ namespace
   const std::string prime = primes[1];
 }
 
-void printBase(IntMat bas_mat)
+/*void printBase(IntMat bas_mat)
 {
   int L = bas_mat.NumRows();
   int C = bas_mat.NumCols();
@@ -53,7 +67,7 @@ void copy(IntMat &b1, IntMat &b2)
       b2(i, j) = b1(i, j);
     }
   }
-}
+}*/
 
 int main()
 {
@@ -111,7 +125,7 @@ int main()
   tmps = clock();
   for (int i = 0; i < 200; i++)
   {
-    CalcDual(m_v2, m_v3, numlines, m);
+    calcDual(m_v2, m_v3, numlines, m);
     //  m_v2(i,i)= m_v2(i,i)+1;
   }
   tps = (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);

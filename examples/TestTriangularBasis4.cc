@@ -4,26 +4,19 @@
  **/
 
 #define NTL_TYPES_CODE 2
-
 #include <iostream>
 #include <ctime>
-
 #include "latticetester/Types.h"
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/Reducer.h"
-
 #include "latticetester/Const.h"
-
 #include "NTL/tools.h"
 #include "NTL/ZZ.h"
 #include "NTL/RR.h"
-
-#include "latticetester/Const.h"
 #include "latticetester/NTLWrap.h"
-
 #include "Examples.h"
 
 using namespace LatticeTester;
@@ -33,56 +26,6 @@ namespace
   const std::string prime = primes[0];
 }
 
-void printBase(IntMat bas_mat)
-{
-  int lin = bas_mat.NumRows();
-  int col = bas_mat.NumCols();
-  for (int i = 0; i < lin; i++)
-  {
-    for (int j = 0; j < col; j++)
-    {
-      std::cout << bas_mat(i, j) << "   ";
-    }
-    std::cout << "" << std::endl;
-  }
-}
-
-void printVector(IntVec vec)
-{
-
-  for (int i = 0; i < vec.length(); i++)
-
-    std::cout << vec[i] << "    ";
-  std::cout << " " << std::endl;
-}
-
-void getMatColumnVec(IntMat mat, int lin, int col, int numCol, int pos, IntVec &vec)
-{
-  int k = 0;
-  vec.SetLength(lin - pos);
-  for (int i = pos; i < lin; i++)
-    vec[k++] = mat(i, numCol);
-}
-
-void getMatRowVec(IntMat mat, int lin, int col, int numRo, int pos, IntVec &vec)
-{
-  int k = 0;
-  vec.SetLength(col - pos);
-  for (int i = pos; i < col; i++)
-    vec[k++] = mat(numRo, i);
-}
-
-void copy(IntMat &b1, IntMat &b2)
-{
-
-  for (int i = 0; i < b1.size1(); i++)
-  {
-    for (int j = 0; j < b1.size2(); j++)
-    {
-      b2(i, j) = b1(i, j);
-    }
-  }
-}
 
 int main()
 {

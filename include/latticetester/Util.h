@@ -1694,7 +1694,7 @@ void modInverse(Int &A, Int &M, Int &res){
    * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
    */
   template <typename Matr, typename Int>
-    void CalcDual (const Matr & A, Matr & B, int d, const Int & m) {
+    void calcDual (const Matr & A, Matr & B, int d, const Int & m) {
       for (int i = 0; i < d; i++) {
         for (int j = i + 1; j < d; j++)
           NTL::clear (B(i,j));

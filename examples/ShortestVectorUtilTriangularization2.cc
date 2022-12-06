@@ -4,48 +4,31 @@
 * is discribe in LatticeGuide section 8.2
 */
 
+
+
+
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
 #include <ctime>
-
-#include "latticetester/ParamReader.h"
 #include "latticetester/Types.h"
-#include "latticetester/Reducer.h"
-#include "latticetester/IntLatticeBase.h"
-#include "latticetester/WriterRes.h"
+#include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
-
+#include "latticetester/ParamReader.h"
+#include "latticetester/IntLatticeBase.h"
+#include "latticetester/Reducer.h"
+#include "latticetester/Const.h"
 #include "Examples.h"
+#include "latticetester/WriterRes.h"
+
+
 
 using namespace LatticeTester;
-
-namespace {
-  // Returns the average of the length of this vector
-  Real average(RealVec vector) {
-    Real sum(0);
-    for (int i = 0; i<vector.length(); i++) {
-      sum += vector[i];
-    }
-    return sum/Real(vector.length());
-  }
-
-
-
-void printBase(IntMat bas_mat){
-     int L=bas_mat.NumRows();
-     int C=bas_mat.NumCols();
-
-     for(int i=0;i<L;i++)
-     {for(int j=0;j<C;j++){
-       std::cout <<  bas_mat(i,j)<< "   ";
-     }
-      std::cout << ""<< std::endl;
-     }
-
+namespace
+{
+  const std::string prime = primes[0];
 }
 
-}
 
 int main() {
   clock_t timer = clock();

@@ -1,22 +1,24 @@
 
 /**An example of program to use the m-dual construction method. 
-*Util::CalcDual @author Lecuyer. 
+*Util::calcDual @author Lecuyer. 
 * The basis can be triangular or not.
 **/
+
+
 
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
 #include <ctime>
-
 #include "latticetester/Types.h"
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/Util.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/Reducer.h"
-
 #include "latticetester/Const.h"
+#include "Examples.h"
+#include "latticetester/WriterRes.h"
 #include <NTL/vector.h>
 #include <NTL/matrix.h>
 #include <NTL/ZZ.h>
@@ -32,34 +34,6 @@ using namespace LatticeTester;
 namespace {
   const std::string prime = primes[0];
 }
-
-
-void printBase(IntMat bas_mat){
-     int L=bas_mat.NumRows();
-     int C=bas_mat.NumCols();
-
-     for(int i=0;i<L;i++)
-     {for(int j=0;j<C;j++){
-       std::cout <<  bas_mat(i,j)<< "   ";
-     }
-      std::cout << ""<< std::endl;
-     }
-
-}
-
-
-void copy(IntMat &b1, IntMat &b2){
- 
-     for(int i=0;i<b1.size1();i++)
-     { for(int j=0;j<b1.size2();j++){
-          b2(i,j)=b1(i,j);
-         }   
-     }
-
-}
-
-
-
 
 
 
@@ -109,7 +83,7 @@ int main() {
        printBase(m_v2); 
         
 
-       CalcDual (bas_mat, m_v3, m) ;
+       calcDual (bas_mat, m_v3,numlines, m) ;
 
        std::cout << " The m-dual basis \n"; 
        printBase(m_v3); 
