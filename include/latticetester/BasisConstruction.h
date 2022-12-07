@@ -19,17 +19,39 @@
 #define LATTICETESTER_BASISCONSTRUCTION_H
 
 #include "NTL/LLL.h"
-
+#include <NTL/mat_GF2.h>
 #include "latticetester/IntLatticeBase.h"
 #include "latticetester/NTLWrap.h"
 #include "latticetester/Util.h"
 #include "latticetester/Coordinates.h"
+#include "NTL/tools.h"
+#include "NTL/ZZ.h"
+#include "NTL/RR.h"
+
+#include "latticetester/Const.h"
+#include "latticetester/NTLWrap.h"
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <set>
+#include <map>
+#include <cmath>
+#include <cstdlib>
+#include <cstdint>
+#include <type_traits>
+
+
+
+
 
 namespace LatticeTester {
 
 template<typename IntMat>
 struct LLLConstr {
 	void LLLConstruction(IntMat &matrix);
+  void LLLConstruction(IntMat &matrix, double delta);
 };
 
 /**
@@ -77,6 +99,19 @@ public:
 	 * It is a good idea to use it before computing a triangular basis.
 	 */
 	void LLLConstruction(IntMat &matrix);
+
+
+ 
+	/**
+	 * This functions takes a set of generating vectors of a vector space and
+	 * finds a basis for this space by applying LLL reduction, using the NTL implementation.
+	 * This is much faster than applying GCDConstruction, but it does not provide a triangular basis.
+	 * It is a good idea to use it before computing a triangular basis.
+	 */
+	void LLLConstruction(IntMat &matrix, double delta);
+
+
+
 
 	/**
 	 * This function does essentially the same thing as `Util::Triangularization`.
@@ -221,7 +256,7 @@ public:
     void calcDual (const IntMat & A, IntMat & B, const Int & m);
         
 
-    	/**
+   /**
 	 * This function does essentially the same thing as `CalcDualUpperTriangularBasis`.
 	 * It assumes that `matrix` contains a triangular basis of the primal lattice
 	 * scaled by the factor `m`.  It computes and returns the `m`-dual basis
@@ -245,13 +280,30 @@ void LLLConstr<NTL::matrix<std::int64_t>>::LLLConstruction(
 		NTL::matrix<std::int64_t> &matrix);
 
 template<>
+void LLLConstr<NTL::matrix<std::int64_t>>::LLLConstruction(
+		NTL::matrix<std::int64_t> &matrix, double delta);   
+
+template<>
 void LLLConstr<NTL::matrix<NTL::ZZ>>::LLLConstruction(
 		NTL::matrix<NTL::ZZ> &matrix);
+
+template<>
+void LLLConstr<NTL::matrix<NTL::ZZ>>::LLLConstruction(
+		NTL::matrix<NTL::ZZ> &matrix, double delta);    
 
 template<typename Int>
 void BasisConstruction<Int>::LLLConstruction(IntMat &matrix) {
 	spec.LLLConstruction(matrix);
 }
+
+
+template<typename Int>
+void BasisConstruction<Int>::LLLConstruction(IntMat &matrix, double delta) {
+	spec.LLLConstruction(matrix,delta);
+
+}
+
+
 
 template<typename Int>
 void BasisConstruction<Int>::GCDTriangularBasis(IntMat &matrix, Int mod) {
@@ -667,10 +719,32 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * Takes a basis `A` and computes an m-dual lattice basis B.
    * The matrix B is the m-dual basis of A.
    */
-   template <typename Int>
-    void BasisConstruction<Int>::calcDual (const IntMat & A, IntMat & B, const Int & m) {
-      Int d, mult;
-      IntMat C;
+   
+   // template <typename Int>
+    template <typename Matr>
+    void   BasisConstruction<Int>::calcDual (Matr & A, Matr & B,  Int & m) {
+      Int  d;
+      Matr C;
+      int dim1=A.NumRows();
+      int dim2=A.NumCols();
+      C.SetDims(dim1, dim2);
+      inv(d,B,A);
+      transpose(C,B);
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++)
+           B(i,j)= (m*C(i,j))/d;     
+        }
+     }
+           
+   // template <typename Int>
+
+   // void BasisConstruction<NTL::ZZ>::
+   /**  
+    void calcDual (const NTL::matrix<NTL::ZZ>  & A, NTL::matrix<NTL::ZZ>  & B, const NTL::ZZ & m) {
+      NTL::ZZ d;
+    //  Int d;// mult;
+    //  IntMat C;
+      NTL::matrix<NTL::ZZ> C;
       int dim1=A.NumRows();
       int dim2=A.NumCols();
       C.SetDims(dim1, dim2);
@@ -683,7 +757,27 @@ void BasisConstruction<Int>::ProjectionConstruction(
         }
      }
   
-     
+   //  void BasisConstruction<std::int64_t>::
+     void calcDual (const NTL::matrix<std::int64_t>  & A, NTL::matrix<std::int64_t>  & B, const std::int64_t & m) {
+      std::int64_t d;
+     // Int d;// mult;
+     // IntMat C;
+      NTL::matrix<std::int64_t>  C;
+      int dim1=A.NumRows();
+      int dim2=A.NumCols();
+      C.SetDims(dim1, dim2);
+      inv(d,B,A);
+      transpose(C,B);
+      for (int i = 0; i < dim1; i++) {
+        for (int j = 0; j < dim2; j++)
+           B(i,j)= (m*C(i,j))/d;
+          
+        }
+     }
+  **/
+
+
+
   /**
    * Takes an upper triangular basis `A` and computes an m-dual lattice basis
    * to this matrix. For this algorithm to work, `A` has to be upper

@@ -1806,6 +1806,35 @@ void modInverse(Int &A, Int &M, Int &res){
    * @}
    */
 
+
+template <typename IntMat>
+void printBase(IntMat bas_mat)
+{
+  int l = bas_mat.size1();
+  int c = bas_mat.size2();
+  for (int i = 0; i < l; i++)
+  {
+    for (int j = 0; j < c; j++)
+    {
+      std::cout << bas_mat(i, j) << "   ";
+    }
+    std::cout << "" << std::endl;
+  }
+}
+
+template <typename IntMat>
+void copy(IntMat &b1, IntMat &b2)
+{
+
+  for (int i = 0; i < b1.size1(); i++)
+  {
+    for (int j = 0; j < b1.size2(); j++)
+    {
+      b2(i, j) = b1(i, j);
+    }
+  }
+}
+
 }     // namespace LatticeTester
 
 #endif

@@ -2,9 +2,7 @@
 /**An example of program to use the
  *Util::Triangularization @author Couture.
  **/
-
-//#define NTL_TYPES_CODE 2
-
+#define NTL_TYPES_CODE 2
 #include <iostream>
 #include <ctime>
 #include "latticetester/Types.h"
@@ -16,6 +14,8 @@
 #include "latticetester/Const.h"
 #include "Examples.h"
 
+
+
 using namespace LatticeTester;
 
 namespace
@@ -23,31 +23,6 @@ namespace
   const std::string prime = primes[0];
 }
 
-/*void printBase(IntMat bas_mat)
-{
-  int l = bas_mat.size1();
-  int c = bas_mat.size2();
-  for (int i = 0; i < l; i++)
-  {
-    for (int j = 0; j < c; j++)
-    {
-      std::cout << bas_mat(i, j) << "   ";
-    }
-    std::cout << "" << std::endl;
-  }
-}
-
-void copy(IntMat &b1, IntMat &b2)
-{
-
-  for (int i = 0; i < b1.size1(); i++)
-  {
-    for (int j = 0; j < b1.size2(); j++)
-    {
-      b2(i, j) = b1(i, j);
-    }
-  }
-}*/
 
 int main()
 {
@@ -119,7 +94,7 @@ int main()
   printBase(m_v2);
 
   std::cout << " The construction of m-dual basis \n";
-  constr.calcDual(w_copie, m_dual, m);
+ // constr.calcDual(w_copie, m_dual, m);
   // Triangularization(m_v, m_v2, numlines, numlines, m);
   std::cout << " Print the m-dual basis \n";
   printBase(m_v2);
