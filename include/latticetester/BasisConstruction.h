@@ -721,8 +721,8 @@ void BasisConstruction<Int>::ProjectionConstruction(
    */
    
    // template <typename Int>
-    template <typename Matr>
-    void   BasisConstruction<Int>::calcDual (Matr & A, Matr & B,  Int & m) {
+    template <typename Matr, typename Int>
+    void calcDual (Matr & A, Matr & B,  Int & m) {
       Int  d;
       Matr C;
       int dim1=A.NumRows();
