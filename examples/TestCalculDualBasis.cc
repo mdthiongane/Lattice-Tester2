@@ -41,7 +41,7 @@ int main() {
 
 
   IntMat bas_mat, bas_mat2, dua_mat;
-  IntMat m_v,m_v2,m_v3;
+  IntMat m_v,m_v2,m_v3,m_v4;
   //Int m(101), G; 
   Int m(100), G, d; 
   IntVec vec, coeff,vl,tmp;
@@ -68,6 +68,7 @@ int main() {
 	     m_v.SetDims(numlines, numlines);
        m_v2.SetDims(numlines, numlines);
        m_v3.SetDims(numlines, numlines);
+       m_v4.SetDims(numlines, numlines);
    
   
        std::cout << " The initial base\n"; 
@@ -87,6 +88,13 @@ int main() {
 
        std::cout << " The m-dual basis \n"; 
        printBase(m_v3); 
+
+
+      CalcDual2 (bas_mat, m_v3, m) ;
+
+      std::cout << " The m-dual basis \n"; 
+      printBase(m_v3); 
+
 
 
   return 0;

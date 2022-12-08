@@ -255,7 +255,7 @@ public:
   // template <typename IntMat>
     void calcDual (const IntMat & A, IntMat & B, const Int & m);
         
-
+    void calcDual(const NTL::Mat<NTL::ZZ>  & A, NTL::Mat<NTL::ZZ>  & B, const NTL::ZZ & m);   
    /**
 	 * This function does essentially the same thing as `CalcDualUpperTriangularBasis`.
 	 * It assumes that `matrix` contains a triangular basis of the primal lattice
@@ -721,7 +721,8 @@ void BasisConstruction<Int>::ProjectionConstruction(
    */
    
    // template <typename Int>
-    template <typename Matr, typename Int>
+  //  template <typename Int>
+    template <typename Matr,typename Int >
     void calcDual (Matr & A, Matr & B,  Int & m) {
       Int  d;
       Matr C;
@@ -737,28 +738,48 @@ void BasisConstruction<Int>::ProjectionConstruction(
      }
            
    // template <typename Int>
-
-   // void BasisConstruction<NTL::ZZ>::
-   /**  
-    void calcDual (const NTL::matrix<NTL::ZZ>  & A, NTL::matrix<NTL::ZZ>  & B, const NTL::ZZ & m) {
-      NTL::ZZ d;
+  /**
+   template<typename Int> 
+   void BasisConstruction<Int>::calcDual(const NTL::Mat<NTL::GF2>  & A, NTL::Mat<NTL::GF2>  & B, const NTL::GF2 & m) {
+      NTL::GF2 d;
     //  Int d;// mult;
     //  IntMat C;
-      NTL::matrix<NTL::ZZ> C;
+      NTL::Mat<NTL::GF2> C;
       int dim1=A.NumRows();
       int dim2=A.NumCols();
       C.SetDims(dim1, dim2);
       inv(d,B,A);
       transpose(C,B);
-      for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++)
+      for (int i = 1; i < dim1; i++) {
+        for (int j = 1; j < dim2; j++)
            B(i,j)= (m*C(i,j))/d;
           
         }
      }
-  
+   */
+
+      template<typename Int> 
+   void BasisConstruction<Int>::calcDual(const NTL::Mat<NTL::ZZ>  & A, NTL::Mat<NTL::ZZ>  & B, const NTL::ZZ & m) {
+      NTL::ZZ d;
+    //  Int d;// mult;
+    //  IntMat C;
+      NTL::Mat<NTL::ZZ> C;
+      int dim1=A.NumRows();
+      int dim2=A.NumCols();
+      C.SetDims(dim1, dim2);
+      inv(d,B,A);
+      transpose(C,B);
+      for (int i = 1; i < dim1; i++) {
+        for (int j = 1; j < dim2; j++)
+           B(i,j)= (m*C(i,j))/d;
+          
+        }
+     }
+   
+
+
    //  void BasisConstruction<std::int64_t>::
-     void calcDual (const NTL::matrix<std::int64_t>  & A, NTL::matrix<std::int64_t>  & B, const std::int64_t & m) {
+ /**   void calcDual (const NTL::matrix<std::int64_t>  & A, NTL::matrix<std::int64_t>  & B, const std::int64_t & m) {
       std::int64_t d;
      // Int d;// mult;
      // IntMat C;

@@ -1655,7 +1655,7 @@ void modInverse(Int &A, Int &M, Int &res){
    * Takes a basis `A` and computes an m-dual lattice basis B.
    * The matrix B is the m-dual basis of A.
    */
-   template <typename Matr, typename Int>
+    template <typename Matr, typename Int>
     void CalcDual2(const Matr & A, Matr & B, const Int & m) {
       Int d, mult;
       Matr C;
@@ -1810,11 +1810,31 @@ void modInverse(Int &A, Int &M, Int &res){
 template <typename IntMat>
 void printBase(IntMat bas_mat)
 {
-  int l = bas_mat.size1();
-  int c = bas_mat.size2();
+  //int l = bas_mat.size1();
+ // int c = bas_mat.size2();
+  int l= bas_mat.NumRows();
+  int c= bas_mat.NumCols();
   for (int i = 0; i < l; i++)
   {
     for (int j = 0; j < c; j++)
+    {
+      std::cout << bas_mat(i, j) << "   ";
+    }
+    std::cout << "" << std::endl;
+  }
+}
+
+
+template <typename IntMat>
+void printBase2(IntMat bas_mat)
+{
+ //int l = bas_mat.size1();
+ // int c = bas_mat.size2();
+  int l= bas_mat.NumRows();
+  int c= bas_mat.NumCols();
+  for (int i = 1; i <= l; i++)
+  {
+    for (int j = 1; j <= c; j++)
     {
       std::cout << bas_mat(i, j) << "   ";
     }
