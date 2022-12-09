@@ -5,8 +5,6 @@
 */
 
 
-
-
 #define NTL_TYPES_CODE 2
 
 #include <iostream>
@@ -65,7 +63,7 @@ int main() {
       unsigned int ln;
       
  
-       std::string s4("UtilTriangular2");
+       std::string s1("triangular");
 
       //name = "bench/" + prime+ "_4" + "_002" ;
       // name = "bench/" + prime+ "_5" + "_2" ;
@@ -97,7 +95,7 @@ int main() {
        std::cout << "Short vector in initial base " <<  red->getMinLength() << "\n";
 
       tmp = clock();
-      if (!red->shortestVector(L2NORM,s4)) {
+      if (!red->shortestVector(L2NORM,s1)) {
         bkz_fails++;
       }
       sho_bkz[j] += clock() - tmp;

@@ -24,35 +24,6 @@ namespace
 }
 
 
-/*namespace
-{
-  // Returns the average of the length of this vector
-  Real average(RealVec vector)
-  {
-    Real sum(0);
-    for (int i = 0; i < vector.length(); i++)
-    {
-      sum += vector[i];
-    }
-    return sum / Real(vector.length());
-  }
-
-  void printBase(IntMat bas_mat)
-  {
-    int l = bas_mat.size1();
-    int c = bas_mat.size2();
-    for (int i = 0; i < l; i++)
-    {
-      for (int j = 0; j < c; j++)
-      {
-        std::cout << bas_mat(i, j) << "   ";
-      }
-      std::cout << "" << std::endl;
-    }
-  }
-
-}*/
-
 int main()
 {
   clock_t timer = clock();
