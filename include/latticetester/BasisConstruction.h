@@ -245,6 +245,7 @@ public:
    */
    //template <typename IntMat>
    void calcDualUpperTriangular (const IntMat & A, IntMat & B, int d, const Int & m);
+     
 
   	/**
 	 * This function assumes that `matrix` contains a basis of the primal lattice
@@ -811,8 +812,10 @@ void BasisConstruction<Int>::ProjectionConstruction(
    * we simply have to recursively take for each line
    * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
    */
-   template <typename Matr, typename Int>
-    void calcDualUpperTriangular (const Matr & A, Matr & B, int d, const Int & m) {
+  // template <typename Matr, typename Int>
+
+   template<typename Int> 
+   void BasisConstruction<Int>::calcDualUpperTriangular (const IntMat & A, IntMat & B, int d, const Int & m) {
       for (int i = 0; i < d; i++) {
         for (int j = i + 1; j < d; j++)
           NTL::clear (B(i,j));
