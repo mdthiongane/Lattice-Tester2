@@ -1764,8 +1764,8 @@ template <typename Matr, typename Int>
         B[i][j]=NTL::conv<NTL::ZZ>(A[i][j]);
   }  
 
-}*/
-
+}
+*/
 
 template <typename Matr1, typename Matr2>
 void copyMatrixToMat(Matr1 & A, Matr2 & B){

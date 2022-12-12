@@ -105,17 +105,21 @@ int main()
   printBase(w_copie);
 
   NTL::ZZ mm(1021);
-
+  // The copy w_copie 'NTL::Mat' basis for which we compute the m-dual
   copyMatrixToMat(bas_mat, w_copie2);
   // std::cout << " The basis initial \n";
   // printBase(bas_mat);
   std::cout << " The copy w_copie 'NTL::Mat' basis for which we compute the m-dual \n";
   printBase2(w_copie2);
-
+  // computing the m-dual with a non-triangular basis
   constr.calcDual(w_copie2, m_dual, mm);
-  // Triangularization(m_v, m_v2, numlines, numlines, m);
-  std::cout << " The m-dual of the primal basis \n";
-  printBase2(m_dual);
+  // printBase2(m_dual);
+  // Copy basis for the m-dual
+  copy(bas_mat, w_copie);
+  // Construct the upper triangular basis
+  constr.upperTriangular(w_copie, m_v, m);
+  constr.calcDualUpperTriangular(m_v, m_v2, numlines, m);
+  printBase(m_v2);
 
   /* To compare the speed of BasisConstruction::calcDual method
    * which compute an m-dual basis using any basis in input,

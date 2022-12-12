@@ -8,7 +8,7 @@
  *We compute triangularization time in time clocks machine.
  *The for each  method an two dimension array of 15 line and 10 column is used
   to save the triangularization time.
- *The line 1 of of the array contain computation time of the 10 basis with dimension   5x5,
+  *The line 1 of of the array contain computation time of the 10 basis with dimension   5x5,
   *The line 2 of of the array contain computation time of the 10 basis with dimension 10x10,
   *The line 3 of of the array contain computation time of the 10 basis with dimension 15x15,
   *The line 4 of of the array contain computation time of the 10 basis with dimension 20x20,
@@ -24,7 +24,6 @@
   *The line 14 of of the array contain computation time of the 10 basis with dimension 70x70,
   *The line 15 of of the array contain computation time of the 10 basis with dimension 75x75,
  **/
-
 
 #define NTL_TYPES_CODE 2
 #include <iostream>
@@ -48,19 +47,17 @@ namespace
   const std::string prime = primes[0];
 }
 
-
-
 int main()
 {
   // clock_t timer = clock();
-   clock_t tmp;
+  clock_t tmp;
 
   RealMat matTriangularTime;
   matTriangularTime.resize(15, 10);
 
   std::string prime = primes[2];
-    double tps=0;
- //
+  double tps = 0;
+  //
 
   for (int j = 0; j < 15; j++)
   {
@@ -89,10 +86,9 @@ int main()
       reader.readBMat(matrix1, ln, 0, numlines);
 
       tmp = clock();
-      constr.upperTriangular(matrix1, matrix2, m); 
+      constr.upperTriangular(matrix1, matrix2, m);
       tps = (double)(clock() - tmp); //(CLOCKS_PER_SEC);
       matTriangularTime(j, k) = tps;
-     
     }
   }
 
@@ -106,9 +102,7 @@ int main()
     std::cout << "" << std::endl;
   }
 
-
-  // we repaeat the same code but this time we use Util::triangularization method 
-
+  // we repaeat the same code but this time we use Util::triangularization method
 
   for (int j = 0; j < 15; j++)
   {
@@ -124,7 +118,7 @@ int main()
       Int m(1021);
       name = "bench/" + prime + "_" + std::to_string(5 * (j + 1)) + "_" + std::to_string(k);
       std::cout << name << std::endl;
-     
+
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
       reader.readInt(numlines, 0, 0);
@@ -144,7 +138,7 @@ int main()
     }
   }
 
-   std::cout << "Print the array that contain computation tine with the Util::Triangularization \n";
+  std::cout << "Print the array that contain computation tine with the Util::Triangularization \n";
   for (int i = 0; i < 15; i++)
   {
     for (int j = 0; j < 10; j++)
