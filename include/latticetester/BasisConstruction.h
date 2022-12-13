@@ -86,9 +86,9 @@ struct LLLConstr {
 template<typename Int> class BasisConstruction {
 
 private:
-	typedef NTL::vector<Int> IntVec;
-	typedef NTL::matrix<Int> IntMat;
-	struct LLLConstr<IntMat> spec;   // Why this?
+	typedef NTL::vector<Int>  IntVec;
+	typedef NTL::matrix<Int>  IntMat;
+ 	struct LLLConstr<IntMat> spec;   // Why this?
 
 public:
 
@@ -759,7 +759,7 @@ void BasisConstruction<Int>::ProjectionConstruction(
      }
    */
 
-      template<typename Int> 
+   template<typename Int> 
    void BasisConstruction<Int>::calcDual(const NTL::Mat<NTL::ZZ>  & A, NTL::Mat<NTL::ZZ>  & B, const NTL::ZZ & m) {
       NTL::ZZ d;
     //  Int d;// mult;

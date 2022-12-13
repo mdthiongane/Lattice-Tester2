@@ -2030,7 +2030,7 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
 	  	 CopyMatr(m_v,m_lat->getBasis(), dim, dim);
         // TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v2 ,mod);
 	 	 constr.lowerTriangular(m_v, m_v2 ,mod);	
-		 CopyMatr(m_lat->getBasis(), m_v2,dim, dim);
+		// CopyMatr(m_lat->getBasis(), m_v2,dim, dim);
 	     for (int i = 0; i < dim; i++){
 		   for (int j = 0; j < dim; j++){
 			if(i!=j){

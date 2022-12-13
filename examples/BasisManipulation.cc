@@ -1,8 +1,8 @@
 
-/**In example, we show the use of most of the method in class BasisConstruction.
+/**In this example, we show the use of most of the method in class BasisConstruction.
  * We begin by reading a file that contains the basis information and create an
- * 'IntLatticeBase' object. The basis have 10x10 dimension, the modulo 'm' is 1021.
- * The name of dat file is '1021_10_1.dat'. It is the 'examples' folder of LatticeTester.
+ * 'IntLatticeBase' object. The basis have 10x10 dimension, the base is modulo  1021.
+ * The name of the dat file is '1021_10_1.dat'. It is in the 'examples' folder of LatticeTester.
  * The absolue path is 'examples/bench/1021_10_1'.
  *
  * We show a use of BasisContruction::upperTriangular, BasisContruction::lowerTriangular,
@@ -77,7 +77,8 @@ int main()
   reader.readBMat(bas_mat, ln, 0, numlines);
 
   // Creating a lattice basis
-  lattice = new IntLatticeBase<Int, Real, RealRed>(bas_mat, bas_mat, m, numlines);
+  // lattice = new IntLatticeBase<Int, Real, RealRed>(bas_mat, bas_mat, m, numlines);
+  lattice = new IntLatticeBase<Int, Real, RealRed>(bas_mat, numlines);
   std::cout << " The initial base\n";
   printBase(lattice->getBasis()); // The primal basi is 'bas_mat'
 
@@ -119,6 +120,7 @@ int main()
   // Construct the upper triangular basis
   constr.upperTriangular(w_copie, m_v, m);
   constr.calcDualUpperTriangular(m_v, m_v2, numlines, m);
+  std::cout << " The m-dual basis \n";
   printBase(m_v2);
 
   /* To compare the speed of BasisConstruction::calcDual method
@@ -129,6 +131,9 @@ int main()
    * of 100 calls
    *
    * */
+
+
+   std::cout << "####### Compare the speed of 'calcDualUpperTriangular' and 'calcDual' ############\n";
   double tps = 0;
 
   // we work with a copy of bas_mat
@@ -139,7 +144,7 @@ int main()
   {
     constr.calcDualUpperTriangular(m_v2, m_v, numlines, m);
   }
-  tps = (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);
+  tps = (double)(clock() - tmps) / (CLOCKS_PER_SEC);
   std::cout << " Time (in second) to compute 100 m-dual from upper triangular basis: " << tps << std::endl;
 
   tmps = clock();
@@ -147,32 +152,33 @@ int main()
   {
     constr.calcDual(w_copie2, m_dual, m);
   }
-  tps = (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);
+  tps = (double)(clock() - tmps) / (CLOCKS_PER_SEC);
   std::cout << " Time (in second) to compute 100 m-dual from non-traingular basis: " << tps << std::endl;
 
   /*
    * To compare the speed of triangular 'BasisConstruction::upperTriangular'
    * and the speed of 'BasisConstruction::LLLConstruction'
    */
+
+   std::cout << "####### Compare the speed of 'upperTriangular' and 'LLLConstruction' ############\n";
   copy(w_copie, bas_mat);
   tps = 0;
   for (int i = 0; i < 100; i++)
   {
     tmps = clock();
     constr.upperTriangular(w_copie, m_v2, m);
-    tps = tps + (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);
+    tps = tps + (double)(clock() - tmps) / (CLOCKS_PER_SEC);
     copy(w_copie, bas_mat);
   }
   std::cout << " The triangular compute time: " << tps << std::endl;
 
-  std::cout << " #############################################################\n";
   tps = 0;
   copy(w_copie, bas_mat);
   for (int i = 0; i < 500; i++)
   {
     tmps = clock();
     constr.LLLConstruction(w_copie, 0.99999);
-    tps = tps + (double)(clock() - tmps) / (CLOCKS_PER_SEC * 60);
+    tps = tps + (double)(clock() - tmps) / (CLOCKS_PER_SEC);
     copy(w_copie, bas_mat);
   }
   std::cout << " The LLL basis compute time: " << tps << std::endl;

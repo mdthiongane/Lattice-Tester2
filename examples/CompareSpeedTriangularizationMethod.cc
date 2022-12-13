@@ -8,21 +8,36 @@
  *We compute triangularization time in time clocks machine.
  *The for each  method an two dimension array of 15 line and 10 column is used
   to save the triangularization time.
-  *The line 1 of of the array contain computation time of the 10 basis with dimension   5x5,
-  *The line 2 of of the array contain computation time of the 10 basis with dimension 10x10,
-  *The line 3 of of the array contain computation time of the 10 basis with dimension 15x15,
-  *The line 4 of of the array contain computation time of the 10 basis with dimension 20x20,
-  *The line 5 of of the array contain computation time of the 10 basis with dimension 25x25,
-  *The line 6 of of the array contain computation time of the 10 basis with dimension 30x30,
-  *The line 7 of of the array contain computation time of the 10 basis with dimension 35x35,
-  *The line 8 of of the array contain computation time of the 10 basis with dimension 40x40,
-  *The line 9 of of the array contain computation time of the 10 basis with dimension 45x45,
-  *The line 10 of of the array contain computation time of the 10 basis with dimension 50x50,
-  *The line 11 of of the array contain computation time of the 10 basis with dimension 55x55,
-  *The line 12 of of the array contain computation time of the 10 basis with dimension 60x60,
-  *The line 13 of of the array contain computation time of the 10 basis with dimension 65x65,
-  *The line 14 of of the array contain computation time of the 10 basis with dimension 70x70,
-  *The line 15 of of the array contain computation time of the 10 basis with dimension 75x75,
+  *---The line 1 of of the array contain computation time of the 10 basis with dimension   5x5,
+   file used /examples/bench/1073741827_5_0.dat to /examples/bench/1073741827_5_9.dat
+  *--The line 2 of of the array contain computation time of the 10 basis with dimension 10x10,
+   file used /examples/bench/1073741827_10_0.dat to /examples/bench/1073741827_10_9.dat
+  *---The line 3 of of the array contain computation time of the 10 basis with dimension 15x15,
+   file used /examples/bench/1073741827_15_0.dat to /examples/bench/1073741827_15_9.dat
+  *---The line 4 of of the array contain computation time of the 10 basis with dimension 20x20,
+   file used /examples/bench/1073741827_20_0.dat to /examples/bench/1073741827_20_9.dat
+  *---The line 5 of of the array contain computation time of the 10 basis with dimension 25x25,
+   file used /examples/bench/1073741827_25_0.dat to /examples/bench/1073741827_25_9.dat
+  *---The line 6 of of the array contain computation time of the 10 basis with dimension 30x30,
+   file used /examples/bench/1073741827_30_0.dat to /examples/bench/1073741827_30_9.dat
+  *---The line 7 of of the array contain computation time of the 10 basis with dimension 35x35,
+   file used /examples/bench/1073741827_35_0.dat to /examples/bench/1073741827_35_9.dat
+  *---The line 8 of of the array contain computation time of the 10 basis with dimension 40x40,
+   file used /examples/bench/1073741827_40_0.dat to /examples/bench/1073741827_40_9.dat
+  *---The line 9 of of the array contain computation time of the 10 basis with dimension 45x45,
+   file used /examples/bench/1073741827_45_0.dat to /examples/bench/1073741827_45_9.dat
+  *---The line 10 of of the array contain computation time of the 10 basis with dimension 50x50,
+   file used /examples/bench/1073741827_50_0.dat to /examples/bench/1073741827_50_9.dat
+  *---The line 11 of of the array contain computation time of the 10 basis with dimension 55x55,
+   file used /examples/bench/1073741827_55_0.dat to /examples/bench/1073741827_55_9.dat
+  *---The line 12 of of the array contain computation time of the 10 basis with dimension 60x60,
+   file used /examples/bench/1073741827_60_0.dat to /examples/bench/1073741827_60_9.dat
+  *---The line 13 of of the array contain computation time of the 10 basis with dimension 65x65,
+   file used /examples/bench/1073741827_65_0.dat to /examples/bench/1073741827_65_9.dat
+  *---The line 14 of of the array contain computation time of the 10 basis with dimension 70x70,
+   file used /examples/bench/1073741827_70_0.dat to /examples/bench/1073741827_70_9.dat
+  *---The line 15 of of the array contain computation time of the 10 basis with dimension 75x75,
+   file used /examples/bench/1073741827_75_0.dat to /examples/bench/1073741827_75_9.dat
  **/
 
 #define NTL_TYPES_CODE 2
@@ -44,7 +59,7 @@
 using namespace LatticeTester;
 namespace
 {
-  const std::string prime = primes[0];
+  const std::string prime = primes[2];
 }
 
 int main()
@@ -73,9 +88,8 @@ int main()
       Int m(1021);
 
       name = "bench/" + prime + "_" + std::to_string(5 * (j + 1)) + "_" + std::to_string(k);
-      std::cout << name << std::endl;
-      // name = "bench/" + prime+ "_2" + "_001" ;
-
+      //std::cout << name << std::endl;
+    
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
       reader.readInt(numlines, 0, 0);
@@ -117,7 +131,7 @@ int main()
       // BasisConstruction<Int> constr;
       Int m(1021);
       name = "bench/" + prime + "_" + std::to_string(5 * (j + 1)) + "_" + std::to_string(k);
-      std::cout << name << std::endl;
+      //std::cout << name << std::endl;
 
       reader = ParamReader<Int, RealRed>(name + ".dat");
       reader.getLines();
