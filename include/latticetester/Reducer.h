@@ -2022,13 +2022,15 @@ bool Reducer<Int, Real, RealRed>::redBBShortVec(NormType norm, std::string decom
     }
     else if(decomp==triangular){
 		/* Perform a triangular decomposition */
+		 BasisConstruction<Int> constr;
 		 IntMat m_v, m_v2;
 		 m_v.resize(dim, dim);
 		 m_v2.resize(dim, dim);
 		 Int mod=m_lat->getModulo();
 	  	 CopyMatr(m_v,m_lat->getBasis(), dim, dim);
-         TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v2 ,mod);
-		 CopyMatr(m_lat->getBasis(), m_v2,dim, dim);
+        // TriangularizationLower<IntMat,IntVec,Int>(m_v, m_v2 ,mod);
+	 	 constr.lowerTriangular(m_v, m_v2 ,mod);	
+		// CopyMatr(m_lat->getBasis(), m_v2,dim, dim);
 	     for (int i = 0; i < dim; i++){
 		   for (int j = 0; j < dim; j++){
 			if(i!=j){

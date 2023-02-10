@@ -513,30 +513,6 @@ namespace LatticeTester {
 
 
 /**
-   * This method return true if the vector is a $m.e_i$ else return false;
-   **
-   */
-
-  template <typename IntVec, typename Int>
-  bool IsMei(IntVec vec, Int mod) {
-    int n=vec.length();
-    int cpt=0;
-    Int val;
-    for(int i=0;i<n;i++) 
-    { if(vec[i]==0)
-        cpt++;
-      else{
-        val=vec[i];
-        if(val!=mod)
-          return false;
-       }
-    }
-    if(cpt==n-1 && val==mod)
-      return true;
-    return false;  
-  }
-
-/**
    * This remplace each element $a[i]$ of the vector $a$ by a[i] modulo m.
    **But we don't compute the modulo for me_i vector
    */
@@ -814,6 +790,7 @@ template <typename IntVec, typename Int>
    * get a new vector from the basis.
    */
 
+   /*
    template<typename IntMat,typename IntVec,typename Int > 
    void Triangularization2(IntMat &mat, IntMat &mat2, Int &mod){
      IntVec coeff, vl,v2; 
@@ -901,7 +878,7 @@ template <typename IntVec, typename Int>
           pc++;
        }
     }
- 
+  */
  
  
   
@@ -928,6 +905,7 @@ template <typename IntVec, typename Int>
 * inverse modulo of 'b'. 
 * This method is called to in 'modIverse' method
 */
+/*
 template<typename Int> 
 void gcdExtended(Int &a, Int &b, Int &x, Int &y, Int &gcd)
 {  
@@ -945,12 +923,13 @@ void gcdExtended(Int &a, Int &b, Int &x, Int &y, Int &gcd)
    y=x1;
    } 
 }
-  
+*/  
 
 /*
 * Compute the 'M' modulo inverse of 'A' if it exist and put it to 'res'
 * If the modulo inverse of A does not exist return a message 
-*/  
+*/ 
+/*
 template<typename Int> 
 void modInverse(Int &A, Int &M, Int &res){
    Int x, y, gcd;
@@ -966,7 +945,7 @@ void modInverse(Int &A, Int &M, Int &res){
 
     }
   }	
-
+*/ 
 
   /**
    * Takes a set of generating vectors in the matrix `mat` and iteratively
@@ -982,6 +961,8 @@ void modInverse(Int &A, Int &M, Int &res){
    * `mat` contains the set of vectors that is used and modified at each step to
    * get a new vector from the basis.
    */
+
+  /*
    template<typename IntMat,typename IntVec,typename Int > 
    void TriangularizationLower(IntMat &mat, IntMat &mat2, Int &mod){
      IntVec coeff, vl,v2; 
@@ -1068,21 +1049,8 @@ void modInverse(Int &A, Int &M, Int &res){
           pl--; 
           pc--;
        }
-     
-    /**   for(int i=0; i<dim1;i++)
-       { Int res,q;
-         if(mat2(i,i)!=mod){
-            modInverse(mat2(i,i),mod,res); 
-            Modulo((mod-1)*res,mod, q);
-           for(int j=0;j<dim2;j++)
-            { 
-              mat2(i,j)=q*mat2(i,j); 
-              Modulo(mat2(i,j),mod, mat2(i,j));
-            }
-           } 
-        } **/
    }
- 
+ */
 
   /**
    * @}
@@ -1562,7 +1530,8 @@ void modInverse(Int &A, Int &M, Int &res){
    * `W` contains the set of vectors that is used and modified at each step to
    * get a new vector from the basis.
    */
-  template <typename Matr, typename Int>
+ 
+template <typename Matr, typename Int>
     void Triangularization (Matr & W, Matr & V, int lin, int col,
         const Int & m)    {
       Int T1, T2, T3, T4, T5, T6, T7, T8;
@@ -1629,32 +1598,16 @@ void modInverse(Int &A, Int &M, Int &res){
           }
         }
 
-       //debut ajout
-     /*   std::cout << "Print W with etape j="<<j<<std::endl; 
-        for(int a=0; a<lin; a++){
-         for(int b=0;b<col;b++)
-            std::cout << W(a,b)<<"   "; 
-           std::cout << " "<<std::endl; 
-        }
-        std::cout << "Print V with etape j="<<j<<std::endl; 
-        for(int a=0; a<lin; a++){
-         for(int b=0;b<col;b++)
-            std::cout << V(a,b)<<"   "; 
-           std::cout << " "<<std::endl; 
-        }
-       */
-       //fin ajout
-
       }
       //  CheckTriangular (V, col, m);
     }
-
 
   
     /**
    * Takes a basis `A` and computes an m-dual lattice basis B.
    * The matrix B is the m-dual basis of A.
    */
+  /*
     template <typename Matr, typename Int>
     void CalcDual2(const Matr & A, Matr & B, const Int & m) {
       Int d, mult;
@@ -1664,21 +1617,14 @@ void modInverse(Int &A, Int &M, Int &res){
       C.SetDims(dim1, dim2);
       inv(d,B,A);
       transpose(C,B);
-     /** std::cout<<"determinant d: "<<d<<std::endl; 
       for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++)
-               std::cout << C(i,j)<<" ";
-         std::cout<<" "<<std::endl; 
-        }*/
-
-      for (int i = 0; i < dim1; i++) {
-        for (int j = 0; j < dim2; j++)
-           B(i,j)= (m*C(i,j))/d;
-          
-        }
+        for (int j = 0; j < dim2; j++){
+          B(i,j)= (m*C(i,j))/d;
+          Modulo(B(i,j),m, B(i,j));
+         }
+      }
      }
-  
-
+     */
   
   
   /**
@@ -1693,7 +1639,8 @@ void modInverse(Int &A, Int &M, Int &res){
    * we simply have to recursively take for each line
    * \f[B_{i,j} = -\frac{1}{A_{j,j}}\sum_{k=j+1}^i A_{j,k} B_{i,k}.\f]
    */
-  template <typename Matr, typename Int>
+  
+   template <typename Matr, typename Int>
     void calcDual (const Matr & A, Matr & B, int d, const Int & m) {
       for (int i = 0; i < d; i++) {
         for (int j = i + 1; j < d; j++)
@@ -1709,6 +1656,7 @@ void modInverse(Int &A, Int &M, Int &res){
         }
       }
     }
+    
 
   /**
    * @}
@@ -1805,6 +1753,31 @@ void modInverse(Int &A, Int &M, Int &res){
   /**
    * @}
    */
+/*
+* copy NTL::matrix<NTL::ZZ> A to NTL::Mat<NTL::ZZ> B
+*/
+/*void copyMatrixToMat(NTL::matrix<NTL::ZZ> & A, NTL::Mat<NTL::ZZ> & B){
+  int l=A.NumRows();
+  int c=A.NumCols();
+  for(int i=0;i<l;i++){
+    for(int j=0;j<c;j++)
+        B[i][j]=NTL::conv<NTL::ZZ>(A[i][j]);
+  }  
+
+}
+*/
+
+template <typename Matr1, typename Matr2>
+void copyMatrixToMat(Matr1 & A, Matr2 & B){
+  int l=A.NumRows();
+  int c=A.NumCols();
+  for(int i=0;i<l;i++){
+    for(int j=0;j<c;j++)
+        B[i][j]=NTL::conv<NTL::ZZ>(A[i][j]);
+  }  
+
+}
+
 
 
 template <typename IntMat>
